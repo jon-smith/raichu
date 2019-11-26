@@ -8,6 +8,7 @@ export type DataPoint = {
 };
 
 export type DataSeriesT<DataPointT extends DataPoint> = {
+	name: string;
 	data: DataPointT[];
 }
 
