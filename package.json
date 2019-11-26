@@ -27,9 +27,10 @@
 	"author": "jon-smith",
 	"license": "MIT",
 	"dependencies": {
+		"lodash": "^4.17.15",
 		"react": "^16.12.0",
 		"react-dom": "^16.12.0",
-		"lodash": "^4.17.15"
+		"react-vis": "^1.11.7"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^2.9.0",
