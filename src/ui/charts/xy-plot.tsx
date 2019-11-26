@@ -4,7 +4,7 @@ import {FlexibleXYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, Li
 
 export type DataPoint = {
 	x: number; 
-	y: number
+	y: number;
 };
 
 export type DataSeriesT<DataPointT extends DataPoint> = {
