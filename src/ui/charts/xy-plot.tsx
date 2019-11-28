@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useMemo, useState, useCallback } from 'react'
-import { FlexibleXYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries, Highlight } from 'react-vis'
+import { FlexibleXYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries, Highlight, Borders } from 'react-vis'
 
 type ReactVisArea =
 	{
@@ -9,6 +9,15 @@ type ReactVisArea =
 		top: number;
 		bottom: number;
 	}
+
+// Helper function to be called in response to the OnDrag event
+const updateZoomAreaOnDrag = (currentArea: ReactVisArea | null, newArea: ReactVisArea) =>
+	({
+		bottom: currentArea?.bottom ?? 0 + (newArea.top - newArea.bottom),
+		left: currentArea?.left ?? 0 - (newArea.right - newArea.left),
+		right: currentArea?.right ?? 0 - (newArea.right - newArea.left),
+		top: currentArea?.top ?? 0 + (newArea.top - newArea.bottom)
+	});
 
 export type DataPoint = {
 	x: number;
@@ -32,18 +41,19 @@ const buildSeriesComponents =
 
 const gridStyle = { stroke: 'lightgrey' };
 const axisStyle = { line: { stroke: 'black' } };
+const backgroundFill = { fill: '#fff' };
+// Define a style for the border around the inner chart area
+// which blocks the chart series from being seen under the axes
+const borderStyle = {
+	bottom: backgroundFill, left: backgroundFill, right: backgroundFill, top: backgroundFill
+};
 
 const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
 	const { series } = props;
 
 	const [zoomArea, setZoomArea] = useState<ReactVisArea | null>(null);
 	const updateZoomArea = useCallback((area: ReactVisArea) => {
-		setZoomArea({
-			bottom: zoomArea?.bottom ?? 0 + (area.top - area.bottom),
-			left: zoomArea?.left ?? 0 - (area.right - area.left),
-			right: zoomArea?.right ?? 0 - (area.right - area.left),
-			top: zoomArea?.top ?? 0 + (area.top - area.bottom)
-		});
+		setZoomArea(updateZoomAreaOnDrag(zoomArea, area));
 	}, [zoomArea]);
 
 	const xDomain = zoomArea && [zoomArea.left, zoomArea.right];
@@ -59,6 +69,7 @@ const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
 			<HorizontalGridLines style={gridStyle} />
 			<VerticalGridLines style={gridStyle} />
 			{seriesComponents}
+			<Borders style={borderStyle} />
 			<XAxis title={"X"} style={axisStyle} />
 			<YAxis title={"Y"} style={axisStyle} />
 			<Highlight
