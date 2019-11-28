@@ -24,7 +24,7 @@ const commonConfig = {
 			'@main': srcPaths('src/main'),
 			'@public': srcPaths('public'),
 			'@renderer': srcPaths('src/renderer'),
-			'@utils': srcPaths('src/utils'),
+			'@shared': srcPaths('src/shared'),
 			'@ui': srcPaths('src/ui')
 		},
 		extensions: ['.js', '.json', '.ts', '.tsx'],

@@ -8,7 +8,7 @@
       "@public/*": ["public/*"],
       "@main/*": ["src/main/*"],
       "@renderer*/": ["src/renderer/*"],
-	  "@utils/*": ["src/utils/*"],
+	  "@shared/*": ["src/shared/*"],
 	  "@ui/*": ["src/ui/*"]
     },
     "module": "commonjs",
