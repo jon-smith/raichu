@@ -23,6 +23,9 @@ const buildSeriesComponents =
 	return series.map((s, i) => <LineMarkSeries key={i} data={s.data}/>)
 }
 
+const gridStyle = {stroke: 'lightgrey'};
+const axisStyle = {line: {stroke: 'black'}};
+
 const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) =>
 {
 	const {series} = props;
@@ -30,10 +33,10 @@ const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) =>
 
 	return (
 		<FlexibleXYPlot className={props.className}>
-			<HorizontalGridLines />
-			<VerticalGridLines />
-			<XAxis title={"X"}/>
-			<YAxis title={"Y"}/>
+			<HorizontalGridLines style={gridStyle}/>
+			<VerticalGridLines style={gridStyle}/>
+			<XAxis title={"X"} style={axisStyle}/>
+			<YAxis title={"Y"} style={axisStyle}/>
 			{seriesComponents}
 		</FlexibleXYPlot>
 	)
