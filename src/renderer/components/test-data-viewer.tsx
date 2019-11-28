@@ -8,7 +8,7 @@ const TestDataViewer = () => {
 		<div className="test-data-viewer">
 			<XYPlot 
 				className="test-data-chart" 
-				series={[{name: "", data: data}]}
+				series={[{name: "", data: data, color: 'red'}]}
 			/>
 		</div>
 	)

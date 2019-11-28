@@ -18,6 +18,7 @@ export type DataPoint = {
 export type DataSeriesT<DataPointT extends DataPoint> = {
 	name: string;
 	data: DataPointT[];
+	color?: string;
 }
 
 interface Props<DataPointT extends DataPoint> {
@@ -27,7 +28,7 @@ interface Props<DataPointT extends DataPoint> {
 
 const buildSeriesComponents =
 	<DataPointT extends DataPoint>(series: DataSeriesT<DataPointT>[]) => {
-		return series.map((s, i) => <LineMarkSeries key={i} data={s.data} />)
+		return series.map((s, i) => <LineMarkSeries key={i} data={s.data} color={s.color} />)
 	}
 
 const gridStyle = { stroke: 'lightgrey' };
