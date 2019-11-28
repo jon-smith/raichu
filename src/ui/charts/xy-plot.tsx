@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState } from 'react'
 import { FlexibleXYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries, Highlight, Borders } from 'react-vis'
 
 type ReactVisArea =
@@ -9,15 +9,6 @@ type ReactVisArea =
 		top: number;
 		bottom: number;
 	}
-
-// Helper function to be called in response to the OnDrag event
-const updateZoomAreaOnDrag = (currentArea: ReactVisArea | null, newArea: ReactVisArea) =>
-	({
-		bottom: currentArea?.bottom ?? 0 + (newArea.top - newArea.bottom),
-		left: currentArea?.left ?? 0 - (newArea.right - newArea.left),
-		right: currentArea?.right ?? 0 - (newArea.right - newArea.left),
-		top: currentArea?.top ?? 0 + (newArea.top - newArea.bottom)
-	});
 
 export type DataPoint = {
 	x: number;
@@ -52,9 +43,6 @@ const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
 	const { series } = props;
 
 	const [zoomArea, setZoomArea] = useState<ReactVisArea | null>(null);
-	const updateZoomArea = useCallback((area: ReactVisArea) => {
-		setZoomArea(updateZoomAreaOnDrag(zoomArea, area));
-	}, [zoomArea]);
 
 	const xDomain = zoomArea && [zoomArea.left, zoomArea.right];
 	const yDomain = zoomArea && [zoomArea.bottom, zoomArea.top];
@@ -72,10 +60,7 @@ const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
 			<Borders style={borderStyle} />
 			<XAxis title={"X"} style={axisStyle} />
 			<YAxis title={"Y"} style={axisStyle} />
-			<Highlight
-				onBrushEnd={(area: ReactVisArea) => setZoomArea(area)}
-				onDrag={(area: ReactVisArea) => updateZoomArea(area)}
-			/>
+			<Highlight onBrushEnd={setZoomArea} />
 		</FlexibleXYPlot>
 	)
 }
