@@ -28,7 +28,14 @@ interface Props<DataPointT extends DataPoint> {
 
 const buildSeriesComponents =
 	<DataPointT extends DataPoint>(series: DataSeriesT<DataPointT>[]) => {
-		return series.map((s, i) => <LineMarkSeries key={i} data={s.data} color={s.color} />)
+		return series.map((s, i) => 
+			<LineMarkSeries 
+				key={i}
+				size={2}
+				data={s.data}
+				color={s.color}
+				lineStyle={{fill: 'none'}}
+			/>)
 	}
 
 const gridStyle = { stroke: 'lightgrey' };
