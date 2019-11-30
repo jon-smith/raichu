@@ -1,6 +1,5 @@
-import * as React from 'react'
-import { useMemo, useState } from 'react'
-import { FlexibleXYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries, Highlight, Borders } from 'react-vis'
+import React, { useMemo, useState } from 'react';
+import { FlexibleXYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries, Highlight, Borders } from 'react-vis';
 
 type ReactVisArea =
 	{
@@ -47,7 +46,7 @@ const buildSeriesComponents =
 
 		// If we don't have any series, return a dummy one so the chart still displays
 		return (<LineMarkSeries size={0} data={[{x: 0, y: 0}]} />);
-	}
+	};
 
 const gridStyle = { stroke: 'lightgrey' };
 const axisStyle = { line: { stroke: 'black' } };
@@ -81,7 +80,7 @@ const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
 			<YAxis title={"Y"} style={axisStyle} />
 			<Highlight onBrushEnd={setZoomArea} />
 		</FlexibleXYPlot>
-	)
-}
+	);
+};
 
 export default XYPlot;

@@ -10,7 +10,7 @@ ReactDOM.render(
 	<div className='app'>
 		<h4>Welcome to raichu</h4>
 		<p>頂きます</p>
-		<TestDataViewer/>
+		<TestDataViewer />
 	</div>,
 	document.getElementById('app')
 );

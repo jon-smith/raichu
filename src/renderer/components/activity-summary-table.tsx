@@ -19,15 +19,13 @@ const useStyles = makeStyles(theme =>
 	}),
 );
 
-interface ActivityData
-{
+interface ActivityData {
 	filename: string;
 	name: string;
 	date?: Date;
 }
 
-interface Props
-{
+interface Props {
 	rows: ActivityData[];
 }
 
@@ -35,7 +33,7 @@ const ActivitySummaryTable = (props: Props) => {
 
 	const classes = useStyles();
 
-	const {rows} = props;
+	const { rows } = props;
 
 	return (
 		<div className={classes.root}>
@@ -63,6 +61,6 @@ const ActivitySummaryTable = (props: Props) => {
 			</Paper>
 		</div>
 	);
-}
+};
 
 export default ActivitySummaryTable;

@@ -27,24 +27,22 @@ const TestDataViewer = () => {
 				y: hrt.hr === null || hrt.hr === undefined ? null : hrt.hr
 			}));
 
-		return { name: "", data: dataPoints }
+		return { name: "", data: dataPoints };
 	});
 
-	return (
-		<div className="test-data-viewer">
-			<GpxFileDrop
-				loadedFiles={loadedFiles}
-				setLoadedFiles={setLoadedFiles}
-			/>
-			<ActivitySummaryTable
-				rows={tableRows}
-			/>
-			<XYPlot
-				className="test-data-chart"
-				series={series}
-			/>
-		</div>
-	)
-}
+	return (<div className="test-data-viewer">
+		<GpxFileDrop
+			loadedFiles={loadedFiles}
+			setLoadedFiles={setLoadedFiles}
+		/>
+		<ActivitySummaryTable
+			rows={tableRows}
+		/>
+		<XYPlot
+			className="test-data-chart"
+			series={series}
+		/>
+	</div>);
+};
 
 export default TestDataViewer;

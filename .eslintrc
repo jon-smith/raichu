@@ -26,6 +26,7 @@
       "tab"
 	],
 	"eqeqeq": "warn",
+	"semi": "error",
 	"@typescript-eslint/prefer-interface": "off",
 	"@typescript-eslint/explicit-function-return-type": "off",
     "react/prop-types": "off",
