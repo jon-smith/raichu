@@ -24,8 +24,9 @@ const TestDataViewer = () => {
 		const earliestTime = lodash.min(heartRateAndTime.map(hrt => hrt.t)) ?? new Date();
 
 		const dataPoints = heartRateAndTime
-			.filter(hrt => hrt.hr != undefined)
-			.map(hrt => ({x: (hrt.t.getTime() - earliestTime.getTime()), y: hrt.hr ?? 0}));
+			.map(hrt => ({
+				x: (hrt.t.getTime() - earliestTime.getTime()),
+				y: hrt.hr === null || hrt.hr === undefined ? null : hrt.hr}));
 
 		return {name: "", data: dataPoints}
 	});

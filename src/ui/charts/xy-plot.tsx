@@ -12,7 +12,8 @@ type ReactVisArea =
 
 export type DataPoint = {
 	x: number;
-	y: number;
+	// null will allow gaps in series lines
+	y: number | null;
 };
 
 export type DataSeriesT<DataPointT extends DataPoint> = {
@@ -35,6 +36,7 @@ const buildSeriesComponents =
 				data={s.data}
 				color={s.color}
 				lineStyle={{fill: 'none'}}
+				getNull={(p: DataPoint) => p.y !== null}
 			/>)
 	}
 
