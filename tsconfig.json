@@ -12,7 +12,8 @@
 	  "@ui/*": ["src/ui/*"]
     },
     "module": "commonjs",
-    "moduleResolution": "node",
+	"moduleResolution": "node",
+	"esModuleInterop": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
