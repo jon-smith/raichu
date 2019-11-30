@@ -1,20 +1,18 @@
-import * as React from 'react';
-import { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import * as lodash from 'lodash';
 import XYPlot from '@ui/charts/xy-plot';
 import GpxFileDrop, { FileAndGpx } from './gpx-file-drop';
+import ActivitySummaryTable from './activity-summary-table';
 
 const TestDataViewer = () => {
 
 	const [loadedFiles, setLoadedFiles] = useState<FileAndGpx[]>([]);
 
-	const info = loadedFiles.map((f, i) => (
-		<div key={i}>
-			<h2>{f.file.name}</h2>
-			<p>{'Name: ' + f.gpx.track.name}</p>
-			<p>{'Metadata: ' + JSON.stringify(f.gpx.metadata)}</p>
-		</div>
-	));
+	const tableRows = useMemo(() => loadedFiles.map(l => ({
+		filename: l.file.name, 
+		name: l.gpx.track.name,
+		date: l.gpx.metadata?.time
+	})), [loadedFiles]);
 
 	const series = loadedFiles.map(l => {
 
@@ -33,17 +31,17 @@ const TestDataViewer = () => {
 
 	return (
 		<div className="test-data-viewer">
-			<XYPlot
-				className="test-data-chart"
-				series={series}
-			/>
 			<GpxFileDrop
 				loadedFiles={loadedFiles}
 				setLoadedFiles={setLoadedFiles}
 			/>
-			<div className="test-data-info">
-				{info}
-			</div>
+			<ActivitySummaryTable
+				rows={tableRows}
+			 />
+			<XYPlot
+				className="test-data-chart"
+				series={series}
+			/>			
 		</div>
 	)
 }
