@@ -9,7 +9,7 @@ const TestDataViewer = () => {
 	const [loadedFiles, setLoadedFiles] = useState<FileAndGpx[]>([]);
 
 	const tableRows = useMemo(() => loadedFiles.map(l => ({
-		filename: l.file.name, 
+		filename: l.file.name,
 		name: l.gpx.track.name,
 		date: l.gpx.metadata?.time
 	})), [loadedFiles]);
@@ -17,16 +17,17 @@ const TestDataViewer = () => {
 	const series = loadedFiles.map(l => {
 
 		const heartRateAndTime = lodash.flatten(lodash.flatten(
-			l.gpx.track.segments.map(s => s.points.map(p => ({hr: p.heartRate, t: p.time})))));
+			l.gpx.track.segments.map(s => s.points.map(p => ({ hr: p.heartRate, t: p.time })))));
 
 		const earliestTime = lodash.min(heartRateAndTime.map(hrt => hrt.t)) ?? new Date();
 
 		const dataPoints = heartRateAndTime
 			.map(hrt => ({
 				x: (hrt.t.getTime() - earliestTime.getTime()),
-				y: hrt.hr === null || hrt.hr === undefined ? null : hrt.hr}));
+				y: hrt.hr === null || hrt.hr === undefined ? null : hrt.hr
+			}));
 
-		return {name: "", data: dataPoints}
+		return { name: "", data: dataPoints }
 	});
 
 	return (
@@ -37,11 +38,11 @@ const TestDataViewer = () => {
 			/>
 			<ActivitySummaryTable
 				rows={tableRows}
-			 />
+			/>
 			<XYPlot
 				className="test-data-chart"
 				series={series}
-			/>			
+			/>
 		</div>
 	)
 }
