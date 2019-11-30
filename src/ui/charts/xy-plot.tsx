@@ -29,7 +29,8 @@ interface Props<DataPointT extends DataPoint> {
 
 const buildSeriesComponents =
 	<DataPointT extends DataPoint>(series: DataSeriesT<DataPointT>[]) => {
-		return series.map((s, i) => 
+
+		const seriesComponents = series.filter(s => s.data.length > 0).map((s, i) => 
 			<LineMarkSeries 
 				key={i}
 				size={2}
@@ -37,7 +38,15 @@ const buildSeriesComponents =
 				color={s.color}
 				lineStyle={{fill: 'none'}}
 				getNull={(p: DataPoint) => p.y !== null}
-			/>)
+			/>);
+
+		if (seriesComponents.length > 0)
+		{
+			return seriesComponents;
+		}
+
+		// If we don't have any series, return a dummy one so the chart still displays
+		return (<LineMarkSeries size={0} data={[{x: 0, y: 0}]} />);
 	}
 
 const gridStyle = { stroke: 'lightgrey' };
