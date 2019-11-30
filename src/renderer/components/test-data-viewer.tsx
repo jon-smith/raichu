@@ -4,6 +4,18 @@ import XYPlot from '@ui/charts/xy-plot';
 import GpxFileDrop, { FileAndGpx } from './gpx-file-drop';
 import ActivitySummaryTable from './activity-summary-table';
 
+const formatSecondsAsHHmm = (seconds: number): string =>
+{
+	const roundedSeconds = Math.round(seconds);
+	if (roundedSeconds < 60)
+		return String(seconds);
+
+	const minutes = Math.floor(seconds / 60);
+	const remainingSeconds = seconds % 60;
+	const remainingSecondsStr = remainingSeconds < 10 ? '0' + remainingSeconds : String(remainingSeconds);
+	return `${minutes}:${remainingSecondsStr}`;
+};
+
 const TestDataViewer = () => {
 
 	const [loadedFiles, setLoadedFiles] = useState<FileAndGpx[]>([]);
@@ -23,7 +35,7 @@ const TestDataViewer = () => {
 
 		const dataPoints = heartRateAndTime
 			.map(hrt => ({
-				x: (hrt.t.getTime() - earliestTime.getTime()),
+				x: (hrt.t.getTime() - earliestTime.getTime()) * 0.001, // Time in seconds
 				y: hrt.hr === null || hrt.hr === undefined ? null : hrt.hr
 			}));
 
@@ -41,6 +53,7 @@ const TestDataViewer = () => {
 		<XYPlot
 			className="test-data-chart"
 			series={series}
+			xTickFormat={formatSecondsAsHHmm}
 		/>
 	</div>);
 };

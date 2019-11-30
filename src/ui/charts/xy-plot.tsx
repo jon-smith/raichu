@@ -22,8 +22,12 @@ export type DataSeriesT<DataPointT extends DataPoint> = {
 }
 
 interface Props<DataPointT extends DataPoint> {
+
 	className?: string;
 	series: DataSeriesT<DataPointT>[];
+
+	xTickFormat?(value: number, index?: number): string | React.ReactSVGElement;
+	yTickFormat?(value: number, index?: number): string | React.ReactSVGElement;
 }
 
 const buildSeriesComponents =
@@ -76,8 +80,8 @@ const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
 			<VerticalGridLines style={gridStyle} />
 			{seriesComponents}
 			<Borders style={borderStyle} />
-			<XAxis title={"X"} style={axisStyle} />
-			<YAxis title={"Y"} style={axisStyle} />
+			<XAxis title={"X"} style={axisStyle} tickFormat={props.xTickFormat} />
+			<YAxis title={"Y"} style={axisStyle} tickFormat={props.yTickFormat} />
 			<Highlight onBrushEnd={setZoomArea} />
 		</FlexibleXYPlot>
 	);
