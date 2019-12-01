@@ -54,6 +54,8 @@ const TestDataViewer = () => {
 			className="test-data-chart"
 			series={series}
 			xTickFormat={formatSecondsAsHHmm}
+			xAxisLabel={'time'}
+			yAxisLabel={'HR'}
 		/>
 	</div>);
 };

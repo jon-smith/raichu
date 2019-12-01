@@ -26,6 +26,9 @@ interface Props<DataPointT extends DataPoint> {
 	className?: string;
 	series: DataSeriesT<DataPointT>[];
 
+	xAxisLabel?: string;
+	yAxisLabel?: string;
+
 	xTickFormat?(value: number, index?: number): string | React.ReactSVGElement;
 	yTickFormat?(value: number, index?: number): string | React.ReactSVGElement;
 }
@@ -80,11 +83,16 @@ const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
 			<VerticalGridLines style={gridStyle} />
 			{seriesComponents}
 			<Borders style={borderStyle} />
-			<XAxis title={"X"} style={axisStyle} tickFormat={props.xTickFormat} />
-			<YAxis title={"Y"} style={axisStyle} tickFormat={props.yTickFormat} />
+			<XAxis title={props.xAxisLabel} style={axisStyle} tickFormat={props.xTickFormat} />
+			<YAxis title={props.yAxisLabel} style={axisStyle} tickFormat={props.yTickFormat} />
 			<Highlight onBrushEnd={setZoomArea} />
 		</FlexibleXYPlot>
 	);
+};
+
+XYPlot.defaultProps = {
+	xAxisLabel: '',
+	yAxisLabel: ''
 };
 
 export default XYPlot;
