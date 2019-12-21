@@ -3,7 +3,7 @@ import * as lodash from 'lodash';
 import XYPlot from '@ui/charts/xy-plot';
 import GpxFileDrop, { FileAndGpx } from './gpx-file-drop';
 import ActivitySummaryTable from './activity-summary-table';
-import {fillMissingIndices, bestAveragesForDistances} from '@shared/activity-data/best-split-calculator';
+import {fillMissingIndices, bestAveragesForDistances, interpolateNullValues} from '@shared/activity-data/best-split-calculator';
 
 const formatSecondsAsHHmm = (seconds: number): string =>
 {
@@ -55,7 +55,8 @@ const TestDataViewer = () => {
 	const maxHRIntervalsSeries = hrVsTimeSecondsPerFile.map(d => {
 
 		const hrDataFilled = fillMissingIndices(d.map(hrt => ({...hrt, index: hrt.t})));
-		const bestSplits = bestAveragesForDistances(hrDataFilled.map(hrt => hrt.data?.hr ?? null), [1, 5, 10, 30, 60, 120, 600]);
+		const interpolatedHR = interpolateNullValues(hrDataFilled.map(hrt => hrt.data?.hr ?? null), 10);
+		const bestSplits = bestAveragesForDistances(interpolatedHR, [1, 5, 10, 30, 60, 120, 240, 360, 600, 900]);
 		const bestSplitsDataPoints = bestSplits.map(r => ({x: r.distance, y: r.best?.average ?? null}));
 
 		return {name: "best-splits", data: bestSplitsDataPoints};
