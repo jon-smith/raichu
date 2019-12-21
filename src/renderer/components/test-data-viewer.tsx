@@ -58,8 +58,6 @@ const TestDataViewer = () => {
 		const bestSplits = bestAveragesForDistances(hrDataFilled.map(hrt => hrt.data?.hr ?? null), [1, 5, 10, 30, 60, 120, 600]);
 		const bestSplitsDataPoints = bestSplits.map(r => ({x: r.distance, y: r.best?.average ?? null}));
 
-		console.log(bestSplits);
-
 		return {name: "best-splits", data: bestSplitsDataPoints};
 	});
 

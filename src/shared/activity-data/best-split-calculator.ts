@@ -74,8 +74,6 @@ export const bestAveragesForDistances = (dataPoints: (number | null)[], indexDis
 		});
 	}
 
-	console.log(dataPointsNullAsZero);
-
 	return currentMaxSumsForDistances.map(b => ({
 		distance: b.distance,
 		best: b.bestIndex === null ?
