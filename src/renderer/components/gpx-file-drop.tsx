@@ -12,25 +12,29 @@ type GpxFileDropProps = {
 };
 
 const GpxFileDrop = (props: GpxFileDropProps) => {
-
 	const { loadedFiles, setLoadedFiles } = props;
 
-	const addFiles = useCallback((files: FileAndGpx[]) => {
-		setLoadedFiles([...loadedFiles, ...files]);
-	}, [loadedFiles, setLoadedFiles]);
+	const addFiles = useCallback(
+		(files: FileAndGpx[]) => {
+			setLoadedFiles([...loadedFiles, ...files]);
+		},
+		[loadedFiles, setLoadedFiles]
+	);
 
-	const onDrop = useCallback(async (acceptedFiles: File[]) => {
-		// Read all files as strings asynchronously
-		const readers = acceptedFiles.map(async f => await readFileAsText(f));
-		const fileStrings = await Promise.all(readers);
+	const onDrop = useCallback(
+		async (acceptedFiles: File[]) => {
+			// Read all files as strings asynchronously
+			const readers = acceptedFiles.map(async f => readFileAsText(f));
+			const fileStrings = await Promise.all(readers);
 
-		// Convert to gpx
-		const gpx = fileStrings.map(f => parseGPXFile(f));
-		const filesAndGpx = acceptedFiles.map((f, i) => ({ file: f, gpx: gpx[i] }));
+			// Convert to gpx
+			const gpx = fileStrings.map(f => parseGPXFile(f));
+			const filesAndGpx = acceptedFiles.map((f, i) => ({ file: f, gpx: gpx[i] }));
 
-		addFiles(filesAndGpx);
-
-	}, [addFiles]);
+			addFiles(filesAndGpx);
+		},
+		[addFiles]
+	);
 
 	const { getRootProps, getInputProps } = useDropzone({ onDrop });
 

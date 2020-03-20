@@ -1,60 +1,71 @@
 # raichu
 React/Typescript/Electron based training data analysis software
 
-## Getting started
+## Folder structure
 
-To install packages:
+- **main** Back-end code
+- **renderer** Front-end code
+- **ui** Generic front-end components
+- **shared** Code shared between front and back end
+
+## Install
+Clone the repository with Git:
+
 ```bash
-npm run install
+git clone --depth=1 git@github.com:Robinfr/electron-react-typescript.git <your-project-name>
 ```
 
-To start Webpack in development mode and watch the changes on source files:
+And then install the dependencies:
+
 ```bash
-npm run dev
+cd <your-project-name>
+npm install
 ```
-To start the application (in another terminal):
+
+## Usage
+Both processes have to be started **simultaneously** in different console tabs:
+
 ```bash
-npm start
+npm run start-renderer-dev
+npm run start-main-dev
 ```
 
-## Building the installer for the app
-The boilerplate is currently configured to package & build the installer of 
-your app for macOS & Windows using `electron-builder`. 
+This will start the application with hot-reload so you can instantly start developing your application.
 
-For macOS, execute:
+You can also run do the following to start both in a single process:
+
 ```bash
-npm run build:mac
+npm run start-dev
 ```
 
-For Windows, execute:
+## Packaging
+We use [Electron builder](https://www.electron.build/) to build and package the application. By default you can run the following to package for your current platform:
+
 ```bash
-npm run build:win
-```
-_** `asar` archiving is disabled by default in Windows build as it can cause 
-errors while running the installed Electron app based on pervious experiences, 
-whereas the macOS build with `asar` enabled works just fine. You can turn it 
-back on by removing line 23 (`"asar": false`) in `package.json`. **_
-
-### Extra options
-The build scripts are pre-configured to build 64 bit installers since 64 bit 
-should be the standard for a modern applications. 32 bit builds are still 
-possible by changing the build scripts in `package.json` as below:
-```json
-// from
-"scripts": {
-    ...
-    "build:win": "electron-builder build --win --x64",
-    "build:mac": "electron-builder build --mac --x64"
-},
-
-// to
-"scripts": {
-    ...
-    "build:win": "electron-builder build --win --ia32",
-    "build:mac": "electron-builder build --mac --ia32"
-},
+npm run dist
 ```
 
-Builds for Linux, armv71, and arm64 can also be configured by modifying the 
-build scripts in `package.json`, but those aren't tested yet. For details, 
-please refer to [documents of `electron-builder`](https://www.electron.build/cli).
+This will create a installer for your platform in the `releases` folder.
+
+You can make builds for specific platforms (or multiple platforms) by using the options found [here](https://www.electron.build/cli). E.g. building for all platforms (Windows, Mac, Linux):
+
+```bash
+npm run dist -- -mwl
+```
+
+## Husky and Prettier
+This project comes with both Husky and Prettier setup to ensure a consistent code style. 
+
+To change the code style, you can change the configuration in `.prettierrc`. 
+
+In case you want to get rid of this, you can removing the following from `package.json`:
+
+1. Remove `precommit` from the `scripts` section
+1. Remove the `lint-staged` section
+1. Remove `lint-staged`, `prettier`, `eslint-config-prettier`, and `husky` from the `devDependencies`
+
+Also remove all mentions of Prettier from the `extends` section in `.eslintrc.json`.
+
+## About this project
+Set up using [electron-react-typescript](https://github.com/Robinfr/electron-react-typescript).
+

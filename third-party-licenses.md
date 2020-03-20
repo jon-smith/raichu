@@ -1,11 +1,11 @@
 # Third party source used in this project:
 
-## Based on electron-react-typescript-webpack-boilerplate
-https://github.com/Devtography/electron-react-typescript-webpack-boilerplate
+## Based on electron-react-typescript
+[https://github.com/Robinfr/electron-react-typescript](https://github.com/Robinfr/electron-react-typescript)
 
 ### MIT License
 
-Copyright (c) 2018 Devtography
+Copyright (c) 2018-present R. Franken
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
