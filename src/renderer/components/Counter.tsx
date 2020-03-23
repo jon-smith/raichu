@@ -1,7 +1,6 @@
 import * as React from 'react';
-
-require('./Counter.scss');
-const redCubeImg = require('./RedCube.jpg');
+import * as redCubeImg from './RedCube.jpg';
+import './Counter.scss';
 
 export interface Props {
 	value: number;

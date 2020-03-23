@@ -6,13 +6,13 @@ import { rootReducer, RootState } from '../reducers';
 const configureStore = (initialState?: RootState): Store<RootState | undefined> => {
 	const middlewares: any[] = [];
 	const enhancer = composeWithDevTools(applyMiddleware(...middlewares));
-	return createStore(rootReducer, initialState, enhancer);
+
+	if (typeof module.hot !== 'undefined') {
+		module.hot.accept('../reducers', () => store.replaceReducer(rootReducer));
+	}
+
+	const store = createStore(rootReducer, initialState, enhancer);
+	return store;
 };
 
-const store = configureStore();
-
-if (typeof module.hot !== 'undefined') {
-	module.hot.accept('../reducers', () => store.replaceReducer(require('../reducers').rootReducer));
-}
-
-export default store;
+export default configureStore;

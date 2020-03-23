@@ -4,7 +4,9 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
 import Application from './components/Application';
-import store from './store';
+import configureStore from './store';
+
+const store = configureStore();
 
 // Create main element
 const mainElement = document.createElement('div');

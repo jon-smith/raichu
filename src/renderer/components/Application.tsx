@@ -4,7 +4,7 @@ import * as React from 'react';
 import CounterContainer from '../containers/CounterContainer';
 import TestDataViewer from './test-data-viewer';
 
-require('./App.scss');
+import './App.scss';
 
 const Application = () => (
 	<div className="app">
