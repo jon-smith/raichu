@@ -15,7 +15,8 @@
 			"@main/*": ["src/main/*"],
 			"@renderer/*": ["src/renderer/*"],
 			"@ui/*": ["src/ui/*"],
-			"@shared/*": ["src/shared/*"]
+			"@shared/*": ["src/shared/*"],
+			"@state/*": ["src/state/*"]
 		},
 		"allowJs": true /* Allow javascript files to be compiled. */,
 		// "checkJs": true,                       /* Report errors in .js files. */

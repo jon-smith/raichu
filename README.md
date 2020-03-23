@@ -1,4 +1,5 @@
 # raichu
+
 React/Typescript/Electron based training data analysis software
 
 ## Folder structure
@@ -7,8 +8,10 @@ React/Typescript/Electron based training data analysis software
 - **renderer** Front-end code
 - **ui** Generic front-end components
 - **shared** Code shared between front and back end
+- **state** Code for the redux store
 
 ## Install
+
 Clone the repository with Git:
 
 ```bash
@@ -23,6 +26,7 @@ npm install
 ```
 
 ## Usage
+
 Both processes have to be started **simultaneously** in different console tabs:
 
 ```bash
@@ -39,6 +43,7 @@ npm run start-dev
 ```
 
 ## Packaging
+
 We use [Electron builder](https://www.electron.build/) to build and package the application. By default you can run the following to package for your current platform:
 
 ```bash
@@ -54,9 +59,10 @@ npm run dist -- -mwl
 ```
 
 ## Husky and Prettier
-This project comes with both Husky and Prettier setup to ensure a consistent code style. 
 
-To change the code style, you can change the configuration in `.prettierrc`. 
+This project comes with both Husky and Prettier setup to ensure a consistent code style.
+
+To change the code style, you can change the configuration in `.prettierrc`.
 
 In case you want to get rid of this, you can removing the following from `package.json`:
 
@@ -67,5 +73,5 @@ In case you want to get rid of this, you can removing the following from `packag
 Also remove all mentions of Prettier from the `extends` section in `.eslintrc.json`.
 
 ## About this project
-Set up using [electron-react-typescript](https://github.com/Robinfr/electron-react-typescript).
 
+Set up using [electron-react-typescript](https://github.com/Robinfr/electron-react-typescript).

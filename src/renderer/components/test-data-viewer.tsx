@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import * as lodash from 'lodash';
 import {
 	fillMissingIndices,
@@ -7,11 +8,10 @@ import {
 	interpolateNullValues
 } from '@shared/activity-data/best-split-calculator';
 import XYPlot from '@ui/charts/xy-plot';
-import { useActivitySelector } from '@renderer/reducers';
-import { useDispatch } from 'react-redux';
+import { addGpxFiles } from '@state/actions/activityActions';
+import { useActivitySelector } from '@state/reducers';
 import GpxFileDrop, { FileAndGpx } from './gpx-file-drop';
 import ActivitySummaryTable from './activity-summary-table';
-import { addGpxFiles } from '../actions/activityActions';
 
 const formatSecondsAsHHmm = (seconds: number): string => {
 	const roundedSeconds = Math.round(seconds);
