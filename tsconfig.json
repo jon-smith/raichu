@@ -13,7 +13,7 @@
 		"paths": {
 			"@/*": ["src/*"],
 			"@main/*": ["src/main/*"],
-			"@renderer*/": ["src/renderer/*"],
+			"@renderer/*": ["src/renderer/*"],
 			"@ui/*": ["src/ui/*"],
 			"@shared/*": ["src/shared/*"]
 		},

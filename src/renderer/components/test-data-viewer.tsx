@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import * as lodash from 'lodash';
 import {
 	fillMissingIndices,
@@ -7,8 +7,11 @@ import {
 	interpolateNullValues
 } from '@shared/activity-data/best-split-calculator';
 import XYPlot from '@ui/charts/xy-plot';
+import { useActivitySelector } from '@renderer/reducers';
+import { useDispatch } from 'react-redux';
 import GpxFileDrop, { FileAndGpx } from './gpx-file-drop';
 import ActivitySummaryTable from './activity-summary-table';
+import { addGpxFiles } from '../actions/activityActions';
 
 const formatSecondsAsHHmm = (seconds: number): string => {
 	const roundedSeconds = Math.round(seconds);
@@ -22,7 +25,10 @@ const formatSecondsAsHHmm = (seconds: number): string => {
 };
 
 const TestDataViewer = () => {
-	const [loadedFiles, setLoadedFiles] = useState<FileAndGpx[]>([]);
+	const loadedFiles = useActivitySelector(s => s.files);
+
+	const dispatch = useDispatch();
+	const addFiles = useCallback((f: FileAndGpx[]) => dispatch(addGpxFiles(f)), []);
 
 	const tableRows = useMemo(
 		() =>
@@ -86,7 +92,7 @@ const TestDataViewer = () => {
 
 	return (
 		<div className="test-data-viewer">
-			<GpxFileDrop loadedFiles={loadedFiles} setLoadedFiles={setLoadedFiles} />
+			<GpxFileDrop loadedFiles={loadedFiles} onAddFiles={addFiles} />
 			<ActivitySummaryTable rows={tableRows} />
 			<XYPlot
 				className="test-data-chart"

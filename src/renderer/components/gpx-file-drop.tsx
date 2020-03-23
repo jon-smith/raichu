@@ -8,17 +8,17 @@ export type FileAndGpx = { file: File; gpx: GpxData };
 
 type GpxFileDropProps = {
 	loadedFiles: FileAndGpx[];
-	setLoadedFiles(files: FileAndGpx[]): void;
+	onAddFiles(file: FileAndGpx[]): void;
 };
 
 const GpxFileDrop = (props: GpxFileDropProps) => {
-	const { loadedFiles, setLoadedFiles } = props;
+	const { loadedFiles, onAddFiles } = props;
 
 	const addFiles = useCallback(
 		(files: FileAndGpx[]) => {
-			setLoadedFiles([...loadedFiles, ...files]);
+			onAddFiles(files);
 		},
-		[loadedFiles, setLoadedFiles]
+		[loadedFiles, onAddFiles]
 	);
 
 	const onDrop = useCallback(

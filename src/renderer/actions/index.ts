@@ -1,3 +1,4 @@
-import { CounterAction } from './counterActions';
+import { useDispatch } from 'react-redux';
+import { ActivityAction } from './activityActions';
 
-export type RootActions = CounterAction[keyof CounterAction];
+export type RootActions = ActivityAction[keyof ActivityAction];
