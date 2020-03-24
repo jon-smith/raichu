@@ -4,7 +4,7 @@ import * as path from 'path';
 
 jest.setTimeout(10000);
 
-describe('Main window', () => {
+describe('Smoke Test', () => {
 	let app: Application;
 
 	beforeEach(() => {
@@ -12,7 +12,6 @@ describe('Main window', () => {
 			path: electronPath.toString(),
 			args: [path.join(__dirname, '..', '..')]
 		});
-
 		return app.start();
 	});
 
@@ -30,27 +29,5 @@ describe('Main window', () => {
 		const title = await browserWindow.getTitle();
 
 		expect(title).toBe('raichu');
-	});
-
-	it('increments the counter', async () => {
-		const { client } = app;
-
-		await client.waitUntilWindowLoaded();
-		await client.click('#increment');
-
-		const counterText = await client.getText('#counter-value');
-
-		expect(counterText).toBe('Current value: 1');
-	});
-
-	it('decrements the counter', async () => {
-		const { client } = app;
-
-		await client.waitUntilWindowLoaded();
-		await client.click('#decrement');
-
-		const counterText = await client.getText('#counter-value');
-
-		expect(counterText).toBe('Current value: -1');
 	});
 });

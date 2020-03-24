@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme =>
 	})
 );
 
-interface ActivityData {
+export interface ActivityData {
 	filename: string;
 	name: string;
 	date?: Date;

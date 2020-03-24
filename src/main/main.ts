@@ -24,7 +24,8 @@ const createWindow = async () => {
 		height: 600,
 		webPreferences: {
 			nodeIntegration: true
-		}
+		},
+		title: 'raichu'
 	});
 
 	if (process.env.NODE_ENV !== 'production') {
