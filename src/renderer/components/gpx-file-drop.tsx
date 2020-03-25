@@ -8,29 +8,33 @@ export type FileAndGpx = { file: File; gpx: GpxData };
 
 type GpxFileDropProps = {
 	loadedFiles: FileAndGpx[];
-	setLoadedFiles(files: FileAndGpx[]): void;
+	onAddFiles(file: FileAndGpx[]): void;
 };
 
 const GpxFileDrop = (props: GpxFileDropProps) => {
+	const { loadedFiles, onAddFiles } = props;
 
-	const { loadedFiles, setLoadedFiles } = props;
+	const addFiles = useCallback(
+		(files: FileAndGpx[]) => {
+			onAddFiles(files);
+		},
+		[loadedFiles, onAddFiles]
+	);
 
-	const addFiles = useCallback((files: FileAndGpx[]) => {
-		setLoadedFiles([...loadedFiles, ...files]);
-	}, [loadedFiles, setLoadedFiles]);
+	const onDrop = useCallback(
+		async (acceptedFiles: File[]) => {
+			// Read all files as strings asynchronously
+			const readers = acceptedFiles.map(async f => readFileAsText(f));
+			const fileStrings = await Promise.all(readers);
 
-	const onDrop = useCallback(async (acceptedFiles: File[]) => {
-		// Read all files as strings asynchronously
-		const readers = acceptedFiles.map(async f => await readFileAsText(f));
-		const fileStrings = await Promise.all(readers);
+			// Convert to gpx
+			const gpx = fileStrings.map(f => parseGPXFile(f));
+			const filesAndGpx = acceptedFiles.map((f, i) => ({ file: f, gpx: gpx[i] }));
 
-		// Convert to gpx
-		const gpx = fileStrings.map(f => parseGPXFile(f));
-		const filesAndGpx = acceptedFiles.map((f, i) => ({ file: f, gpx: gpx[i] }));
-
-		addFiles(filesAndGpx);
-
-	}, [addFiles]);
+			addFiles(filesAndGpx);
+		},
+		[addFiles]
+	);
 
 	const { getRootProps, getInputProps } = useDropzone({ onDrop });
 

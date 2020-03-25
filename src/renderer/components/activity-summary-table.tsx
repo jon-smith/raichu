@@ -1,25 +1,25 @@
-import React from 'react';
+import * as React from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@material-ui/core';
 
 const useStyles = makeStyles(theme =>
 	createStyles({
 		root: {
-			width: '100%',
+			width: '100%'
 		},
 		paper: {
 			marginTop: theme.spacing(3),
 			width: '100%',
 			overflowX: 'auto',
-			marginBottom: theme.spacing(2),
+			marginBottom: theme.spacing(2)
 		},
 		table: {
-			minWidth: 650,
-		},
-	}),
+			minWidth: 650
+		}
+	})
 );
 
-interface ActivityData {
+export interface ActivityData {
 	filename: string;
 	name: string;
 	date?: Date;
@@ -30,7 +30,6 @@ interface Props {
 }
 
 const ActivitySummaryTable = (props: Props) => {
-
 	const classes = useStyles();
 
 	const { rows } = props;

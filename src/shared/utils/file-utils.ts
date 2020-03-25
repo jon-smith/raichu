@@ -4,7 +4,7 @@ export const readFileAsText = (inputFile: File) => {
 	return new Promise<string>((resolve, reject) => {
 		fileReader.onerror = () => {
 			fileReader.abort();
-			reject(new DOMException('Failed to read ' + inputFile.name));
+			reject(new DOMException(`Failed to read ${inputFile.name}`));
 		};
 
 		fileReader.onload = () => {
