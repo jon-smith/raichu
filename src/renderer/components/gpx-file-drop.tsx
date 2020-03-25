@@ -18,7 +18,7 @@ const GpxFileDrop = (props: GpxFileDropProps) => {
 		(files: FileAndGpx[]) => {
 			onAddFiles(files);
 		},
-		[loadedFiles, onAddFiles]
+		[onAddFiles]
 	);
 
 	const onDrop = useCallback(
