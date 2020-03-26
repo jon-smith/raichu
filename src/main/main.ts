@@ -2,6 +2,8 @@ import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
+const Native = require('jolteon');
+
 let win: BrowserWindow | null;
 
 const installExtensions = async () => {
@@ -18,6 +20,9 @@ const createWindow = async () => {
 	if (process.env.NODE_ENV !== 'production') {
 		await installExtensions();
 	}
+
+	// eslint-disable-next-line no-console
+	console.log(Native.greet());
 
 	win = new BrowserWindow({
 		width: 800,

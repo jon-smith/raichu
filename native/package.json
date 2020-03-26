@@ -1,0 +1,16 @@
+{
+	"name": "jolteon",
+	"version": "0.0.1",
+	"author": {
+		"name": "jon-smith"
+	},
+	"description": "",
+	"main": "lib/index.js",
+	"license": "MIT",
+	"dependencies": {
+		"neon-cli": "^0.4.0"
+	},
+	"scripts": {
+		"install": "neon build --release"
+	}
+}
