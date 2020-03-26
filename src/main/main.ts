@@ -1,8 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-
-const Native = require('jolteon');
+import * as jolteon from 'jolteon';
 
 let win: BrowserWindow | null;
 
@@ -22,7 +21,7 @@ const createWindow = async () => {
 	}
 
 	// eslint-disable-next-line no-console
-	console.log(Native.greet());
+	console.log(jolteon.greet());
 
 	win = new BrowserWindow({
 		width: 800,

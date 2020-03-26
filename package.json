@@ -17,6 +17,7 @@
 		"test": "jest",
 		"pretest:e2e": "npm run build",
 		"test:e2e": "jest /test/e2e\\\\",
+		"test:native": "jest /test/native\\\\",
 		"pack": "npm run build && electron-builder --dir",
 		"dist": "npm run build && electron-builder",
 		"postinstall": "electron-builder install-app-deps"
@@ -36,26 +37,47 @@
 		]
 	},
 	"jest": {
-		"transform": {
-			"^.+\\.tsx?$": "ts-jest"
-		},
-		"testRegex": "(/test/.+\\.spec)\\.tsx?$",
-		"moduleFileExtensions": [
-			"ts",
-			"tsx",
-			"js",
-			"json",
-			"node"
-		],
-		"moduleNameMapper": {
-			"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
-			"\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js",
-			"^@main/(.*)$": "<rootDir>/src/main/$1",
-			"^@renderer/(.*)$": "<rootDir>/src/renderer/$1",
-			"^@shared/(.*)$": "<rootDir>/src/shared/$1",
-			"^@state/(.*)$": "<rootDir>/src/state/$1",
-			"^@ui/(.*)$": "<rootDir>/src/ui/$1"
-		}
+		"projects": [
+			{
+				"transform": {
+					"^.+\\.tsx?$": "ts-jest"
+				},
+				"testRegex": "(/test/(?!native).+\\.spec)\\.tsx?$",
+				"moduleFileExtensions": [
+					"ts",
+					"tsx",
+					"js",
+					"json",
+					"node"
+				],
+				"moduleNameMapper": {
+					"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
+					"\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js",
+					"^@main/(.*)$": "<rootDir>/src/main/$1",
+					"^@renderer/(.*)$": "<rootDir>/src/renderer/$1",
+					"^@shared/(.*)$": "<rootDir>/src/shared/$1",
+					"^@state/(.*)$": "<rootDir>/src/state/$1",
+					"^@ui/(.*)$": "<rootDir>/src/ui/$1"
+				}
+			},
+			{
+				"transform": {
+					"^.+\\.tsx?$": "ts-jest"
+				},
+				"moduleFileExtensions": [
+					"ts",
+					"tsx",
+					"js",
+					"json",
+					"node"
+				],
+				"runner": "@jest-runner/electron",
+				"testEnvironment": "@jest-runner/electron/environment",
+				"testMatch": [
+					"**/test/native/*.(spec|test).ts"
+				]
+			}
+		]
 	},
 	"build": {
 		"productName": "raichu",
@@ -98,6 +120,7 @@
 		"@babel/preset-react": "^7.0.0",
 		"@babel/preset-typescript": "^7.3.3",
 		"@hot-loader/react-dom": "^16.8.6",
+		"@jest-runner/electron": "^2.0.3",
 		"@types/electron-devtools-installer": "^2.2.0",
 		"@types/jest": "^25.1.4",
 		"@types/lodash": "^4.14.149",
