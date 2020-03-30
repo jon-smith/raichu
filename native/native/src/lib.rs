@@ -17,22 +17,52 @@ mod activity_calculations {
         data_points: Vec<f64>,
         distances: Vec<u64>,
     ) -> Vec<BestAverageResult> {
-        
-        // Create empty results
-        let mut results: Vec<BestAverageResult> = distances
+
+        struct IntermediateResult {
+            pub distance: u64,
+            pub max_sum: f64,
+            pub start_index: Option<u64>
+        }
+
+        let mut current_max_sums = distances
             .into_iter()
-            .map(|d| BestAverageResult {
+            .filter(|d| d > &0)
+            .map(|d| IntermediateResult {
                 distance: d,
-                best: Option::None,
+                max_sum: 0.0,
+                start_index: None
             })
-            .collect();
+            .collect::<Vec<_>>();
 
         // Sort on distance
-        results.sort_by(|a, b| b.distance.cmp(&a.distance));
+        current_max_sums.sort_by(|a, b| a.distance.cmp(&b.distance));
 
+        for i in 0..data_points.len() {
+            for current_max in & mut current_max_sums{
+                let to_index = i + current_max.distance as usize - 1;
+                if to_index < data_points.len()
+                {
+                    let sum = data_points[i..=to_index].iter().sum::<f64>();
+                    if current_max.start_index.is_none() || sum > current_max.max_sum
+                    {
+                        current_max.max_sum = sum;
+                        current_max.start_index = Some(i as u64);
+                    }
+                }
+            }
+        }
 
-
-        results
+        // Convert to output results
+        current_max_sums.into_iter().map(|m| BestAverageResult {
+            distance: m.distance,
+            best: match m.start_index { 
+                Some(x) => 
+                Option::Some(BestAverage {
+                start_index: x,
+                average: m.max_sum / (m.distance as f64),
+            }),
+            None => None},
+        }).collect()
     }
 }
 
@@ -61,7 +91,7 @@ fn convert_to_js<'a>(
     let js_distance = cx.number(result.distance as f64);
     js_result.set(cx, "distance", js_distance).unwrap();
 
-    js_best
+    js_result
 }
 
 fn to_native_f64_vec(cx: &mut FunctionContext, js_array: Handle<JsArray>, default: f64) -> NeonResult<Vec<f64>> {
@@ -98,16 +128,6 @@ fn best_averages_for_distances(mut cx: FunctionContext) -> JsResult<JsArray> {
 
     let results = activity_calculations::best_averages_for_distances(data_points_vec?, distances_vec?);
     
-    /*let result = BestAverageResult {
-        distance: 10,
-        best: Option::Some(BestAverage {
-            start_index: 0,
-            average: 50.6,
-        }),
-    };
-
-    let results = vec![result];*/
-
     let js_results = JsArray::new(&mut cx, results.len() as u32);
 
     for (i, r) in results.iter().enumerate() {
