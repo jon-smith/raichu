@@ -72,7 +72,7 @@ fn best_averages_for_distances(mut cx: FunctionContext) -> JsResult<JsArray> {
     let distances_vec = to_native_u64_vec(&mut cx, distances_arg, 0);
 
     let results =
-        activity_calculations::best_averages_for_distances(data_points_vec?, distances_vec?);
+        activity_calculations::best_averages_for_distances(&data_points_vec?, &distances_vec?);
 
     let js_results = JsArray::new(&mut cx, results.len() as u32);
 
