@@ -4,6 +4,8 @@ import {
 	fillMissingIndices
 } from '@shared/activity-data/best-split-calculator';
 
+import * as jolteon from 'jolteon';
+
 test('fillMissingIndices', () => {
 	const data = [
 		{ a: 1, index: 1 },
@@ -104,5 +106,15 @@ describe('bestAveragesForDistance', () => {
 
 		expect(result[5].best?.average).toEqual(22 / 6);
 		expect(result[5].best?.startIndex).toEqual(2);
+	});
+
+	test('vs native', () => {
+		const input = [1, 1, 5, 5, 1, 1, 5, 5];
+		const distances = [1, 2, 3, 4, 5, 6];
+
+		const result = bestAveragesForDistances(input, distances);
+		const nativeResult = jolteon.bestAveragesForDistances(input, distances);
+
+		expect(result).toEqual(nativeResult);
 	});
 });

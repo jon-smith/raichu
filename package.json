@@ -39,11 +39,13 @@
 	"jest": {
 		"projects": [
 			{
-				"displayName": "Main tests",
+				"displayName": "e2e tests",
 				"transform": {
 					"^.+\\.tsx?$": "ts-jest"
 				},
-				"testRegex": "(/test/(?!native).+\\.spec)\\.tsx?$",
+				"testMatch": [
+					"**/test/e2e/*.(spec|test).ts(|x)"
+				],
 				"moduleFileExtensions": [
 					"ts",
 					"tsx",
@@ -62,7 +64,7 @@
 				}
 			},
 			{
-				"displayName": "Native interop tests",
+				"displayName": "Electron environment tests",
 				"transform": {
 					"^.+\\.tsx?$": "ts-jest"
 				},
@@ -73,10 +75,19 @@
 					"json",
 					"node"
 				],
+				"moduleNameMapper": {
+					"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
+					"\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js",
+					"^@main/(.*)$": "<rootDir>/src/main/$1",
+					"^@renderer/(.*)$": "<rootDir>/src/renderer/$1",
+					"^@shared/(.*)$": "<rootDir>/src/shared/$1",
+					"^@state/(.*)$": "<rootDir>/src/state/$1",
+					"^@ui/(.*)$": "<rootDir>/src/ui/$1"
+				},
 				"runner": "@jest-runner/electron",
 				"testEnvironment": "@jest-runner/electron/environment",
 				"testMatch": [
-					"**/test/native/*.(spec|test).ts"
+					"**/test/!(e2e)/*.(spec|test).ts(|x)"
 				]
 			}
 		]
