@@ -6,21 +6,26 @@ fn convert_to_js<'a>(
     cx: &mut FunctionContext<'a>,
     result: &activity_calculations::BestAverageResult,
 ) -> Handle<'a, JsObject> {
-    let js_best = JsObject::new(cx);
+
+    let js_result = JsObject::new(cx);
 
     match &result.best {
         Some(x) => {
+            let js_best = JsObject::new(cx);
+
             let start_index = cx.number(x.start_index as f64);
             let average = cx.number(x.average);
             js_best.set(cx, "startIndex", start_index).unwrap();
             js_best.set(cx, "average", average).unwrap();
+
+            js_result.set(cx, "best", js_best).unwrap();
         }
-        None => {}
+        None => {
+            let null = cx.null();
+            js_result.set(cx, "best", null).unwrap();
+        }
     }
 
-    let js_result = JsObject::new(cx);
-
-    js_result.set(cx, "best", js_best).unwrap();
     let js_distance = cx.number(result.distance as f64);
     js_result.set(cx, "distance", js_distance).unwrap();
 

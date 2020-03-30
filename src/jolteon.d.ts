@@ -6,7 +6,7 @@ declare module 'jolteon' {
 
 	type BestAverageResult = {
 		distance: number;
-		best?: BestAverage;
+		best: BestAverage | null;
 	};
 
 	const _: {
