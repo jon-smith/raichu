@@ -7,7 +7,8 @@ describe('Native greeter', () => {
 	});
 
 	it('Other funcs', () => {
-		const result = jolteon.bestAveragesForDistances();
+		const result = jolteon.bestAveragesForDistances([1, 2, null, 3], [1]);
 		expect(typeof result).toEqual('object');
+		expect(Array.isArray(result)).toBe(true);
 	});
 });

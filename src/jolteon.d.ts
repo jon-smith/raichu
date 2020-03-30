@@ -1,7 +1,7 @@
 declare module 'jolteon' {
 	const _: {
 		greet(): string;
-		bestAveragesForDistances(): unknown;
+		bestAveragesForDistances(dataPoints: (number | null)[], distances: number[]): unknown;
 	};
 	export = _;
 }
