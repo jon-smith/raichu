@@ -1,11 +1,11 @@
-import * as ArrayUtils from '@shared/utils/array-utils'
+import * as ArrayUtils from '@shared/utils/array-utils';
 
 interface Metadata {
 	time: Date;
 }
 
 // A geographic point with optional attributes
-interface Point {
+export interface Point {
 	time: Date; // UTC
 	lat: number; // Decimal degrees
 	lon: number; // Decimal degrees
@@ -26,7 +26,7 @@ interface Segment {
 
 // Description from GPX spec:
 // trk represents a track - an ordered list of points describing a path.
-interface Track {
+export interface Track {
 	name: string;
 	segments: Segment[];
 }
@@ -48,7 +48,7 @@ const getNumericAttributeValue = (parent: Element, name: string): number | undef
 
 const getMetadata = (metadataNode: Element) => {
 	const time = getElementValue(metadataNode, 'time') || '';
-	return ({ time: new Date(time) });
+	return { time: new Date(time) };
 };
 
 const getPoint = (pointNode: Element): Point | undefined => {
@@ -61,15 +61,15 @@ const getPoint = (pointNode: Element): Point | undefined => {
 	const heartRate = getNumericChildElementValue(pointNode, 'gpxtpx:hr');
 
 	if (lat != null && lon != null) {
-		return ({
+		return {
 			lat,
 			lon,
 			time: new Date(time),
 			elevation_m,
 			temperature_c,
 			heartRate,
-			cadence,
-		});
+			cadence
+		};
 	}
 
 	return undefined;
@@ -101,6 +101,6 @@ export function parseGPXFile(file: string): GpxData {
 
 	return {
 		metadata: metadataNode ? getMetadata(metadataNode) : undefined,
-		track,
+		track
 	};
 }

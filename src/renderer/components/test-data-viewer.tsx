@@ -1,12 +1,7 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import * as lodash from 'lodash';
-import {
-	fillMissingIndices,
-	bestAveragesForDistances,
-	interpolateNullValues
-} from '@shared/activity-data/best-split-calculator';
+import * as activityCalculator from '@shared/activity-data/activity-calculator';
 import XYPlot from '@ui/charts/xy-plot';
 import { addGpxFiles } from '@state/actions/activityActions';
 import { useActivitySelector } from '@state/reducers';
@@ -40,48 +35,20 @@ const TestDataViewer = () => {
 		[loadedFiles]
 	);
 
-	const hrVsTimeSecondsPerFile = loadedFiles.map(l => {
-		const heartRateAndTime = lodash.flatten(
-			lodash.flatten(
-				l.gpx.track.segments.map(s => s.points.map(p => ({ hr: p.heartRate, t: p.time })))
-			)
-		);
+	const processedDataPerFile = useMemo(
+		() => loadedFiles.map(l => activityCalculator.fromGPXData(l.gpx)),
+		[loadedFiles]
+	);
 
-		const earliestTime = lodash.min(heartRateAndTime.map(hrt => hrt.t)) ?? new Date();
-
-		return heartRateAndTime.map(hrt => ({
-			t: (hrt.t.getTime() - earliestTime.getTime()) * 0.001, // Time in seconds
-			hr: hrt.hr === null || hrt.hr === undefined ? null : hrt.hr
-		}));
+	const timeSeries = processedDataPerFile.map(d => {
+		return { name: '', data: activityCalculator.getAsTimeSeries(d, 'heartrate') };
 	});
 
-	const timeSeries = hrVsTimeSecondsPerFile.map(d => {
-		const dataPoints = d.map(hrt => ({
-			x: hrt.t,
-			y: hrt.hr
-		}));
+	const maxHRIntervalsSeries = processedDataPerFile.map(d => {
+		const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
 
-		return { name: '', data: dataPoints };
-	});
+		const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'heartrate', timeIntervals, 10);
 
-	const maxHRIntervalsSeries = hrVsTimeSecondsPerFile.map(d => {
-		const hrDataFilled = fillMissingIndices(d.map(hrt => ({ ...hrt, index: hrt.t })));
-		const interpolatedHR = interpolateNullValues(
-			hrDataFilled.map(hrt => hrt.data?.hr ?? null),
-			10
-		);
-		const bestSplits = bestAveragesForDistances(interpolatedHR, [
-			1,
-			5,
-			10,
-			30,
-			60,
-			120,
-			240,
-			360,
-			600,
-			900
-		]);
 		const bestSplitsDataPoints = bestSplits.map(r => ({
 			x: r.distance,
 			y: r.best?.average ?? null
