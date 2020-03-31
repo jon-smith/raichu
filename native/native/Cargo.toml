@@ -1,6 +1,6 @@
 [package]
 name = "jolteon"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["jon-smith"]
 license = "MIT"
 build = "build.rs"
@@ -16,3 +16,4 @@ neon-build = "0.4.0"
 
 [dependencies]
 neon = "0.4.0"
+activity_calculator = { path = "./submodules/activity_calculator"}

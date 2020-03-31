@@ -1,10 +1,10 @@
 use neon::prelude::*;
 
-mod activity_calculations;
+use activity_calculator;
 
 fn convert_to_js<'a>(
     cx: &mut FunctionContext<'a>,
-    result: &activity_calculations::BestAverageResult,
+    result: &activity_calculator::BestAverageResult,
 ) -> Handle<'a, JsObject> {
 
     let js_result = JsObject::new(cx);
@@ -72,7 +72,7 @@ fn best_averages_for_distances(mut cx: FunctionContext) -> JsResult<JsArray> {
     let distances_vec = to_native_u64_vec(&mut cx, distances_arg, 0);
 
     let results =
-        activity_calculations::best_averages_for_distances(&data_points_vec?, &distances_vec?);
+    activity_calculator::best_averages_for_distances(&data_points_vec?, &distances_vec?);
 
     let js_results = JsArray::new(&mut cx, results.len() as u32);
 
