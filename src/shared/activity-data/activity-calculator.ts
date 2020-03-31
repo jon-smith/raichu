@@ -57,7 +57,7 @@ export const fromGPXData = (gpx: GpxData): ActivityData => {
 
 export type Variable = 'heartrate' | 'power' | 'time';
 
-export const getAsTimeSeries = <T>(data: ActivityData, y: Variable) =>
+export const getAsTimeSeries = (data: ActivityData, y: Variable) =>
 	data.flatPoints.map(p => ({ x: p.secondsSinceStart, y: getVar(p, y) }));
 
 export const extractData = (data: ActivityData, v: Variable) =>
