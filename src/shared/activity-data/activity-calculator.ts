@@ -1,10 +1,16 @@
 import * as lodash from 'lodash';
 import {
 	fillMissingIndices,
-	bestAveragesForDistances,
+	bestAveragesForDistances as jsBestAveragesForDistances,
 	interpolateNullValues
 } from '@shared/activity-data/best-split-calculator';
+import * as jolteon from 'jolteon';
 import { GpxData, Track, Point } from './gpxparsing';
+
+const useNative = true;
+const bestAveragesForDistances = useNative
+	? jolteon.bestAveragesForDistances
+	: jsBestAveragesForDistances;
 
 type ExtendedPoint = Point & {
 	secondsSinceStart: number;
