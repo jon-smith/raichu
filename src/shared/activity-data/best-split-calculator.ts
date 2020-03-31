@@ -35,6 +35,7 @@ export const fillMissingIndices = <T extends { index: number }>(data: T[]) => {
 				}
 
 				filledArray.push({ index, data: d });
+				lastIndex = index;
 			}
 		});
 	}
@@ -106,7 +107,7 @@ export const bestAveragesForDistances = (
 	const dataPointsNullAsZero = dataPoints.map(d => d ?? 0);
 	for (let i = 0; i < dataPointsNullAsZero.length; ++i) {
 		currentMaxSumsForDistances = currentMaxSumsForDistances.map(b => {
-			const compareIndex = i + b.distance;
+			const compareIndex = i + b.distance - 1;
 			if (compareIndex < dataPointsNullAsZero.length) {
 				const sum = sumRange(dataPointsNullAsZero, i, b.distance);
 				if (b.bestIndex === null || sum > b.bestSum) {

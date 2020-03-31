@@ -1,0 +1,20 @@
+[package]
+name = "jolteon"
+version = "0.1.0"
+authors = ["jon-smith"]
+license = "MIT"
+build = "build.rs"
+edition = "2018"
+exclude = ["artifacts.json", "index.node"]
+
+[lib]
+name = "jolteon"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+neon-build = "0.3.1"
+
+[dependencies]
+neon = "0.3.1"
+neon-serde = "0.3.0"
+jolteon_impl = { path = "./lib-impl"}

@@ -1,8 +1,10 @@
 # raichu
 
-React/Typescript/Electron based training data analysis software
+React/Typescript/Electron/Rust based training data analysis software
 
 ## Folder structure
+
+Typescript code is located in the src folder split into the following sub-directories:
 
 - **main** Back-end code
 - **renderer** Front-end code
@@ -10,19 +12,22 @@ React/Typescript/Electron based training data analysis software
 - **shared** Code shared between front and back end
 - **state** Code for the redux store
 
+Native (Rust) code is located in the native folder.
+
 ## Install
 
-Clone the repository with Git:
+The rust back-end uses Neon bindings. See [https://neon-bindings.com/docs/getting-started/](https://neon-bindings.com/docs/getting-started/) for instructions to install pre-requisites.
+
+To install the local dependencies:
 
 ```bash
-git clone --depth=1 git@github.com:Robinfr/electron-react-typescript.git <your-project-name>
+npm install
 ```
 
-And then install the dependencies:
+To build the native code:
 
 ```bash
-cd <your-project-name>
-npm install
+npm run build-native
 ```
 
 ## Usage

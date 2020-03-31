@@ -1,11 +1,11 @@
-import * as ArrayUtils from '@shared/utils/array-utils'
+import * as ArrayUtils from '@shared/utils/array-utils';
 
 interface Metadata {
 	time: Date;
 }
 
 // A geographic point with optional attributes
-interface Point {
+export interface Point {
 	time: Date; // UTC
 	lat: number; // Decimal degrees
 	lon: number; // Decimal degrees
@@ -15,6 +15,7 @@ interface Point {
 	temperature_c?: number;
 	cadence?: number; // SPM or RPM
 	heartRate?: number; // bpm
+	power?: number; // Watts
 }
 
 // A Track Segment holds a list of Track Points which are logically connected in order.
@@ -26,7 +27,7 @@ interface Segment {
 
 // Description from GPX spec:
 // trk represents a track - an ordered list of points describing a path.
-interface Track {
+export interface Track {
 	name: string;
 	segments: Segment[];
 }
@@ -48,7 +49,7 @@ const getNumericAttributeValue = (parent: Element, name: string): number | undef
 
 const getMetadata = (metadataNode: Element) => {
 	const time = getElementValue(metadataNode, 'time') || '';
-	return ({ time: new Date(time) });
+	return { time: new Date(time) };
 };
 
 const getPoint = (pointNode: Element): Point | undefined => {
@@ -56,12 +57,13 @@ const getPoint = (pointNode: Element): Point | undefined => {
 	const lon = getNumericAttributeValue(pointNode, 'lon');
 	const elevation_m = getNumericChildElementValue(pointNode, 'ele');
 	const time = getElementValue(pointNode, 'time') || '';
+	const power = getNumericChildElementValue(pointNode, 'power');
 	const temperature_c = getNumericChildElementValue(pointNode, 'gpxtpx:atemp');
 	const cadence = getNumericChildElementValue(pointNode, 'gpxtpx:cad');
 	const heartRate = getNumericChildElementValue(pointNode, 'gpxtpx:hr');
 
 	if (lat != null && lon != null) {
-		return ({
+		return {
 			lat,
 			lon,
 			time: new Date(time),
@@ -69,7 +71,8 @@ const getPoint = (pointNode: Element): Point | undefined => {
 			temperature_c,
 			heartRate,
 			cadence,
-		});
+			power
+		};
 	}
 
 	return undefined;
@@ -101,6 +104,6 @@ export function parseGPXFile(file: string): GpxData {
 
 	return {
 		metadata: metadataNode ? getMetadata(metadataNode) : undefined,
-		track,
+		track
 	};
 }

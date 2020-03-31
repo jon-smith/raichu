@@ -1,0 +1,10 @@
+[package]
+name = "jolteon_impl"
+version = "0.1.0"
+authors = ["jon-smith"]
+edition = "2018"
+license = "MIT"
+
+[dependencies]
+serde_derive = "1.0.80"
+serde = "1.0.80"
