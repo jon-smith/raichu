@@ -113,7 +113,7 @@ describe('bestAveragesForDistance', () => {
 		const distances = [1, 2, 3, 4, 5, 6];
 
 		const result = bestAveragesForDistances(input, distances);
-		const nativeResult = jolteon.bestAveragesForDistances(input, distances);
+		const nativeResult = jolteon.best_averages_for_distances(input, distances);
 
 		expect(result).toEqual(nativeResult);
 	});

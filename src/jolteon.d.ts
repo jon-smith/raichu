@@ -11,7 +11,7 @@ declare module 'jolteon' {
 
 	const _: {
 		greet(): string;
-		bestAveragesForDistances(
+		best_averages_for_distances(
 			dataPoints: (number | null)[],
 			distances: number[]
 		): BestAverageResult[];

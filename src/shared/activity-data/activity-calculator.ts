@@ -9,7 +9,7 @@ import { GpxData, Track, Point } from './gpxparsing';
 
 const useNative = true;
 const bestAveragesForDistances = useNative
-	? jolteon.bestAveragesForDistances
+	? jolteon.best_averages_for_distances
 	: jsBestAveragesForDistances;
 
 type ExtendedPoint = Point & {

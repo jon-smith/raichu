@@ -1,9 +1,12 @@
-
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BestAverage {
     pub start_index: u64,
     pub average: f64,
 }
 
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BestAverageResult {
     pub distance: u64,
     pub best: Option<BestAverage>,
