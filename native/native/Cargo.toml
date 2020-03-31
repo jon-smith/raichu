@@ -16,4 +16,4 @@ neon-build = "0.4.0"
 
 [dependencies]
 neon = "0.4.0"
-activity_calculator = { path = "./submodules/activity_calculator"}
+jolteon_impl = { path = "./lib-impl"}

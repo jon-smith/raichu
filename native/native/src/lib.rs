@@ -1,6 +1,6 @@
 use neon::prelude::*;
 
-use activity_calculator;
+use jolteon_impl::activity_calculator;
 
 fn convert_to_js<'a>(
     cx: &mut FunctionContext<'a>,

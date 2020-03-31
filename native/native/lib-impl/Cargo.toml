@@ -1,5 +1,5 @@
 [package]
-name = "activity_calculator"
+name = "jolteon_impl"
 version = "0.1.0"
 authors = ["jon-smith"]
 edition = "2018"
