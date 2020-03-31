@@ -28,6 +28,8 @@ const getVar = (p: ExtendedPoint, v: Variable) => {
 	switch (v) {
 		case 'heartrate':
 			return p.heartRate ?? null;
+		case 'power':
+			return p.power ?? null;
 		case 'time':
 			return p.secondsSinceStart;
 		default:
@@ -47,7 +49,7 @@ export const fromGPXData = (gpx: GpxData): ActivityData => {
 	};
 };
 
-export type Variable = 'heartrate' | 'time';
+export type Variable = 'heartrate' | 'power' | 'time';
 
 export const getAsTimeSeries = <T>(data: ActivityData, y: Variable) =>
 	data.flatPoints.map(p => ({ x: p.secondsSinceStart, y: getVar(p, y) }));

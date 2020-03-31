@@ -15,6 +15,7 @@ export interface Point {
 	temperature_c?: number;
 	cadence?: number; // SPM or RPM
 	heartRate?: number; // bpm
+	power?: number; // Watts
 }
 
 // A Track Segment holds a list of Track Points which are logically connected in order.
@@ -56,6 +57,7 @@ const getPoint = (pointNode: Element): Point | undefined => {
 	const lon = getNumericAttributeValue(pointNode, 'lon');
 	const elevation_m = getNumericChildElementValue(pointNode, 'ele');
 	const time = getElementValue(pointNode, 'time') || '';
+	const power = getNumericChildElementValue(pointNode, 'power');
 	const temperature_c = getNumericChildElementValue(pointNode, 'gpxtpx:atemp');
 	const cadence = getNumericChildElementValue(pointNode, 'gpxtpx:cad');
 	const heartRate = getNumericChildElementValue(pointNode, 'gpxtpx:hr');
@@ -68,7 +70,8 @@ const getPoint = (pointNode: Element): Point | undefined => {
 			elevation_m,
 			temperature_c,
 			heartRate,
-			cadence
+			cadence,
+			power
 		};
 	}
 

@@ -57,6 +57,19 @@ const TestDataViewer = () => {
 		return { name: 'best-splits', data: bestSplitsDataPoints };
 	});
 
+	const maxPowerIntervalsSeries = processedDataPerFile.map(d => {
+		const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
+
+		const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'power', timeIntervals, 10);
+
+		const bestSplitsDataPoints = bestSplits.map(r => ({
+			x: r.distance,
+			y: r.best?.average ?? null
+		}));
+
+		return { name: 'best-splits', data: bestSplitsDataPoints };
+	});
+
 	return (
 		<div className="test-data-viewer">
 			<GpxFileDrop loadedFiles={loadedFiles} onAddFiles={addFiles} />
@@ -74,6 +87,13 @@ const TestDataViewer = () => {
 				xTickFormat={formatSecondsAsHHmm}
 				xAxisLabel="time"
 				yAxisLabel="HR"
+			/>
+			<XYPlot
+				className="test-data-chart"
+				series={maxPowerIntervalsSeries}
+				xTickFormat={formatSecondsAsHHmm}
+				xAxisLabel="time"
+				yAxisLabel="Power"
 			/>
 		</div>
 	);
