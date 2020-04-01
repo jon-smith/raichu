@@ -50,10 +50,6 @@ const GpxFileDrop = (props: GpxFileDropProps) => {
 				<input {...getInputProps()} />
 				<p>Drag and drop GPX files here, or click to use the file browser</p>
 			</div>
-			<aside>
-				<h4>Files</h4>
-				<ul>{files}</ul>
-			</aside>
 		</section>
 	);
 };

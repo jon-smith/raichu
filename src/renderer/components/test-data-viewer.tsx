@@ -1,12 +1,8 @@
 import * as React from 'react';
-import { useCallback, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useMemo } from 'react';
 import * as activityCalculator from '@shared/activity-data/activity-calculator';
 import XYPlot from '@ui/charts/xy-plot';
-import { addGpxFiles } from '@state/actions/activityActions';
 import { useActivitySelector } from '@state/reducers';
-import GpxFileDrop, { FileAndGpx } from './gpx-file-drop';
-import ActivitySummaryTable from './activity-summary-table';
 
 const formatSecondsAsHHmm = (seconds: number): string => {
 	const roundedSeconds = Math.round(seconds);
@@ -21,19 +17,6 @@ const formatSecondsAsHHmm = (seconds: number): string => {
 
 const TestDataViewer = () => {
 	const loadedFiles = useActivitySelector(s => s.files);
-
-	const dispatch = useDispatch();
-	const addFiles = useCallback((f: FileAndGpx[]) => dispatch(addGpxFiles(f)), []);
-
-	const tableRows = useMemo(
-		() =>
-			loadedFiles.map(l => ({
-				filename: l.file.name,
-				name: l.gpx.track.name,
-				date: l.gpx.metadata?.time
-			})),
-		[loadedFiles]
-	);
 
 	const processedDataPerFile = useMemo(
 		() => loadedFiles.map(l => activityCalculator.fromGPXData(l.gpx)),
@@ -72,8 +55,6 @@ const TestDataViewer = () => {
 
 	return (
 		<div className="test-data-viewer">
-			<GpxFileDrop loadedFiles={loadedFiles} onAddFiles={addFiles} />
-			<ActivitySummaryTable rows={tableRows} />
 			<XYPlot
 				className="test-data-chart"
 				series={timeSeries}

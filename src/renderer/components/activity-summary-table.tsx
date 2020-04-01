@@ -1,6 +1,14 @@
 import * as React from 'react';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@material-ui/core';
+import { createStyles, makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableRow,
+	Paper,
+	ThemeProvider
+} from '@material-ui/core';
 
 const useStyles = makeStyles(theme =>
 	createStyles({
@@ -8,16 +16,26 @@ const useStyles = makeStyles(theme =>
 			width: '100%'
 		},
 		paper: {
-			marginTop: theme.spacing(3),
+			marginTop: theme.spacing(1),
 			width: '100%',
 			overflowX: 'auto',
-			marginBottom: theme.spacing(2)
+			marginBottom: theme.spacing(1)
 		},
 		table: {
-			minWidth: 650
+			minWidth: '100%'
 		}
 	})
 );
+
+const theme = createMuiTheme({
+	overrides: {
+		MuiTableCell: {
+			root: {
+				padding: '0px'
+			}
+		}
+	}
+});
 
 export interface ActivityData {
 	filename: string;
@@ -37,26 +55,28 @@ const ActivitySummaryTable = (props: Props) => {
 	return (
 		<div className={classes.root}>
 			<Paper className={classes.paper}>
-				<Table className={classes.table} size="small" aria-label="activity table">
-					<TableHead>
-						<TableRow>
-							<TableCell>Filename</TableCell>
-							<TableCell align="right">Name</TableCell>
-							<TableCell align="right">Date</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{rows.map((row, i) => (
-							<TableRow key={i}>
-								<TableCell component="th" scope="row">
-									{row.filename}
-								</TableCell>
-								<TableCell align="right">{row.name}</TableCell>
-								<TableCell align="right">{String(row.date)}</TableCell>
+				<ThemeProvider theme={theme}>
+					<Table className={classes.table} aria-label="activity table">
+						<TableHead>
+							<TableRow>
+								<TableCell>Time</TableCell>
+								<TableCell>Date</TableCell>
+								<TableCell>Name</TableCell>
 							</TableRow>
-						))}
-					</TableBody>
-				</Table>
+						</TableHead>
+						<TableBody>
+							{rows.map((row, i) => (
+								<TableRow key={i}>
+									<TableCell>{row.date?.toLocaleTimeString() ?? '-'}</TableCell>
+									<TableCell>{row.date?.toDateString() ?? '-'}</TableCell>
+									<TableCell component="th" scope="row">
+										{row.name}
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</ThemeProvider>
 			</Paper>
 		</div>
 	);

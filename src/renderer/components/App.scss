@@ -1,5 +1,37 @@
+html,
+body {
+	padding: 0;
+	margin: 0;
+}
+
 .app {
 	color: grey;
+	display: flex;
+	flex-direction: row;
+	min-height: 100%;
+	align-items: stretch;
+}
+
+.left-panel {
+	display: flex;
+	flex: 0 0 330px;
+	display: block;
+}
+
+.left-panel-inner {
+	position: fixed;
+	width: 330px;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+.main-panel {
+	display: flex;
+	display: block;
+}
+
+.main-panel-inner {
+	overflow: auto;
 }
 
 .test-data-viewer {
