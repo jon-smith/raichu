@@ -19,24 +19,24 @@ exports[`Counter component renders correctly 1`] = `
         >
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeSmall"
+            className="MuiTableCell-root MuiTableCell-head"
             scope="col"
           >
-            Filename
+            Time
           </th>
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-head MuiTableCell-alignRight MuiTableCell-sizeSmall"
-            scope="col"
-          >
-            Name
-          </th>
-          <th
-            aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-head MuiTableCell-alignRight MuiTableCell-sizeSmall"
+            className="MuiTableCell-root MuiTableCell-head"
             scope="col"
           >
             Date
+          </th>
+          <th
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-head"
+            scope="col"
+          >
+            Name
           </th>
         </tr>
       </thead>
@@ -46,48 +46,48 @@ exports[`Counter component renders correctly 1`] = `
         <tr
           className="MuiTableRow-root"
         >
+          <td
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body"
+          >
+            12:00:00 AM
+          </td>
+          <td
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body"
+          >
+            Tue Feb 01 2000
+          </td>
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall"
+            className="MuiTableCell-root MuiTableCell-body"
             scope="row"
           >
-            1
-          </th>
-          <td
-            aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeSmall"
-          >
             one
-          </td>
-          <td
-            aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeSmall"
-          >
-            Tue Feb 01 2000 00:00:00 GMT+0000 (Greenwich Mean Time)
-          </td>
+          </th>
         </tr>
         <tr
           className="MuiTableRow-root"
         >
+          <td
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body"
+          >
+            -
+          </td>
+          <td
+            aria-sort={null}
+            className="MuiTableCell-root MuiTableCell-body"
+          >
+            -
+          </td>
           <th
             aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeSmall"
+            className="MuiTableCell-root MuiTableCell-body"
             scope="row"
           >
-            2
-          </th>
-          <td
-            aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeSmall"
-          >
             two
-          </td>
-          <td
-            aria-sort={null}
-            className="MuiTableCell-root MuiTableCell-body MuiTableCell-alignRight MuiTableCell-sizeSmall"
-          >
-            undefined
-          </td>
+          </th>
         </tr>
       </tbody>
     </table>
