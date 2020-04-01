@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { useMemo } from 'react';
+import * as lodash from 'lodash';
 import * as activityCalculator from '@shared/activity-data/activity-calculator';
+import { findNiceTimeTickInterval } from '@shared/utils/chart-utils';
 import XYPlot from '@ui/charts/xy-plot';
 import { useActivitySelector } from '@state/reducers';
 
 const defaultSecondTicks = [5, 30];
 
-const defaultMinuteTicks = [2, 5, 10, 20, 30, 45];
+const defaultMinuteTicks = [1, 2, 5, 10, 20, 30, 45];
 
 const defaultHourTicks = [1, 2, 5];
 
-const defaultTimeTicks = [
+const defaultTimeTicksForBestSplits = [
 	...defaultSecondTicks,
 	...defaultMinuteTicks.map(t => t * 60),
 	...defaultHourTicks.map(t => t * 60 * 60)
@@ -24,7 +26,16 @@ const formatSecondsAsHHMMSS = (seconds: number): string => {
 	const remainingSeconds = seconds % 60;
 	const remainingSecondsStr =
 		remainingSeconds < 10 ? `0${remainingSeconds}` : String(remainingSeconds);
-	return `${minutes}:${remainingSecondsStr}`;
+
+	if (minutes < 60) return `${minutes}:${remainingSecondsStr}`;
+
+	const hours = Math.floor(minutes / 60);
+
+	const remainingMinutes = minutes % 60;
+	const remainingMinutesStr =
+		remainingMinutes < 10 ? `0${remainingMinutes}` : String(remainingMinutes);
+
+	return `${hours}:${remainingMinutesStr}:${remainingSecondsStr}`;
 };
 
 const formatSecondsAsTimeWords = (seconds: number): string => {
@@ -39,6 +50,11 @@ const formatSecondsAsTimeWords = (seconds: number): string => {
 	return `${minutes} m${remainingSecondsStr}`;
 };
 
+const timeTicksToDisplay = (maxSeconds: number, maxTicks: number) => {
+	const interval = findNiceTimeTickInterval(maxSeconds, maxTicks);
+	return lodash.range(0, maxSeconds, interval);
+};
+
 const TestDataViewer = () => {
 	const loadedFiles = useActivitySelector(s => s.files);
 
@@ -47,9 +63,18 @@ const TestDataViewer = () => {
 		[loadedFiles]
 	);
 
-	const timeSeries = processedDataPerFile.map(d => {
-		return { name: '', data: activityCalculator.getAsTimeSeries(d, 'heartrate') };
-	});
+	const timeSeries = useMemo(
+		() =>
+			processedDataPerFile.map(d => {
+				return { name: '', data: activityCalculator.getAsTimeSeries(d, 'heartrate') };
+			}),
+		[processedDataPerFile]
+	);
+
+	const maxTimeSeconds =
+		useMemo(() => lodash.max(timeSeries.flatMap(t => t.data.map(d => d.x))), [timeSeries]) ?? 0;
+
+	const timeTicks = timeTicksToDisplay(maxTimeSeconds, 6);
 
 	const maxHRIntervalsSeries = processedDataPerFile.map(d => {
 		const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
@@ -83,6 +108,7 @@ const TestDataViewer = () => {
 				className="test-data-chart"
 				series={timeSeries}
 				xTickFormat={formatSecondsAsHHMMSS}
+				xTickValues={timeTicks}
 				xAxisLabel="time"
 				yAxisLabel="HR"
 			/>
@@ -90,7 +116,7 @@ const TestDataViewer = () => {
 				className="test-data-chart"
 				series={maxHRIntervalsSeries}
 				xTickFormat={formatSecondsAsTimeWords}
-				xTickValues={defaultTimeTicks}
+				xTickValues={defaultTimeTicksForBestSplits}
 				xAxisLabel="time"
 				yAxisLabel="HR"
 			/>
@@ -98,7 +124,7 @@ const TestDataViewer = () => {
 				className="test-data-chart"
 				series={maxPowerIntervalsSeries}
 				xTickFormat={formatSecondsAsTimeWords}
-				xTickValues={defaultTimeTicks}
+				xTickValues={defaultTimeTicksForBestSplits}
 				xAxisLabel="time"
 				yAxisLabel="Power"
 			/>
