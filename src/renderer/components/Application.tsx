@@ -1,6 +1,5 @@
 import { hot } from 'react-hot-loader/root';
 import * as React from 'react';
-
 import TestDataViewer from './test-data-viewer';
 import FilePanel from './file-panel';
 
@@ -16,9 +15,7 @@ const Application = () => (
 			</div>
 		</div>
 		<div className="main-panel">
-			<div className="main-panel-inner">
-				<TestDataViewer />
-			</div>
+			<TestDataViewer />
 		</div>
 	</div>
 );

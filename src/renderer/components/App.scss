@@ -5,7 +5,6 @@ body {
 }
 
 .app {
-	color: grey;
 	display: flex;
 	flex-direction: row;
 	min-height: 100%;
@@ -20,18 +19,14 @@ body {
 
 .left-panel-inner {
 	position: fixed;
+	box-sizing: border-box;
 	width: 330px;
 	padding: 10px;
-	box-sizing: border-box;
 }
 
 .main-panel {
-	display: flex;
 	display: block;
-}
-
-.main-panel-inner {
-	overflow: auto;
+	flex: 1 1;
 }
 
 .test-data-viewer {
