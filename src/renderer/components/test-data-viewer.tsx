@@ -4,7 +4,19 @@ import * as activityCalculator from '@shared/activity-data/activity-calculator';
 import XYPlot from '@ui/charts/xy-plot';
 import { useActivitySelector } from '@state/reducers';
 
-const formatSecondsAsHHmm = (seconds: number): string => {
+const defaultSecondTicks = [5, 30];
+
+const defaultMinuteTicks = [2, 5, 10, 20, 30, 45];
+
+const defaultHourTicks = [1, 2, 5];
+
+const defaultTimeTicks = [
+	...defaultSecondTicks,
+	...defaultMinuteTicks.map(t => t * 60),
+	...defaultHourTicks.map(t => t * 60 * 60)
+];
+
+const formatSecondsAsHHMMSS = (seconds: number): string => {
 	const roundedSeconds = Math.round(seconds);
 	if (roundedSeconds < 60) return String(seconds);
 
@@ -13,6 +25,18 @@ const formatSecondsAsHHmm = (seconds: number): string => {
 	const remainingSecondsStr =
 		remainingSeconds < 10 ? `0${remainingSeconds}` : String(remainingSeconds);
 	return `${minutes}:${remainingSecondsStr}`;
+};
+
+const formatSecondsAsTimeWords = (seconds: number): string => {
+	const roundedSeconds = Math.round(seconds);
+	if (roundedSeconds < 60) return `${seconds} s`;
+
+	const minutes = Math.floor(seconds / 60);
+	const remainingSeconds = seconds % 60;
+	const remainingSecondsStr =
+		remainingSeconds === 0 ? `` : ` ${remainingSeconds < 10 ? `0` : ``}${remainingSeconds} s`;
+
+	return `${minutes} m${remainingSecondsStr}`;
 };
 
 const TestDataViewer = () => {
@@ -58,21 +82,23 @@ const TestDataViewer = () => {
 			<XYPlot
 				className="test-data-chart"
 				series={timeSeries}
-				xTickFormat={formatSecondsAsHHmm}
+				xTickFormat={formatSecondsAsHHMMSS}
 				xAxisLabel="time"
 				yAxisLabel="HR"
 			/>
 			<XYPlot
 				className="test-data-chart"
 				series={maxHRIntervalsSeries}
-				xTickFormat={formatSecondsAsHHmm}
+				xTickFormat={formatSecondsAsTimeWords}
+				xTickValues={defaultTimeTicks}
 				xAxisLabel="time"
 				yAxisLabel="HR"
 			/>
 			<XYPlot
 				className="test-data-chart"
 				series={maxPowerIntervalsSeries}
-				xTickFormat={formatSecondsAsHHmm}
+				xTickFormat={formatSecondsAsTimeWords}
+				xTickValues={defaultTimeTicks}
 				xAxisLabel="time"
 				yAxisLabel="Power"
 			/>
