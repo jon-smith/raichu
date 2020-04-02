@@ -1,4 +1,4 @@
-import { Action, ActionCreator } from 'redux';
+import { Action } from 'redux';
 
 import { FileAndGpx } from '@renderer/components/gpx-file-drop';
 
@@ -14,12 +14,12 @@ export interface ClearActivityDataAction extends Action {
 	type: 'CLEAR_ACTIVITY_DATA';
 }
 
-export const addGpxFiles: ActionCreator<AddGpxFileAction> = (data: FileAndGpx[]) => ({
+export const addGpxFiles = (data: FileAndGpx[]): AddGpxFileAction => ({
 	type: ADD_GPX_FILE,
 	data
 });
 
-export const clearActivityData: ActionCreator<ClearActivityDataAction> = () => ({
+export const clearActivityData = (): ClearActivityDataAction => ({
 	type: CLEAR_ACTIVITY_DATA
 });
 

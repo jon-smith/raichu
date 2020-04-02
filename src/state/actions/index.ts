@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
 import { ActivityAction } from './activityActions';
+import { ViewAction } from './viewActions';
 
-export type RootActions = ActivityAction[keyof ActivityAction];
+export type RootActions = ActivityAction[keyof ActivityAction] | ViewAction[keyof ViewAction];

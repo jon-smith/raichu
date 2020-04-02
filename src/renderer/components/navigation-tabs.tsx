@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import { useViewSelector } from '@/state/reducers';
+import * as ViewActions from '@/state/actions/viewActions';
 
 const StyledTabs = withStyles((theme: Theme) => ({
 	root: {
@@ -42,15 +45,23 @@ const StyledTab = withStyles((theme: Theme) =>
 	})
 )((props: StyledTabProps) => <Tab disableRipple {...props} />);
 
-const NavigationTabs = () => {
-	const [selectedTab, setSelectedTab] = useState(0);
+const pageOrder: ViewActions.Page[] = ['data', 'workout-creator'];
+const pageToIndex = (p: ViewActions.Page) => pageOrder.findIndex(o => o === p) ?? 0;
 
-	const handleChange = useCallback((_: React.ChangeEvent<{}>, newValue: number) => {
-		setSelectedTab(newValue);
-	}, []);
+const NavigationTabs = () => {
+	const currentPage = useViewSelector(s => s.currentPage);
+
+	const dispatch = useDispatch();
+
+	const setCurrentPage = useCallback(
+		(_: React.ChangeEvent<{}>, newValue: number) => {
+			dispatch(ViewActions.setCurrentPage(pageOrder[newValue]));
+		},
+		[dispatch]
+	);
 
 	return (
-		<StyledTabs value={selectedTab} onChange={handleChange} aria-label="ant example">
+		<StyledTabs value={pageToIndex(currentPage)} onChange={setCurrentPage}>
 			<StyledTab label="Data" />
 			<StyledTab label="Workout Creator" />
 		</StyledTabs>
