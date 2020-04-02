@@ -6,27 +6,37 @@ import { useViewSelector } from '@/state/reducers';
 import TestDataViewer from './test-data-viewer';
 import FilePanel from './file-panel';
 import NavigationTabs from './navigation-tabs';
-import './App.scss';
+import WorkoutCreatorPanel from './workout-creator-panel';
+import './app.scss';
 
-const DataPage = () => (
+const MakePage = (LeftPanel: React.ComponentType, MainPanel: React.ComponentType) => (
 	<div className="tab-panel">
 		<div className="left-panel">
-			<div className="left-panel-inner">
-				<h4>Welcome to raichu</h4>
-				<p>頂きます</p>
-				<FilePanel />
-			</div>
+			<LeftPanel />
 		</div>
 		<div className="main-panel">
-			<TestDataViewer />
+			<MainPanel />
 		</div>
 	</div>
 );
+
+const DataPageLeftPanel = () => (
+	<div className="left-panel-inner">
+		<h4>Welcome to raichu</h4>
+		<p>頂きます</p>
+		<FilePanel />
+	</div>
+);
+
+const DataPage = () => MakePage(DataPageLeftPanel, TestDataViewer);
+const WorkoutCreatorPage = () => MakePage(() => <div />, WorkoutCreatorPanel);
 
 const getPage = (page: Page) => {
 	switch (page) {
 		case 'data':
 			return <DataPage />;
+		case 'workout-creator':
+			return <WorkoutCreatorPage />;
 		default:
 			break;
 	}
