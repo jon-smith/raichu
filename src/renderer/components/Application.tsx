@@ -34,26 +34,26 @@ const WorkoutCreatorPage = () => MakePage(() => <div />, WorkoutCreatorPanel);
 const getPage = (page: Page) => {
 	switch (page) {
 		case 'data':
-			return <DataPage />;
+			return DataPage;
 		case 'workout-creator':
-			return <WorkoutCreatorPage />;
+			return WorkoutCreatorPage;
 		default:
 			break;
 	}
 
-	return <div className="tab-panel" />;
+	return () => <div className="tab-panel" />;
 };
 
 const Application = () => {
 	const currentPage = useViewSelector(s => s.currentPage);
-	const page = useMemo(() => getPage(currentPage), [currentPage]);
+	const PageElement = useMemo(() => getPage(currentPage), [currentPage]);
 
 	return (
 		<div className="app">
 			<div className="nav-tabs">
 				<NavigationTabs />
 			</div>
-			{page}
+			<PageElement />
 		</div>
 	);
 };

@@ -134,6 +134,7 @@
 		"@babel/preset-typescript": "^7.3.3",
 		"@hot-loader/react-dom": "^16.8.6",
 		"@jest-runner/electron": "^2.0.3",
+		"@types/d3": "^5.7.2",
 		"@types/electron-devtools-installer": "^2.2.0",
 		"@types/jest": "^25.1.4",
 		"@types/lodash": "^4.14.149",
@@ -189,6 +190,7 @@
 	},
 	"dependencies": {
 		"@material-ui/core": "^4.9.7",
+		"d3": "^5.15.1",
 		"jolteon": "file:native",
 		"lodash": "^4.17.15",
 		"react": "^16.13.1",
