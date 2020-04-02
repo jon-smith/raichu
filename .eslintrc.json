@@ -31,7 +31,7 @@
 		"sourceType": "module",
 		"project": "./tsconfig.json"
 	},
-	"plugins": ["react", "prettier", "@typescript-eslint"],
+	"plugins": ["react", "prettier", "@typescript-eslint", "react-hooks"],
 	"rules": {
 		"global-require": 0,
 		"eqeqeq": "error",
@@ -83,6 +83,8 @@
 		"react/static-property-placement": 0,
 		"react/state-in-constructor": 0,
 		"react/no-array-index-key": 0,
+		"react-hooks/rules-of-hooks": "error",
+		"react-hooks/exhaustive-deps": "warn",
 		"@typescript-eslint/no-var-requires": 0,
 		"@typescript-eslint/indent": 0,
 		"@typescript-eslint/camelcase": 0,
