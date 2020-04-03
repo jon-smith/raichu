@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
+import * as lodash from 'lodash';
+import { findNiceTimeTickInterval } from '@/shared/utils/chart-utils';
+import { formatSecondsAsHHMMSS } from '@/shared/utils/time-format-utils';
 
 type Interval = {
 	intensity: number;
@@ -16,6 +19,11 @@ const calculateStartTimes = (intervals: Interval[]): IntervalChartItem[] => {
 		copy[i].startTime = i === 0 ? 0 : copy[i - 1].startTime + copy[i - 1].length;
 	}
 	return copy;
+};
+
+const timeTicksToDisplay = (maxSeconds: number, maxTicks: number) => {
+	const interval = findNiceTimeTickInterval(maxSeconds, maxTicks);
+	return lodash.range(0, maxSeconds, interval);
 };
 
 const buildChart = (
@@ -60,7 +68,7 @@ const buildChart = (
 			const mouseX = d3.mouse(j[i])[0];
 			const newX = mouseX - xDiff;
 
-			const xRange = xScale(d.length) / 2; // (xScale.step() * 2) / 3;
+			const xRange = xScale(d.length) / 2;
 			const backlash = xScale(d.length) / 2;
 
 			if (newX < xScale.range()[0] - backlash || xScale.range()[1] - backlash < newX) return;
@@ -112,12 +120,16 @@ const buildChart = (
 				.on('end', () => updateData(data));
 		});
 
-	const xAxis = d3.axisBottom(xScale);
+	const endTimeSeconds = d3.max(data, d => d.startTime + d.length) ?? 0;
+
+	const xAxis = d3
+		.axisBottom(xScale)
+		.tickValues(timeTicksToDisplay(endTimeSeconds, 6))
+		.tickFormat(formatSecondsAsHHMMSS as any);
+
 	const yAxis = d3.axisLeft(yScale).tickFormat(d3.format('.0%'));
 
-	xScale
-		.domain([0, d3.max(data, d => d.startTime + d.length) ?? 0])
-		.range([padding.left, width - padding.right]);
+	xScale.domain([0, endTimeSeconds]).range([padding.left, width - padding.right]);
 
 	yScale
 		.domain([0, d3.max(data, d => d.intensity) ?? 0])
