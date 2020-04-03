@@ -1,10 +1,16 @@
 import * as React from 'react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 
-type DataItem = { category: string; value: number };
+type DataItem = { category: string; value: number; color: string };
 
-const buildChart = (nodeRef: SVGSVGElement, width: number, height: number) => {
+const buildChart = (
+	nodeRef: SVGSVGElement,
+	width: number,
+	height: number,
+	initialData: DataItem[],
+	updateData: (d: DataItem[]) => void
+) => {
 	const svg = d3.select(nodeRef).html('');
 
 	const padding = { top: 20, left: 20, right: 20, bottom: 20 };
@@ -12,16 +18,9 @@ const buildChart = (nodeRef: SVGSVGElement, width: number, height: number) => {
 	const xScale = d3.scaleBand();
 	const yScale = d3.scaleLinear();
 
-	const color = d3.schemeCategory10;
-
 	const xAxis = d3.axisBottom(xScale);
 
-	const data: DataItem[] = [
-		{ category: 'A', value: 50 },
-		{ category: 'B', value: 30 },
-		{ category: 'C', value: 20 },
-		{ category: 'D', value: 20 }
-	];
+	const data = initialData.map(d => ({ ...d }));
 
 	const drag = d3
 		.drag<SVGRectElement, DataItem>()
@@ -98,7 +97,8 @@ const buildChart = (nodeRef: SVGSVGElement, width: number, height: number) => {
 			bar
 				.transition()
 				.duration(300)
-				.attr('x', xScale(d.category) ?? 0);
+				.attr('x', xScale(d.category) ?? 0)
+				.on('end', () => updateData(data));
 		});
 
 	xScale
@@ -115,9 +115,9 @@ const buildChart = (nodeRef: SVGSVGElement, width: number, height: number) => {
 		.append('rect')
 		.attr('width', xScale.bandwidth())
 		.attr('height', d => height - padding.bottom - yScale(d.value))
-		.attr('x', (d: DataItem) => xScale(d.category) ?? 0)
-		.attr('y', (d: DataItem) => yScale(d.value) ?? 0)
-		.attr('fill', (_, i) => color[i])
+		.attr('x', d => xScale(d.category) ?? 0)
+		.attr('y', d => yScale(d.value) ?? 0)
+		.attr('fill', d => d.color)
 		.attr('class', 'bar')
 		.call(drag);
 
@@ -131,14 +131,21 @@ const buildChart = (nodeRef: SVGSVGElement, width: number, height: number) => {
 const WorkoutCreatorChart = () => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
+	const [data, setData] = useState<DataItem[]>([
+		{ category: 'A', value: 50, color: d3.schemeCategory10[0] },
+		{ category: 'B', value: 30, color: d3.schemeCategory10[1] },
+		{ category: 'C', value: 20, color: d3.schemeCategory10[2] },
+		{ category: 'D', value: 20, color: d3.schemeCategory10[3] }
+	]);
+
 	const width = 400;
 	const height = 400;
 
 	useEffect(() => {
 		if (svgRef.current) {
-			buildChart(svgRef.current, width, height);
+			buildChart(svgRef.current, width, height, data, setData);
 		}
-	}, []);
+	}, [data]);
 
 	return <svg ref={svgRef} width={width} height={height} />;
 };
