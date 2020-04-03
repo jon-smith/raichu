@@ -22,6 +22,9 @@ const buildChart = (
 
 	const data = initialData.map(d => ({ ...d }));
 
+	let startX: number;
+	let xDiff: number;
+
 	const drag = d3
 		.drag<SVGRectElement, DataItem>()
 		.on('start', (d, i, j) => {
@@ -29,10 +32,9 @@ const buildChart = (
 			const mouseX = d3.mouse(j[i])[0];
 			const barX = parseFloat(bar.attr('x'));
 
-			// Store the x coordinate of bar when the dragging starts
-			bar.property('startX', barX);
-			// Store offset to mouse
-			bar.property('xDiff', mouseX - barX);
+			// Store the x coordinate of bar when the dragging starts and offset to mouse
+			startX = barX;
+			xDiff = mouseX - barX;
 
 			// Bring the bar to the front
 			if (bar.node()) {
@@ -42,14 +44,14 @@ const buildChart = (
 		.on('drag', (d, i, j) => {
 			const curBar = d3.select(j[i]);
 			const curIdx = data.indexOf(d);
-			const startX = curBar.property('startX');
+
 			const mouseX = d3.mouse(j[i])[0];
-			const newX = mouseX - curBar.property('xDiff');
-			const xRange = (xScale.range()[1] - xScale.range()[0]) / 2;
+			const newX = mouseX - xDiff;
+
+			const xRange = (xScale.step() * 2) / 3;
 			const backlash = xScale.bandwidth() / 2.5;
 
-			if (newX < xScale.range()[0] - backlash || xScale.range()[data.length - 1] + backlash < newX)
-				return;
+			if (newX < xScale.range()[0] - backlash || xScale.range()[1] - backlash < newX) return;
 
 			curBar.attr('x', newX);
 
@@ -66,7 +68,7 @@ const buildChart = (
 				.selectAll<SVGRectElement, DataItem>('.bar')
 				.filter((d2: DataItem) => d2 === data[nearestIdx]);
 
-			const nearestX = +nearestBar.attr('x');
+			const nearestX = parseFloat(nearestBar.attr('x'));
 
 			// If the current bar is moved close enough to the nearest bar,
 			// then update the order of the data array. For example, if we are dragging
@@ -76,7 +78,7 @@ const buildChart = (
 				data[curIdx] = data[nearestIdx];
 				data[nearestIdx] = tmp;
 
-				curBar.property('startX', nearestX);
+				startX = nearestX;
 
 				xScale.domain(data.map(d2 => d2.category));
 
@@ -104,7 +106,7 @@ const buildChart = (
 	xScale
 		.domain(data.map(d => d.category))
 		.rangeRound([padding.left, width - padding.right])
-		.padding(0.3);
+		.padding(0);
 
 	yScale.domain([0, d3.max(data, d => d.value) ?? 0]).range([height - padding.bottom, padding.top]);
 
