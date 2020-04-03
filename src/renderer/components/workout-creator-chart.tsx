@@ -35,10 +35,12 @@ const buildChart = (
 ) => {
 	const svg = d3.select(nodeRef).html('');
 
-	const padding = { top: 20, left: 40, right: 20, bottom: 20 };
+	const padding = { top: 20, left: 40, right: 40, bottom: 20 };
 
 	const xScale = d3.scaleLinear();
 	const yScale = d3.scaleLinear();
+
+	const xScaleTimeSpan = (t: number) => xScale(t) - xScale(0);
 
 	const data = calculateStartTimes(initialData);
 
@@ -62,26 +64,28 @@ const buildChart = (
 			}
 		})
 		.on('drag', (d, i, j) => {
-			const curBar = d3.select(j[i]);
-			const curIdx = data.indexOf(d);
+			const draggingBar = d3.select(j[i]);
+			// We rearrange the data as we drag, so the original i value isn't the index in the data array
+			const dragDataCurrentIndex = data.indexOf(d);
 
 			const mouseX = d3.mouse(j[i])[0];
 			const newX = mouseX - xDiff;
 
-			const xRange = xScale(d.length) / 2;
-			const backlash = xScale(d.length) / 2;
+			const draggingBarWidth = xScaleTimeSpan(d.length);
+			const backlash = draggingBarWidth / 2;
 
 			if (newX < xScale.range()[0] - backlash || xScale.range()[1] - backlash < newX) return;
 
-			curBar.attr('x', newX);
+			draggingBar.attr('x', newX);
 
 			// Get the index of the nearest bar
 			const nearestIdx = (() => {
-				if (curIdx === 0) return 1;
+				if (dragDataCurrentIndex === 0) return 1;
 
-				if (newX < startX || curIdx === data.length - 1) return curIdx - 1;
+				if (newX < startX || dragDataCurrentIndex === data.length - 1)
+					return dragDataCurrentIndex - 1;
 
-				return curIdx + 1;
+				return dragDataCurrentIndex + 1;
 			})();
 
 			const nearestBar = d3
@@ -93,9 +97,9 @@ const buildChart = (
 			// If the current bar is moved close enough to the nearest bar,
 			// then update the order of the data array. For example, if we are dragging
 			// the first bar and moving to right, the order will be [a, b, c] to [b, a, c]
-			if (startX + xRange < newX || newX < startX - xRange) {
-				const tmp = data[curIdx];
-				data[curIdx] = data[nearestIdx];
+			if (startX + draggingBarWidth < newX || newX < startX - draggingBarWidth) {
+				const tmp = data[dragDataCurrentIndex];
+				data[dragDataCurrentIndex] = data[nearestIdx];
 				data[nearestIdx] = tmp;
 
 				// Update start times
@@ -140,7 +144,7 @@ const buildChart = (
 		.data(data)
 		.enter()
 		.append('rect')
-		.attr('width', d => xScale(d.length) - padding.left)
+		.attr('width', d => xScaleTimeSpan(d.length))
 		.attr('height', d => height - padding.bottom - yScale(d.intensity))
 		.attr('x', d => xScale(d.startTime))
 		.attr('y', d => yScale(d.intensity))
@@ -178,7 +182,7 @@ const WorkoutCreatorChart = () => {
 		{ intensity: 0.6, length: 60 * 5, color: d3.schemeBlues[5][1] }
 	]);
 
-	const width = 400;
+	const width = 600;
 	const height = 400;
 
 	useEffect(() => {
