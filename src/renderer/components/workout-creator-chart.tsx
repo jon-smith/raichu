@@ -3,7 +3,6 @@ import { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 
 type Interval = {
-	category: string;
 	intensity: number;
 	length: number;
 	color: string;
@@ -154,10 +153,10 @@ const WorkoutCreatorChart = () => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
 	const [data, setData] = useState<Interval[]>([
-		{ category: 'A', intensity: 0.5, length: 60, color: d3.schemeBlues[3][0] },
-		{ category: 'B', intensity: 0.3, length: 60, color: d3.schemeBlues[3][1] },
-		{ category: 'C', intensity: 0.2, length: 60, color: d3.schemeBlues[3][2] },
-		{ category: 'D', intensity: 0.2, length: 60, color: d3.schemeBlues[3][3] }
+		{ intensity: 0.5, length: 60, color: d3.schemeBlues[3][0] },
+		{ intensity: 0.3, length: 60, color: d3.schemeBlues[3][1] },
+		{ intensity: 0.2, length: 60, color: d3.schemeBlues[3][2] },
+		{ intensity: 0.2, length: 60, color: d3.schemeBlues[3][3] }
 	]);
 
 	const width = 400;
