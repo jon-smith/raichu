@@ -153,10 +153,17 @@ const WorkoutCreatorChart = () => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
 	const [data, setData] = useState<Interval[]>([
-		{ intensity: 0.5, length: 60, color: d3.schemeBlues[3][0] },
-		{ intensity: 0.3, length: 60, color: d3.schemeBlues[3][1] },
-		{ intensity: 0.2, length: 60, color: d3.schemeBlues[3][2] },
-		{ intensity: 0.2, length: 60, color: d3.schemeBlues[3][3] }
+		{ intensity: 0.3, length: 60, color: d3.schemeBlues[5][0] },
+		{ intensity: 0.4, length: 60, color: d3.schemeBlues[5][0] },
+		{ intensity: 0.5, length: 60, color: d3.schemeBlues[5][0] },
+		{ intensity: 0.6, length: 60 * 5, color: d3.schemeBlues[5][1] },
+		...Array(13)
+			.fill([
+				{ intensity: 1.3, length: 30, color: d3.schemeBlues[5][3] },
+				{ intensity: 0.6, length: 15, color: d3.schemeBlues[5][2] }
+			])
+			.flat(),
+		{ intensity: 0.6, length: 60 * 5, color: d3.schemeBlues[5][1] }
 	]);
 
 	const width = 400;
