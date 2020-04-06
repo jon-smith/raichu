@@ -190,6 +190,7 @@
 	},
 	"dependencies": {
 		"@material-ui/core": "^4.9.7",
+		"@material-ui/icons": "^4.9.1",
 		"d3": "^5.15.1",
 		"jolteon": "file:native",
 		"lodash": "^4.17.15",
