@@ -42,7 +42,7 @@ export const workoutCreatorReducer: Reducer<WorkoutCreatorState> = (
 	switch (action.type) {
 		case SET_INTERVALS: {
 			const newHistory = [
-				...state.history.slice(0, state.currentHistoryPosition),
+				...state.history.slice(0, state.currentHistoryPosition + 1),
 				action.intervals
 			];
 			return {
