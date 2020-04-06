@@ -1,15 +1,10 @@
 import * as React from 'react';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import * as lodash from 'lodash';
 import { findNiceTimeTickInterval } from '@/shared/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from '@/shared/utils/time-format-utils';
-
-type Interval = {
-	intensity: number;
-	length: number;
-	color: string;
-};
+import { Interval } from '@/state/actions/workoutCreatorActions';
 
 type IntervalChartItem = Interval & { startTime: number };
 
@@ -155,31 +150,24 @@ const buildChart = (
 		.call(yAxis);
 };
 
-const WorkoutCreatorChart = () => {
+interface Props {
+	intervals: Interval[];
+	setIntervals: (i: Interval[]) => void;
+}
+
+const WorkoutCreatorChart = (props: Props) => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
-	const [data, setData] = useState<Interval[]>([
-		{ intensity: 0.3, length: 60, color: d3.schemeBlues[5][0] },
-		{ intensity: 0.4, length: 60, color: d3.schemeBlues[5][0] },
-		{ intensity: 0.5, length: 60, color: d3.schemeBlues[5][0] },
-		{ intensity: 0.6, length: 60 * 5, color: d3.schemeBlues[5][1] },
-		...Array(13)
-			.fill([
-				{ intensity: 1.3, length: 30, color: d3.schemeBlues[5][3] },
-				{ intensity: 0.6, length: 15, color: d3.schemeBlues[5][2] }
-			])
-			.flat(),
-		{ intensity: 0.6, length: 60 * 5, color: d3.schemeBlues[5][1] }
-	]);
+	const { intervals, setIntervals } = props;
 
 	const width = 600;
 	const height = 400;
 
 	useEffect(() => {
 		if (svgRef.current) {
-			buildChart(svgRef.current, width, height, data, setData);
+			buildChart(svgRef.current, width, height, intervals, setIntervals);
 		}
-	}, [data]);
+	}, [intervals, setIntervals]);
 
 	return <svg ref={svgRef} width={width} height={height} />;
 };
