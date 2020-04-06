@@ -1,5 +1,6 @@
 import { Reducer } from 'redux';
 import * as d3 from 'd3';
+import * as lodash from 'lodash';
 
 import {
 	Interval,
@@ -41,6 +42,7 @@ export const workoutCreatorReducer: Reducer<WorkoutCreatorState> = (
 ) => {
 	switch (action.type) {
 		case SET_INTERVALS: {
+			if (lodash.isEqual(action.intervals, state.currentIntervals)) return state;
 			const newHistory = [
 				...state.history.slice(0, state.currentHistoryPosition + 1),
 				action.intervals

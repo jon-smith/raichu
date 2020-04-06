@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { rootReducer } from '@state/reducers';
-import * as Actions from '@/state/actions/workout-creator-actions';
+import * as Actions from '@state/actions/workout-creator-actions';
 
 const getInitialState = () => rootReducer(undefined, {} as Action);
 
@@ -19,6 +19,20 @@ describe('Workout Creator Store', () => {
 		expect(updatedStore.workoutCreator.currentIntervals).toEqual(intervalsToSet);
 		expect(updatedStore.workoutCreator.history.length).toEqual(2);
 		expect(updatedStore.workoutCreator.currentHistoryPosition).toEqual(1);
+	});
+
+	it('doesnt change intervals if set to same', () => {
+		const store = getInitialState();
+		const intervalCopy = store.workoutCreator.currentIntervals.slice();
+
+		const updatedStore = rootReducer(store, Actions.setIntervals(intervalCopy));
+
+		// Confirm exact reference to original intervals
+		expect(updatedStore.workoutCreator.currentIntervals).toBe(
+			store.workoutCreator.currentIntervals
+		);
+		expect(updatedStore.workoutCreator.history.length).toEqual(1);
+		expect(updatedStore.workoutCreator.currentHistoryPosition).toEqual(0);
 	});
 
 	it('undo redo', () => {
