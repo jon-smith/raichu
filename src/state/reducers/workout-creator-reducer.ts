@@ -74,3 +74,8 @@ export const workoutCreatorReducer: Reducer<WorkoutCreatorState> = (
 			return state;
 	}
 };
+
+export const canUndo = (state: WorkoutCreatorState) => state.currentHistoryPosition > 0;
+
+export const canRedo = (state: WorkoutCreatorState) =>
+	state.currentHistoryPosition < state.history.length - 1;
