@@ -10,8 +10,10 @@ export type RootActions =
 	| ViewAction[keyof ViewAction]
 	| WorkoutCreatorAction[keyof WorkoutCreatorAction];
 
-export const useDispatchCallback = <T, ActionT extends Action>(action: (t: T) => ActionT) => {
+export const useDispatchCallback = <T extends unknown, ActionT extends Action>(
+	action: (t: T) => ActionT
+) => {
 	const dispatch = useDispatch();
-	const callback = useCallback(i => dispatch(action(i)), [dispatch, action]);
+	const callback = useCallback((i: T) => dispatch(action(i)), [dispatch, action]);
 	return callback;
 };

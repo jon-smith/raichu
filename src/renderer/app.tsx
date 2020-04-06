@@ -6,6 +6,8 @@ import { AppContainer } from 'react-hot-loader';
 import configureStore from '@/state/store';
 import Application from './components/application';
 
+import 'rc-time-picker/assets/index.css';
+
 const store = configureStore();
 
 // Create main element

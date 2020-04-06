@@ -186,6 +186,7 @@
 		"d3": "^5.15.1",
 		"jolteon": "file:native",
 		"lodash": "^4.17.15",
+		"rc-time-picker": "^3.7.3",
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",
 		"react-dropzone": "^10.2.1",
