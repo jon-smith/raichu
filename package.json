@@ -56,11 +56,7 @@
 				"moduleNameMapper": {
 					"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
 					"\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js",
-					"^@main/(.*)$": "<rootDir>/src/main/$1",
-					"^@renderer/(.*)$": "<rootDir>/src/renderer/$1",
-					"^@shared/(.*)$": "<rootDir>/src/shared/$1",
-					"^@state/(.*)$": "<rootDir>/src/state/$1",
-					"^@ui/(.*)$": "<rootDir>/src/ui/$1"
+					"^@/(.*)$": "<rootDir>/src/$1"
 				}
 			},
 			{
@@ -78,11 +74,7 @@
 				"moduleNameMapper": {
 					"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
 					"\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js",
-					"^@main/(.*)$": "<rootDir>/src/main/$1",
-					"^@renderer/(.*)$": "<rootDir>/src/renderer/$1",
-					"^@shared/(.*)$": "<rootDir>/src/shared/$1",
-					"^@state/(.*)$": "<rootDir>/src/state/$1",
-					"^@ui/(.*)$": "<rootDir>/src/ui/$1"
+					"^@/(.*)$": "<rootDir>/src/$1"
 				},
 				"runner": "@jest-runner/electron",
 				"testEnvironment": "@jest-runner/electron/environment",

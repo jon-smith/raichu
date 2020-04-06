@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import * as lodash from 'lodash';
-import XYPlot from '@ui/charts/xy-plot';
-import * as activityCalculator from '@shared/activity-data/activity-calculator';
-import { findNiceTimeTickInterval } from '@shared/utils/chart-utils';
-import { useActivitySelector } from '@state/reducers';
+import XYPlot from '@/ui/charts/xy-plot';
+import * as activityCalculator from '@/shared/activity-data/activity-calculator';
+import { findNiceTimeTickInterval } from '@/shared/utils/chart-utils';
+import { useActivitySelector } from '@/state/reducers';
 import { formatSecondsAsHHMMSS, formatSecondsAsTimeWords } from '@/shared/utils/time-format-utils';
 
 const defaultSecondTicks = [5, 30];

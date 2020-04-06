@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 
-import { FileAndGpx } from '@renderer/components/gpx-file-drop';
+import { FileAndGpx } from '@/renderer/components/gpx-file-drop';
 
 export const ADD_GPX_FILE = 'ADD_GPX_FILE';
 export const CLEAR_ACTIVITY_DATA = 'CLEAR_ACTIVITY_DATA';

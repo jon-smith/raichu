@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
-import configureStore from '@state/store';
+import configureStore from '@/state/store';
 import Application from './components/application';
 
 const store = configureStore();
