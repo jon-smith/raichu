@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useWorkoutCreatorSelector } from '@/state/reducers';
 import { useDispatchCallback } from '@/state/actions';
-import * as WorkoutCreatorActions from '@/state/actions/workoutCreatorActions';
+import * as WorkoutCreatorActions from '@/state/actions/workout-creator-actions';
 import WorkoutCreatorChart from './workout-creator-chart';
 
 const WorkoutCreatorPage = () => {

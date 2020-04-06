@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { ViewAction, Page, SET_CURRENT_PAGE, DUMMY_ACTION } from '../actions/viewActions';
+import { ViewAction, Page, SET_CURRENT_PAGE, DUMMY_ACTION } from '../actions/view-actions';
 
 export interface ViewState {
 	readonly currentPage: Page;

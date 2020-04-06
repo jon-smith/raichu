@@ -1,9 +1,9 @@
 import { useDispatch } from 'react-redux';
 import { useCallback } from 'react';
 import { Action } from 'redux';
-import { ActivityAction } from './activityActions';
-import { ViewAction } from './viewActions';
-import { WorkoutCreatorAction } from './workoutCreatorActions';
+import { ActivityAction } from './activity-actions';
+import { ViewAction } from './view-actions';
+import { WorkoutCreatorAction } from './workout-creator-actions';
 
 export type RootActions =
 	| ActivityAction[keyof ActivityAction]

@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 import { useSelector } from 'react-redux';
 
-import { ActivityState, activityReducer } from './activityReducer';
-import { ViewState, viewReducer } from './viewReducer';
-import { workoutCreatorReducer, WorkoutCreatorState } from './workoutCreatorReducer';
+import { ActivityState, activityReducer } from './activity-reducer';
+import { ViewState, viewReducer } from './view-reducer';
+import { workoutCreatorReducer, WorkoutCreatorState } from './workout-creator-reducer';
 
 export interface RootState {
 	activities: ActivityState;

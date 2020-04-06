@@ -1,7 +1,7 @@
 import { hot } from 'react-hot-loader/root';
 import * as React from 'react';
 import { useMemo } from 'react';
-import { Page } from '@/state/actions/viewActions';
+import { Page } from '@/state/actions/view-actions';
 import { useViewSelector } from '@/state/reducers';
 import TestDataViewer from './test-data-viewer';
 import FilePanel from './file-panel';

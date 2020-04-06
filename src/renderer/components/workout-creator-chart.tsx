@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import * as lodash from 'lodash';
 import { findNiceTimeTickInterval } from '@/shared/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from '@/shared/utils/time-format-utils';
-import { Interval } from '@/state/actions/workoutCreatorActions';
+import { Interval } from '@/state/actions/workout-creator-actions';
 
 type IntervalChartItem = Interval & { startTime: number };
 
