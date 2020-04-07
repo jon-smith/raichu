@@ -1,3 +1,6 @@
+// Native functions use snake_case so disable eslint warnings
+/* eslint-disable @typescript-eslint/camelcase */
+
 declare module 'jolteon' {
 	type BestAverage = {
 		startIndex: number;

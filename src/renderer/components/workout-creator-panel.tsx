@@ -34,8 +34,6 @@ const useStyles = makeStyles(theme =>
 	})
 );
 
-const totalSeconds = (m: moment.Moment) => m.unix();
-
 const WorkoutCreatorPage = () => {
 	const {
 		intervals,

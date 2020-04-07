@@ -73,11 +73,12 @@ export const interpolateNullValues = (
 			// If we had a gap including nulls that is smaller than the max gap
 			// We can interpolate
 			if (i > lastNonNullIndex + 1 && i <= lastNonNullIndex + maxGap) {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				const interpolator = buildLinearInterpolator(
 					lastNonNullIndex,
 					i,
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					dataPoints[lastNonNullIndex]!,
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					dataPoints[i]!
 				);
 				for (let j = lastNonNullIndex + 1; j < i; ++j) {

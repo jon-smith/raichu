@@ -65,7 +65,6 @@ const buildChart = (
 		updateSelectedOutline();
 	};
 
-	let dragStartMouseX: number;
 	let dragMouseOffsetX: number;
 
 	const drag = d3
@@ -78,8 +77,7 @@ const buildChart = (
 			const mouseX = d3.mouse(j[i])[0];
 			const barX = parseFloat(bar.attr('x'));
 
-			// Store the original mouse position and offset
-			dragStartMouseX = mouseX;
+			// Store the original offset
 			dragMouseOffsetX = mouseX - barX;
 
 			// Bring the bar to the front

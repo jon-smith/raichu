@@ -6,11 +6,12 @@ import { rootReducer, RootState } from '../reducers';
 const configureStore = (initialState?: RootState): Store<RootState | undefined> => {
 	const enhancer = composeWithDevTools(applyMiddleware(...[]));
 
+	const store = createStore(enableBatching(rootReducer), initialState, enhancer);
+
 	if (typeof module.hot !== 'undefined') {
 		module.hot.accept('../reducers', () => store.replaceReducer(rootReducer));
 	}
 
-	const store = createStore(enableBatching(rootReducer), initialState, enhancer);
 	return store;
 };
 
