@@ -123,14 +123,23 @@ const buildChart = (
 		})
 		.on('end', (d, i, j) => {
 			const bar = d3.select(j[i]);
-			bar
-				.transition()
-				.duration(300)
-				.attr('x', xScale(d.startTime) ?? 0)
-				.on('end', () => {
-					const newSelectedIndex = data.indexOf(d);
-					onChange(data, newSelectedIndex);
-				});
+			const currentX = parseFloat(bar.attr('x'));
+			const newX = xScale(d.startTime) ?? 0;
+
+			const doUpdate = () => {
+				const newSelectedIndex = data.indexOf(d);
+				onChange(data, newSelectedIndex);
+			};
+
+			if (currentX !== newX) {
+				bar
+					.transition()
+					.duration(300)
+					.attr('x', newX)
+					.on('end', doUpdate);
+			} else {
+				doUpdate();
+			}
 		});
 
 	const endTimeSeconds = d3.max(data, d => d.startTime + d.length) ?? 0;
