@@ -35,6 +35,22 @@ describe('Workout Creator Store', () => {
 		expect(updatedStore.workoutCreator.currentHistoryPosition).toEqual(0);
 	});
 
+	it('doesnt change intervals if set to same with extra properties', () => {
+		const store = getInitialState();
+		const intervalsWithExtra = store.workoutCreator.currentIntervals.map(
+			i => ({ ...i, extra: 100 } as Actions.Interval)
+		);
+
+		const updatedStore = rootReducer(store, Actions.setIntervals(intervalsWithExtra));
+
+		// Confirm exact reference to original intervals
+		expect(updatedStore.workoutCreator.currentIntervals).toBe(
+			store.workoutCreator.currentIntervals
+		);
+		expect(updatedStore.workoutCreator.history.length).toEqual(1);
+		expect(updatedStore.workoutCreator.currentHistoryPosition).toEqual(0);
+	});
+
 	it('undo redo', () => {
 		const initialStore = getInitialState();
 

@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
 import * as d3 from 'd3';
-import * as lodash from 'lodash';
+import * as ArrayUtils from '@/shared/utils/array-utils';
 
 import {
 	Interval,
@@ -32,6 +32,9 @@ const defaultIntervals: Interval[] = [
 	{ intensity: 0.6, length: 60 * 5, color: d3.schemeBlues[5][1] }
 ];
 
+const areEqual = (a: Interval, b: Interval) =>
+	a.color === b.color && a.intensity === b.intensity && a.length === b.length;
+
 const defaultState: WorkoutCreatorState = {
 	currentIntervals: defaultIntervals,
 	history: [defaultIntervals],
@@ -45,7 +48,7 @@ export const workoutCreatorReducer: Reducer<WorkoutCreatorState> = (
 ) => {
 	switch (action.type) {
 		case SET_INTERVALS: {
-			if (lodash.isEqual(action.intervals, state.currentIntervals)) return state;
+			if (ArrayUtils.areEqual(action.intervals, state.currentIntervals, areEqual)) return state;
 			const newHistory = [
 				...state.history.slice(0, state.currentHistoryPosition + 1),
 				action.intervals
