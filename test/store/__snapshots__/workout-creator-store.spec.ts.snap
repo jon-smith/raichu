@@ -319,5 +319,6 @@ Object {
       },
     ],
   ],
+  "selectedIndex": null,
 }
 `;
