@@ -1,5 +1,8 @@
 import * as React from 'react';
 import { useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { batchActions } from 'redux-batched-actions';
+
 import Box from '@material-ui/core/Box';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -15,6 +18,8 @@ import { useWorkoutCreatorSelector } from '@/state/reducers';
 import { useDispatchCallback } from '@/state/actions';
 import * as WorkoutCreatorActions from '@/state/actions/workout-creator-actions';
 import { canUndo, canRedo } from '@/state/reducers/workout-creator-reducer';
+
+import { Interval } from '@/state/actions/workout-creator-actions';
 import WorkoutCreatorChart from './workout-creator-chart';
 
 const useStyles = makeStyles(theme =>
@@ -32,8 +37,9 @@ const useStyles = makeStyles(theme =>
 const totalSeconds = (m: moment.Moment) => m.unix();
 
 const WorkoutCreatorPage = () => {
-	const { intervals, undoEnabled, redoEnabled } = useWorkoutCreatorSelector(w => ({
+	const { intervals, selectedIndex, undoEnabled, redoEnabled } = useWorkoutCreatorSelector(w => ({
 		intervals: w.currentIntervals,
+		selectedIndex: w.selectedIndex,
 		undoEnabled: canUndo(w),
 		redoEnabled: canRedo(w)
 	}));
@@ -44,6 +50,20 @@ const WorkoutCreatorPage = () => {
 	const setIntervals = useDispatchCallback(WorkoutCreatorActions.setIntervals);
 	const undo = useDispatchCallback(WorkoutCreatorActions.undo);
 	const redo = useDispatchCallback(WorkoutCreatorActions.redo);
+
+	const dispatch = useDispatch();
+	const onChange = useCallback(
+		(newIntervals: Interval[], newIndex: number | null) => {
+			// Batch the interval and index updates to prevent flicker on multiple rerender
+			dispatch(
+				batchActions([
+					WorkoutCreatorActions.setIntervals(newIntervals),
+					WorkoutCreatorActions.setSelectedIndex(newIndex)
+				])
+			);
+		},
+		[dispatch]
+	);
 
 	const intervalDuration = totalSeconds(currentDuration);
 
@@ -101,7 +121,11 @@ const WorkoutCreatorPage = () => {
 				</IconButton>
 			</FormGroup>
 			<Box>
-				<WorkoutCreatorChart intervals={intervals} setIntervals={setIntervals} />
+				<WorkoutCreatorChart
+					intervals={intervals}
+					selectedIndex={selectedIndex}
+					onChange={onChange}
+				/>
 			</Box>
 		</Box>
 	);

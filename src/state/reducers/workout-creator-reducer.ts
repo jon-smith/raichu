@@ -5,6 +5,7 @@ import * as lodash from 'lodash';
 import {
 	Interval,
 	SET_INTERVALS,
+	SET_SELECTED,
 	UNDO,
 	REDO,
 	WorkoutCreatorAction
@@ -14,6 +15,7 @@ export interface WorkoutCreatorState {
 	readonly currentIntervals: Interval[];
 	readonly history: Interval[][];
 	readonly currentHistoryPosition: number;
+	readonly selectedIndex: number | null;
 }
 
 const defaultIntervals: Interval[] = [
@@ -33,7 +35,8 @@ const defaultIntervals: Interval[] = [
 const defaultState: WorkoutCreatorState = {
 	currentIntervals: defaultIntervals,
 	history: [defaultIntervals],
-	currentHistoryPosition: 0
+	currentHistoryPosition: 0,
+	selectedIndex: null
 };
 
 export const workoutCreatorReducer: Reducer<WorkoutCreatorState> = (
@@ -70,6 +73,11 @@ export const workoutCreatorReducer: Reducer<WorkoutCreatorState> = (
 						currentHistoryPosition: state.currentHistoryPosition + 1,
 						currentIntervals: state.history[state.currentHistoryPosition + 1]
 				  };
+		case SET_SELECTED:
+			return {
+				...state,
+				selectedIndex: action.index
+			};
 		default:
 			return state;
 	}

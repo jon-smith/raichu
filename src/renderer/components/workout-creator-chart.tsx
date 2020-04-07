@@ -32,7 +32,8 @@ const buildChart = (
 	width: number,
 	height: number,
 	initialData: Interval[],
-	updateData: (d: Interval[]) => void
+	selectedIndex: number | null,
+	onChange: (it: Interval[], i: number | null) => void
 ) => {
 	const svg = d3.select(nodeRef).html('');
 
@@ -45,12 +46,32 @@ const buildChart = (
 
 	const data = calculateStartTimes(initialData);
 
+	let localSelectedIndex = selectedIndex;
+
+	const updateSelectedOutline = () => {
+		const selectedData = localSelectedIndex == null ? null : data[localSelectedIndex];
+
+		svg
+			.selectAll('rect')
+			.attr('stroke', d => (d === selectedData ? 'black' : null))
+			.filter(d => d === selectedData)
+			.raise();
+	};
+
+	const setLocalSelectedIndex = (index: number) => {
+		localSelectedIndex = index;
+		updateSelectedOutline();
+	};
+
 	let dragStartMouseX: number;
 	let dragMouseOffsetX: number;
 
 	const drag = d3
 		.drag<SVGRectElement, IntervalChartItem>()
 		.on('start', (d, i, j) => {
+			const dataIndex = data.indexOf(d);
+			setLocalSelectedIndex(dataIndex);
+
 			const bar = d3.select(j[i]);
 			const mouseX = d3.mouse(j[i])[0];
 			const barX = parseFloat(bar.attr('x'));
@@ -60,9 +81,7 @@ const buildChart = (
 			dragMouseOffsetX = mouseX - barX;
 
 			// Bring the bar to the front
-			if (bar.node()) {
-				nodeRef.appendChild(bar.node()!);
-			}
+			bar.raise();
 		})
 		.on('drag', (d, i, j) => {
 			const draggingBar = d3.select(j[i]);
@@ -106,7 +125,10 @@ const buildChart = (
 				.transition()
 				.duration(300)
 				.attr('x', xScale(d.startTime) ?? 0)
-				.on('end', () => updateData(data));
+				.on('end', () => {
+					const newSelectedIndex = data.indexOf(d);
+					onChange(data, newSelectedIndex);
+				});
 		});
 
 	const endTimeSeconds = d3.max(data, d => d.startTime + d.length) ?? 0;
@@ -114,6 +136,7 @@ const buildChart = (
 	const xAxis = d3
 		.axisBottom(xScale)
 		.tickValues(timeTicksToDisplay(endTimeSeconds, 6))
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		.tickFormat(formatSecondsAsHHMMSS as any);
 
 	const yAxis = d3.axisLeft(yScale).tickFormat(d3.format('.0%'));
@@ -137,6 +160,8 @@ const buildChart = (
 		.attr('class', 'bar')
 		.call(drag);
 
+	updateSelectedOutline();
+
 	svg
 		.append('g')
 		.attr('transform', `translate(${0},${height - padding.bottom})`)
@@ -152,22 +177,23 @@ const buildChart = (
 
 interface Props {
 	intervals: Interval[];
-	setIntervals: (i: Interval[]) => void;
+	selectedIndex: number | null;
+	onChange(it: Interval[], i: number | null): void;
 }
 
 const WorkoutCreatorChart = (props: Props) => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
-	const { intervals, setIntervals } = props;
+	const { intervals, selectedIndex, onChange } = props;
 
 	const width = 600;
 	const height = 400;
 
 	useEffect(() => {
 		if (svgRef.current) {
-			buildChart(svgRef.current, width, height, intervals, setIntervals);
+			buildChart(svgRef.current, width, height, intervals, selectedIndex, onChange);
 		}
-	}, [intervals, setIntervals]);
+	}, [intervals, selectedIndex, onChange]);
 
 	return <svg ref={svgRef} width={width} height={height} />;
 };
