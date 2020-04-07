@@ -17,7 +17,7 @@ import TimePicker from 'rc-time-picker';
 import { useWorkoutCreatorSelector } from '@/state/reducers';
 import { useDispatchCallback } from '@/state/actions';
 import * as WorkoutCreatorActions from '@/state/actions/workout-creator-actions';
-import { canUndo, canRedo } from '@/state/reducers/workout-creator-reducer';
+import { canUndo, canRedo, selectedInterval } from '@/state/reducers/workout-creator-reducer';
 
 import { Interval } from '@/state/actions/workout-creator-actions';
 import WorkoutCreatorChart from './workout-creator-chart';
@@ -37,19 +37,61 @@ const useStyles = makeStyles(theme =>
 const totalSeconds = (m: moment.Moment) => m.unix();
 
 const WorkoutCreatorPage = () => {
-	const { intervals, selectedIndex, undoEnabled, redoEnabled } = useWorkoutCreatorSelector(w => ({
+	const {
+		intervals,
+		selectedIndex,
+		currentSelectedInterval,
+		undoEnabled,
+		redoEnabled
+	} = useWorkoutCreatorSelector(w => ({
 		intervals: w.currentIntervals,
 		selectedIndex: w.selectedIndex,
+		currentSelectedInterval: selectedInterval(w),
 		undoEnabled: canUndo(w),
 		redoEnabled: canRedo(w)
 	}));
 
-	const [currentDuration, setCurrentDuration] = useState(moment(0));
-	const [currentIntensity, setCurrentIntensity] = useState(100);
-
 	const setIntervals = useDispatchCallback(WorkoutCreatorActions.setIntervals);
 	const undo = useDispatchCallback(WorkoutCreatorActions.undo);
 	const redo = useDispatchCallback(WorkoutCreatorActions.redo);
+
+	const [newIntervalDuration, setNewIntervalDuration] = useState(0);
+	const [newIntervalIntensity, setNewIntervalIntensity] = useState(1);
+
+	const intervalDuration = currentSelectedInterval?.length ?? newIntervalDuration;
+	const setIntervalDuration = useCallback(
+		(m: moment.Moment | null) => {
+			const seconds = m?.unix() ?? 0;
+			if (currentSelectedInterval === null) {
+				setNewIntervalDuration(seconds);
+			} else if (selectedIndex !== null) {
+				const updatedIntervals = intervals.slice();
+				updatedIntervals[selectedIndex] = {
+					...updatedIntervals[selectedIndex],
+					length: seconds
+				};
+				setIntervals(updatedIntervals);
+			}
+		},
+		[currentSelectedInterval, intervals, selectedIndex, setIntervals]
+	);
+
+	const intervalIntensity = currentSelectedInterval?.intensity ?? newIntervalIntensity;
+	const setIntervalIntensity = useCallback(
+		(i: number) => {
+			if (currentSelectedInterval === null) {
+				setNewIntervalIntensity(i);
+			} else if (selectedIndex !== null) {
+				const updatedIntervals = intervals.slice();
+				updatedIntervals[selectedIndex] = {
+					...updatedIntervals[selectedIndex],
+					intensity: i
+				};
+				setIntervals(updatedIntervals);
+			}
+		},
+		[currentSelectedInterval, intervals, selectedIndex, setIntervals]
+	);
 
 	const dispatch = useDispatch();
 	const onChange = useCallback(
@@ -65,16 +107,14 @@ const WorkoutCreatorPage = () => {
 		[dispatch]
 	);
 
-	const intervalDuration = totalSeconds(currentDuration);
-
 	const addInterval = useCallback(() => {
-		if (intervalDuration > 0) {
+		if (newIntervalDuration > 0) {
 			setIntervals([
 				...intervals,
-				{ color: 'red', intensity: currentIntensity * 0.01, length: intervalDuration }
+				{ color: 'red', intensity: newIntervalIntensity, length: newIntervalDuration }
 			]);
 		}
-	}, [intervalDuration, currentIntensity, intervals, setIntervals]);
+	}, [newIntervalDuration, setIntervals, intervals, newIntervalIntensity]);
 
 	const formControlClasses = useStyles();
 
@@ -91,8 +131,8 @@ const WorkoutCreatorPage = () => {
 					classes={formControlClasses}
 					control={
 						<TimePicker
-							value={currentDuration}
-							onChange={d => setCurrentDuration(d ?? moment(0))}
+							value={moment.utc(intervalDuration * 1000)}
+							onChange={d => setIntervalDuration(d)}
 							showHour={false}
 							showMinute={true}
 							showSecond={true}
@@ -109,14 +149,18 @@ const WorkoutCreatorPage = () => {
 							variant="outlined"
 							size="small"
 							margin="none"
-							value={currentIntensity}
-							onChange={e => setCurrentIntensity(parseFloat(e.target.value))}
+							value={intervalIntensity * 100}
+							onChange={e => setIntervalIntensity(parseFloat(e.target.value) * 0.01)}
 						/>
 					}
 					label="Intensity"
 					labelPlacement="start"
 				/>
-				<IconButton aria-label="add" onClick={addInterval} disabled={intervalDuration === 0}>
+				<IconButton
+					aria-label="add"
+					onClick={addInterval}
+					disabled={newIntervalDuration === 0 || selectedIndex !== null}
+				>
 					<Add />
 				</IconButton>
 			</FormGroup>

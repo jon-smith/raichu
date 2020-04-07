@@ -46,6 +46,8 @@ const buildChart = (
 
 	const data = calculateStartTimes(initialData);
 
+	svg.on('click', () => onChange(data, null));
+
 	let localSelectedIndex = selectedIndex;
 
 	const updateSelectedOutline = () => {
