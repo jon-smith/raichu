@@ -12,8 +12,8 @@ import {
 } from '../actions/workout-creator-actions';
 
 export interface WorkoutCreatorState {
-	readonly currentIntervals: Interval[];
-	readonly history: Interval[][];
+	readonly currentIntervals: readonly Interval[];
+	readonly history: readonly Interval[][];
 	readonly currentHistoryPosition: number;
 	readonly selectedIndex: number | null;
 }

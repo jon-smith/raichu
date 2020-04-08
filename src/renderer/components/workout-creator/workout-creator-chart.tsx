@@ -8,7 +8,7 @@ import { Interval } from '@/state/actions/workout-creator-actions';
 
 type IntervalChartItem = Interval & { startTime: number };
 
-const calculateStartTimes = (intervals: Interval[]): IntervalChartItem[] => {
+const calculateStartTimes = (intervals: readonly Interval[]): IntervalChartItem[] => {
 	const copy = intervals.map(i => ({ ...i, startTime: 0 }));
 	for (let i = 0; i < intervals.length; ++i) {
 		copy[i].startTime = i === 0 ? 0 : copy[i - 1].startTime + copy[i - 1].length;
@@ -31,7 +31,7 @@ const buildChart = (
 	nodeRef: SVGSVGElement,
 	width: number,
 	height: number,
-	initialData: Interval[],
+	initialData: readonly Interval[],
 	selectedIndex: number | null,
 	onChange: (it: Interval[], i: number | null) => void
 ) => {
@@ -185,7 +185,7 @@ const buildChart = (
 };
 
 interface Props {
-	intervals: Interval[];
+	intervals: readonly Interval[];
 	selectedIndex: number | null;
 	onChange(it: Interval[], i: number | null): void;
 }

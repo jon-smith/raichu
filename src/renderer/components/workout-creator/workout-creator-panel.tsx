@@ -11,7 +11,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
-import { Undo, Redo, Add, Save } from '@material-ui/icons';
+import { Undo, Redo, Add, Save, Delete } from '@material-ui/icons';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 import * as moment from 'moment';
@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme =>
 	})
 );
 
-const useDispatchCallbacks = () => {
+const useActions = () => {
 	const setIntervals = useDispatchCallback(WorkoutCreatorActions.setIntervals);
 	const undo = useDispatchCallback(WorkoutCreatorActions.undo);
 	const redo = useDispatchCallback(WorkoutCreatorActions.redo);
@@ -66,7 +66,7 @@ const useDispatchCallbacks = () => {
 	};
 };
 
-const loadFileDialog = (intervals: Interval[]) => {
+const loadFileDialog = (intervals: readonly Interval[]) => {
 	const savePath = remote.dialog.showSaveDialogSync({
 		title: 'Save workout as MRC',
 		filters: [{ name: 'MRC', extensions: ['mrc'] }]
@@ -99,7 +99,7 @@ const WorkoutCreatorPage = () => {
 		redoEnabled: canRedo(w)
 	}));
 
-	const { setIntervals, undo, redo, onChange } = useDispatchCallbacks();
+	const { setIntervals, undo, redo, onChange } = useActions();
 
 	const saveToMRC = useCallback(() => loadFileDialog(intervals), [intervals]);
 
@@ -150,6 +150,14 @@ const WorkoutCreatorPage = () => {
 		}
 	}, [newIntervalDuration, setIntervals, intervals, newIntervalIntensity]);
 
+	const deleteSelected = useCallback(() => {
+		if (selectedIndex != null) {
+			const copy = intervals.slice();
+			copy.splice(selectedIndex, 1);
+			setIntervals(copy);
+		}
+	}, [intervals, selectedIndex, setIntervals]);
+
 	const formControlClasses = useStyles();
 
 	return (
@@ -199,6 +207,9 @@ const WorkoutCreatorPage = () => {
 					disabled={newIntervalDuration === 0 || selectedIndex !== null}
 				>
 					<Add />
+				</IconButton>
+				<IconButton aria-label="delete" onClick={deleteSelected} disabled={selectedIndex === null}>
+					<Delete />
 				</IconButton>
 			</FormGroup>
 			<Box>
