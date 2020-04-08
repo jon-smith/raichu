@@ -27,26 +27,32 @@ const convertToCourseData = (intervals: Interval[]): CourseData[] => {
 	]);
 };
 
+const makeCourseHeader = (name: string, description: string) =>
+	`
+[COURSE HEADER]\n
+VERSION = 2\n
+UNITS = ENGLISH\n
+DESCRIPTION = ${description}\n
+FILE NAME = ${name}\n
+MINUTES PERCENT\n
+[END COURSE HEADER]\n
+`;
+
+const makeMRCString = (header: string, data: string) =>
+	`
+${header}
+[COURSE DATA]\n
+${data}
+[END COURSE DATA]
+`;
+
 export const buildMRCFileString = (name: string, description: string, intervals: Interval[]) => {
-	const courseHeader = `
-		[COURSE HEADER]\n
-		VERSION = 2\n
-		UNITS = ENGLISH\n
-		DESCRIPTION = ${description}\n
-		FILE NAME = ${name}\n
-		MINUTES PERCENT\n
-		[END COURSE HEADER]\n
-		`;
+	const courseHeader = makeCourseHeader(name, description);
 
 	const courseData = convertToCourseData(intervals);
 	const courseDataString = courseData
 		.map(d => `${d.timeMinutes.toFixed(2)}\t${d.intensityPercent.toFixed(0)}\n`)
 		.join('');
 
-	return `
-	${courseHeader}
-	[COURSE DATA]\n
-	${courseDataString}
-	[END COURSE DATA]
-	`;
+	return makeMRCString(courseHeader, courseDataString);
 };

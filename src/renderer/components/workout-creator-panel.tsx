@@ -3,12 +3,15 @@ import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { batchActions } from 'redux-batched-actions';
 
+import { remote } from 'electron';
+import * as fs from 'fs';
+
 import Box from '@material-ui/core/Box';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
-import { Undo, Redo, Add } from '@material-ui/icons';
+import { Undo, Redo, Add, Save } from '@material-ui/icons';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 import * as moment from 'moment';
@@ -18,8 +21,10 @@ import { useWorkoutCreatorSelector } from '@/state/reducers';
 import { useDispatchCallback } from '@/state/actions';
 import * as WorkoutCreatorActions from '@/state/actions/workout-creator-actions';
 import { canUndo, canRedo, selectedInterval } from '@/state/reducers/workout-creator-reducer';
-
 import { Interval } from '@/state/actions/workout-creator-actions';
+
+import { buildMRCFileString } from '@/shared/activity-data/export-mrc';
+
 import WorkoutCreatorChart from './workout-creator-chart';
 
 const useStyles = makeStyles(theme =>
@@ -48,6 +53,24 @@ const WorkoutCreatorPage = () => {
 		undoEnabled: canUndo(w),
 		redoEnabled: canRedo(w)
 	}));
+
+	const saveToMRC = useCallback(() => {
+		const savePath = remote.dialog.showSaveDialogSync({
+			title: 'Save workout as MRC',
+			filters: [{ name: 'MRC', extensions: ['mrc'] }]
+		});
+
+		if (savePath) {
+			fs.writeFileSync(
+				savePath,
+				buildMRCFileString(
+					'Workout',
+					'',
+					intervals.map(i => ({ durationSeconds: i.length, intensityPercent: i.intensity * 100 }))
+				)
+			);
+		}
+	}, [intervals]);
 
 	const setIntervals = useDispatchCallback(WorkoutCreatorActions.setIntervals);
 	const undo = useDispatchCallback(WorkoutCreatorActions.undo);
@@ -119,6 +142,9 @@ const WorkoutCreatorPage = () => {
 	return (
 		<Box display="flex" flexDirection="column">
 			<FormGroup row>
+				<IconButton aria-label="save to MRC" onClick={saveToMRC}>
+					<Save />
+				</IconButton>
 				<IconButton aria-label="undo" disabled={!undoEnabled} onClick={undo}>
 					<Undo />
 				</IconButton>

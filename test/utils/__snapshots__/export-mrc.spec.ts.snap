@@ -2,31 +2,31 @@
 
 exports[`MRC Export Should match snapshot 1`] = `
 "
-	
-		[COURSE HEADER]
 
-		VERSION = 2
+[COURSE HEADER]
 
-		UNITS = ENGLISH
+VERSION = 2
 
-		DESCRIPTION = description
+UNITS = ENGLISH
 
-		FILE NAME = name
+DESCRIPTION = description
 
-		MINUTES PERCENT
+FILE NAME = name
 
-		[END COURSE HEADER]
+MINUTES PERCENT
 
-		
-	[COURSE DATA]
+[END COURSE HEADER]
 
-	0.00	100
+
+[COURSE DATA]
+
+0.00	100
 1.00	100
 1.00	120
 1.50	120
 1.50	80
 2.17	80
 
-	[END COURSE DATA]
-	"
+[END COURSE DATA]
+"
 `;
