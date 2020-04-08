@@ -40,6 +40,8 @@ const buildChart = (
 
 	const padding = { top: 20, left: 40, right: 40, bottom: 20 };
 
+	if (!width ?? !height) return;
+
 	if (width <= padding.left + padding.right + 1 || height <= padding.top + padding.bottom + 1)
 		return;
 
