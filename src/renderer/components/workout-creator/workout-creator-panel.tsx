@@ -39,6 +39,51 @@ const useStyles = makeStyles(theme =>
 	})
 );
 
+const useDispatchCallbacks = () => {
+	const setIntervals = useDispatchCallback(WorkoutCreatorActions.setIntervals);
+	const undo = useDispatchCallback(WorkoutCreatorActions.undo);
+	const redo = useDispatchCallback(WorkoutCreatorActions.redo);
+
+	const dispatch = useDispatch();
+	const onChange = useCallback(
+		(newIntervals: Interval[], newIndex: number | null) => {
+			// Batch the interval and index updates to prevent flicker on multiple rerender
+			dispatch(
+				batchActions([
+					WorkoutCreatorActions.setIntervals(newIntervals),
+					WorkoutCreatorActions.setSelectedIndex(newIndex)
+				])
+			);
+		},
+		[dispatch]
+	);
+
+	return {
+		setIntervals,
+		undo,
+		redo,
+		onChange
+	};
+};
+
+const loadFileDialog = (intervals: Interval[]) => {
+	const savePath = remote.dialog.showSaveDialogSync({
+		title: 'Save workout as MRC',
+		filters: [{ name: 'MRC', extensions: ['mrc'] }]
+	});
+
+	if (savePath) {
+		fs.writeFileSync(
+			savePath,
+			buildMRCFileString(
+				'Workout',
+				'',
+				intervals.map(i => ({ durationSeconds: i.length, intensityPercent: i.intensity * 100 }))
+			)
+		);
+	}
+};
+
 const WorkoutCreatorPage = () => {
 	const {
 		intervals,
@@ -54,27 +99,9 @@ const WorkoutCreatorPage = () => {
 		redoEnabled: canRedo(w)
 	}));
 
-	const saveToMRC = useCallback(() => {
-		const savePath = remote.dialog.showSaveDialogSync({
-			title: 'Save workout as MRC',
-			filters: [{ name: 'MRC', extensions: ['mrc'] }]
-		});
+	const { setIntervals, undo, redo, onChange } = useDispatchCallbacks();
 
-		if (savePath) {
-			fs.writeFileSync(
-				savePath,
-				buildMRCFileString(
-					'Workout',
-					'',
-					intervals.map(i => ({ durationSeconds: i.length, intensityPercent: i.intensity * 100 }))
-				)
-			);
-		}
-	}, [intervals]);
-
-	const setIntervals = useDispatchCallback(WorkoutCreatorActions.setIntervals);
-	const undo = useDispatchCallback(WorkoutCreatorActions.undo);
-	const redo = useDispatchCallback(WorkoutCreatorActions.redo);
+	const saveToMRC = useCallback(() => loadFileDialog(intervals), [intervals]);
 
 	const [newIntervalDuration, setNewIntervalDuration] = useState(0);
 	const [newIntervalIntensity, setNewIntervalIntensity] = useState(1);
@@ -112,20 +139,6 @@ const WorkoutCreatorPage = () => {
 			}
 		},
 		[currentSelectedInterval, intervals, selectedIndex, setIntervals]
-	);
-
-	const dispatch = useDispatch();
-	const onChange = useCallback(
-		(newIntervals: Interval[], newIndex: number | null) => {
-			// Batch the interval and index updates to prevent flicker on multiple rerender
-			dispatch(
-				batchActions([
-					WorkoutCreatorActions.setIntervals(newIntervals),
-					WorkoutCreatorActions.setSelectedIndex(newIndex)
-				])
-			);
-		},
-		[dispatch]
 	);
 
 	const addInterval = useCallback(() => {

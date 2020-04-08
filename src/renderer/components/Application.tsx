@@ -6,7 +6,7 @@ import { useViewSelector } from '@/state/reducers';
 import TestDataViewer from './test-data-viewer';
 import FilePanel from './file-panel';
 import NavigationTabs from './navigation-tabs';
-import WorkoutCreatorPanel from './workout-creator-panel';
+import WorkoutCreatorPanel from './workout-creator/workout-creator-panel';
 import './app.scss';
 
 const MakePage = (LeftPanel: React.ComponentType, MainPanel: React.ComponentType) => (
