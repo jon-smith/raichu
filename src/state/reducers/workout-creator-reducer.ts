@@ -1,5 +1,4 @@
 import { Reducer } from 'redux';
-import * as d3 from 'd3';
 import * as ArrayUtils from '@/shared/utils/array-utils';
 
 import {
@@ -19,21 +18,20 @@ export interface WorkoutCreatorState {
 }
 
 const defaultIntervals: Interval[] = [
-	{ intensity: 0.3, length: 60, color: d3.schemeBlues[5][0] },
-	{ intensity: 0.4, length: 60, color: d3.schemeBlues[5][0] },
-	{ intensity: 0.5, length: 60, color: d3.schemeBlues[5][0] },
-	{ intensity: 0.6, length: 60 * 5, color: d3.schemeBlues[5][1] },
+	{ intensity: 0.3, length: 60 },
+	{ intensity: 0.4, length: 60 },
+	{ intensity: 0.5, length: 60 },
+	{ intensity: 0.6, length: 60 * 5 },
 	...Array(13)
 		.fill([
-			{ intensity: 1.3, length: 30, color: d3.schemeBlues[5][3] },
-			{ intensity: 0.6, length: 15, color: d3.schemeBlues[5][2] }
+			{ intensity: 1.3, length: 30 },
+			{ intensity: 0.6, length: 15 }
 		])
 		.flat(),
-	{ intensity: 0.6, length: 60 * 5, color: d3.schemeBlues[5][1] }
+	{ intensity: 0.6, length: 60 * 5 }
 ];
 
-const areEqual = (a: Interval, b: Interval) =>
-	a.color === b.color && a.intensity === b.intensity && a.length === b.length;
+const areEqual = (a: Interval, b: Interval) => a.intensity === b.intensity && a.length === b.length;
 
 const defaultState: WorkoutCreatorState = {
 	currentIntervals: defaultIntervals,
@@ -93,3 +91,18 @@ export const canRedo = (state: WorkoutCreatorState) =>
 
 export const selectedInterval = (state: WorkoutCreatorState): Interval | null =>
 	state.selectedIndex === null ? null : state.currentIntervals[state.selectedIndex];
+
+const getColor = (i: Interval) => {
+	const { intensity } = i;
+	if (intensity < 0.6) return '#a6a6a6';
+	if (intensity < 0.75) return '#9acfe3';
+	if (intensity < 0.9) return '#77dd77';
+	if (intensity < 1.05) return '#fdfd96';
+	if (intensity < 1.18) return '#ffb347';
+	return '#ff6961';
+};
+
+export type IntervalWithColor = Interval & { color: string };
+
+export const intervalsWithColor = (state: WorkoutCreatorState) =>
+	state.currentIntervals.map(i => ({ ...i, color: getColor(i) }));

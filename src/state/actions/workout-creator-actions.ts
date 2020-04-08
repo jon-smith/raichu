@@ -8,7 +8,6 @@ export const REDO = 'WORKOUT_CREATOR_REDO';
 export type Interval = {
 	intensity: number;
 	length: number;
-	color: string;
 };
 
 export interface SetIntervalsAction extends Action {

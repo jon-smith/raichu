@@ -20,7 +20,12 @@ import TimePicker from 'rc-time-picker';
 import { useWorkoutCreatorSelector } from '@/state/reducers';
 import { useDispatchCallback } from '@/state/actions';
 import * as WorkoutCreatorActions from '@/state/actions/workout-creator-actions';
-import { canUndo, canRedo, selectedInterval } from '@/state/reducers/workout-creator-reducer';
+import {
+	canUndo,
+	canRedo,
+	selectedInterval,
+	intervalsWithColor
+} from '@/state/reducers/workout-creator-reducer';
 import { Interval } from '@/state/actions/workout-creator-actions';
 
 import { buildMRCFileString } from '@/shared/activity-data/export-mrc';
@@ -92,7 +97,7 @@ const WorkoutCreatorPage = () => {
 		undoEnabled,
 		redoEnabled
 	} = useWorkoutCreatorSelector(w => ({
-		intervals: w.currentIntervals,
+		intervals: intervalsWithColor(w),
 		selectedIndex: w.selectedIndex,
 		currentSelectedInterval: selectedInterval(w),
 		undoEnabled: canUndo(w),
@@ -155,7 +160,7 @@ const WorkoutCreatorPage = () => {
 		if (newIntervalDuration > 0) {
 			setIntervals([
 				...intervals,
-				{ color: 'red', intensity: newIntervalIntensity, length: newIntervalDuration }
+				{ intensity: newIntervalIntensity, length: newIntervalDuration }
 			]);
 		}
 	}, [newIntervalDuration, setIntervals, intervals, newIntervalIntensity]);

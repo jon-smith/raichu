@@ -6,10 +6,11 @@ import { withResizeDetector } from 'react-resize-detector';
 import { findNiceTimeTickInterval } from '@/shared/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from '@/shared/utils/time-format-utils';
 import { Interval } from '@/state/actions/workout-creator-actions';
+import { IntervalWithColor } from '@/state/reducers/workout-creator-reducer';
 
-type IntervalChartItem = Interval & { startTime: number };
+type IntervalChartItem = IntervalWithColor & { startTime: number };
 
-const calculateStartTimes = (intervals: readonly Interval[]): IntervalChartItem[] => {
+const calculateStartTimes = (intervals: readonly IntervalWithColor[]): IntervalChartItem[] => {
 	const copy = intervals.map(i => ({ ...i, startTime: 0 }));
 	for (let i = 0; i < intervals.length; ++i) {
 		copy[i].startTime = i === 0 ? 0 : copy[i - 1].startTime + copy[i - 1].length;
@@ -32,9 +33,9 @@ const buildChart = (
 	nodeRef: SVGSVGElement,
 	width: number,
 	height: number,
-	initialData: readonly Interval[],
+	initialData: readonly IntervalWithColor[],
 	selectedIndex: number | null,
-	onChange: (it: Interval[], i: number | null) => void
+	onChange: (it: IntervalWithColor[], i: number | null) => void
 ) => {
 	const svg = d3.select(nodeRef).html('');
 
@@ -191,7 +192,7 @@ const buildChart = (
 };
 
 interface Props {
-	intervals: readonly Interval[];
+	intervals: readonly IntervalWithColor[];
 	selectedIndex: number | null;
 	onChange(it: Interval[], i: number | null): void;
 	width: number;
