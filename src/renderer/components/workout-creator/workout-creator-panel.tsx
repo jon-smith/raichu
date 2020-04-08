@@ -161,65 +161,73 @@ const WorkoutCreatorPage = () => {
 	const formControlClasses = useStyles();
 
 	return (
-		<Box display="flex" flexDirection="column">
-			<FormGroup row>
-				<IconButton aria-label="save to MRC" onClick={saveToMRC}>
-					<Save />
-				</IconButton>
-				<IconButton aria-label="undo" disabled={!undoEnabled} onClick={undo}>
-					<Undo />
-				</IconButton>
-				<IconButton aria-label="redo" disabled={!redoEnabled} onClick={redo}>
-					<Redo />
-				</IconButton>
-				<FormControlLabel
-					classes={formControlClasses}
-					control={
-						<TimePicker
-							value={moment.utc(intervalDuration * 1000)}
-							onChange={d => setIntervalDuration(d)}
-							showHour={false}
-							showMinute={true}
-							showSecond={true}
+		<div className="workout-creator-panel">
+			<Box display="flex" flexDirection="column">
+				<FormGroup row>
+					<IconButton aria-label="save to MRC" onClick={saveToMRC}>
+						<Save />
+					</IconButton>
+					<IconButton aria-label="undo" disabled={!undoEnabled} onClick={undo}>
+						<Undo />
+					</IconButton>
+					<IconButton aria-label="redo" disabled={!redoEnabled} onClick={redo}>
+						<Redo />
+					</IconButton>
+					<FormControlLabel
+						classes={formControlClasses}
+						control={
+							<TimePicker
+								value={moment.utc(intervalDuration * 1000)}
+								onChange={d => setIntervalDuration(d)}
+								showHour={false}
+								showMinute={true}
+								showSecond={true}
+							/>
+						}
+						label="Duration"
+						labelPlacement="start"
+					/>
+					<FormControlLabel
+						classes={formControlClasses}
+						control={
+							<TextField
+								type="number"
+								variant="outlined"
+								size="small"
+								margin="none"
+								value={intervalIntensity * 100}
+								onChange={e => setIntervalIntensity(parseFloat(e.target.value) * 0.01)}
+							/>
+						}
+						label="Intensity"
+						labelPlacement="start"
+					/>
+					<IconButton
+						aria-label="add"
+						onClick={addInterval}
+						disabled={newIntervalDuration === 0 || selectedIndex !== null}
+					>
+						<Add />
+					</IconButton>
+					<IconButton
+						aria-label="delete"
+						onClick={deleteSelected}
+						disabled={selectedIndex === null}
+					>
+						<Delete />
+					</IconButton>
+				</FormGroup>
+				<Box>
+					<div className="workout-creator-chart">
+						<WorkoutCreatorChart
+							intervals={intervals}
+							selectedIndex={selectedIndex}
+							onChange={onChange}
 						/>
-					}
-					label="Duration"
-					labelPlacement="start"
-				/>
-				<FormControlLabel
-					classes={formControlClasses}
-					control={
-						<TextField
-							type="number"
-							variant="outlined"
-							size="small"
-							margin="none"
-							value={intervalIntensity * 100}
-							onChange={e => setIntervalIntensity(parseFloat(e.target.value) * 0.01)}
-						/>
-					}
-					label="Intensity"
-					labelPlacement="start"
-				/>
-				<IconButton
-					aria-label="add"
-					onClick={addInterval}
-					disabled={newIntervalDuration === 0 || selectedIndex !== null}
-				>
-					<Add />
-				</IconButton>
-				<IconButton aria-label="delete" onClick={deleteSelected} disabled={selectedIndex === null}>
-					<Delete />
-				</IconButton>
-			</FormGroup>
-			<Box>
-				<WorkoutCreatorChart
-					intervals={intervals}
-					selectedIndex={selectedIndex}
-					onChange={onChange}
-				/>
+					</div>
+				</Box>
 			</Box>
-		</Box>
+		</div>
 	);
 };
 

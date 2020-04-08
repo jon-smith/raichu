@@ -12,7 +12,9 @@ import './app.scss';
 const MakePage = (LeftPanel: React.ComponentType, MainPanel: React.ComponentType) => (
 	<div className="tab-panel">
 		<div className="left-panel">
-			<LeftPanel />
+			<div className="left-panel-inner">
+				<LeftPanel />
+			</div>
 		</div>
 		<div className="main-panel">
 			<MainPanel />
@@ -21,7 +23,7 @@ const MakePage = (LeftPanel: React.ComponentType, MainPanel: React.ComponentType
 );
 
 const DataPageLeftPanel = () => (
-	<div className="left-panel-inner">
+	<div>
 		<h4>Welcome to raichu</h4>
 		<p>頂きます</p>
 		<FilePanel />

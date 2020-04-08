@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import * as lodash from 'lodash';
+import { withResizeDetector } from 'react-resize-detector';
 import { findNiceTimeTickInterval } from '@/shared/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from '@/shared/utils/time-format-utils';
 import { Interval } from '@/state/actions/workout-creator-actions';
@@ -38,6 +39,9 @@ const buildChart = (
 	const svg = d3.select(nodeRef).html('');
 
 	const padding = { top: 20, left: 40, right: 40, bottom: 20 };
+
+	if (width <= padding.left + padding.right + 1 || height <= padding.top + padding.bottom + 1)
+		return;
 
 	const xScale = d3.scaleLinear();
 	const yScale = d3.scaleLinear();
@@ -188,23 +192,22 @@ interface Props {
 	intervals: readonly Interval[];
 	selectedIndex: number | null;
 	onChange(it: Interval[], i: number | null): void;
+	width: number;
+	height: number;
 }
 
 const WorkoutCreatorChart = (props: Props) => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
-	const { intervals, selectedIndex, onChange } = props;
-
-	const width = 600;
-	const height = 400;
+	const { intervals, selectedIndex, onChange, width, height } = props;
 
 	useEffect(() => {
 		if (svgRef.current) {
 			buildChart(svgRef.current, width, height, intervals, selectedIndex, onChange);
 		}
-	}, [intervals, selectedIndex, onChange]);
+	}, [intervals, selectedIndex, onChange, width, height]);
 
 	return <svg ref={svgRef} width={width} height={height} />;
 };
 
-export default WorkoutCreatorChart;
+export default withResizeDetector(WorkoutCreatorChart);

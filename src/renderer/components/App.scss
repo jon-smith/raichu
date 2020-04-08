@@ -38,9 +38,9 @@ body {
 }
 
 .left-panel {
-	display: flex;
 	flex: 0 0 330px;
 	display: block;
+	z-index: 1;
 }
 
 .left-panel-inner {
@@ -48,13 +48,19 @@ body {
 	box-sizing: border-box;
 	width: 330px;
 	padding: 10px;
+	background-color: white;
+	height: 100%;
+	border-right-style: solid;
+	border-color: lightgray;
 }
 
 .main-panel {
 	display: block;
 	flex: 1;
 	z-index: 0;
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: auto;
+	min-width: 700px;
 }
 
 .test-data-viewer {
@@ -63,4 +69,8 @@ body {
 
 .test-data-chart {
 	min-height: 300px;
+}
+
+.workout-creator-chart {
+	height: 50vh;
 }
