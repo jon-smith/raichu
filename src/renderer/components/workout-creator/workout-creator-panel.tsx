@@ -141,6 +141,16 @@ const WorkoutCreatorPage = () => {
 		[currentSelectedInterval, intervals, selectedIndex, setIntervals]
 	);
 
+	const onMouseWheel = useCallback(
+		(e: React.WheelEvent) => {
+			if (selectedIndex == null) return;
+			const intensityChange = e.deltaY < 0 ? 0.01 : -0.01;
+			const newIntensity = Math.max(0.01, intervalIntensity + intensityChange).toFixed(2);
+			setIntervalIntensity(parseFloat(newIntensity));
+		},
+		[intervalIntensity, selectedIndex, setIntervalIntensity]
+	);
+
 	const addInterval = useCallback(() => {
 		if (newIntervalDuration > 0) {
 			setIntervals([
@@ -218,7 +228,7 @@ const WorkoutCreatorPage = () => {
 					</IconButton>
 				</FormGroup>
 				<Box>
-					<div className="workout-creator-chart">
+					<div className="workout-creator-chart" onWheel={onMouseWheel}>
 						<WorkoutCreatorChart
 							intervals={intervals}
 							selectedIndex={selectedIndex}
