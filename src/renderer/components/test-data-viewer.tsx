@@ -55,7 +55,7 @@ const TestDataViewer = () => {
 			y: r.best?.average ?? null
 		}));
 
-		return { name: 'best-splits', data: bestSplitsDataPoints };
+		return { name: 'hr-best-splits', data: bestSplitsDataPoints };
 	});
 
 	const maxPowerIntervalsSeries = processedDataPerFile.map(d => {
@@ -68,7 +68,20 @@ const TestDataViewer = () => {
 			y: r.best?.average ?? null
 		}));
 
-		return { name: 'best-splits', data: bestSplitsDataPoints };
+		return { name: 'power-curve', data: bestSplitsDataPoints };
+	});
+
+	const maxAverageSpeedIntervalsSeries = processedDataPerFile.map(d => {
+		const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
+
+		const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'speed', timeIntervals, 10);
+
+		const bestSplitsDataPoints = bestSplits.map(r => ({
+			x: r.distance,
+			y: r.best?.average ?? null
+		}));
+
+		return { name: 'pace-curve', data: bestSplitsDataPoints };
 	});
 
 	return (
@@ -96,6 +109,14 @@ const TestDataViewer = () => {
 				xTickValues={defaultTimeTicksForBestSplits}
 				xAxisLabel="time"
 				yAxisLabel="Power"
+			/>
+			<XYPlot
+				className="test-data-chart"
+				series={maxAverageSpeedIntervalsSeries}
+				xTickFormat={formatSecondsAsTimeWords}
+				xTickValues={defaultTimeTicksForBestSplits}
+				xAxisLabel="time"
+				yAxisLabel="Speed"
 			/>
 		</div>
 	);
