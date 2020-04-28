@@ -1,9 +1,11 @@
 import * as lodash from 'lodash';
+import { getDistance } from 'geolib';
 import {
 	fillMissingIndices,
 	bestAveragesForDistances as jsBestAveragesForDistances,
 	interpolateNullValues
 } from 'shared/activity-data/best-split-calculator';
+import { cumulative } from 'shared/utils/array-utils';
 import * as jolteon from 'jolteon';
 import { GpxData, Track, Point } from './gpxparsing';
 
@@ -14,6 +16,7 @@ const bestAveragesForDistances = useNative
 
 type ExtendedPoint = Point & {
 	secondsSinceStart: number;
+	cumulativeDistance_m: number;
 };
 
 interface ActivityData {
@@ -22,10 +25,22 @@ interface ActivityData {
 	filledPoints: { index: number; data?: ExtendedPoint }[];
 }
 
+function asGeolibCoord(p: Point) {
+	return {
+		latitude: p.lat,
+		longitude: p.lon
+	};
+}
+
 const buildExtendedPoints = (points: Point[]): ExtendedPoint[] => {
 	const earliestTime = lodash.min(points.map(p => p.time)) ?? new Date();
-	return points.map(p => ({
+	const distancesBetween = points.map((p, i) =>
+		i === 0 ? 0 : getDistance(asGeolibCoord(p), asGeolibCoord(points[i - 1]))
+	);
+	const cumulativeDistances = cumulative(distancesBetween);
+	return points.map((p, i) => ({
 		...p,
+		cumulativeDistance_m: cumulativeDistances[i],
 		secondsSinceStart: (p.time.getTime() - earliestTime.getTime()) * 0.001
 	}));
 };
