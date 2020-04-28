@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import * as ArrayUtils from '@/shared/utils/array-utils';
+import * as ArrayUtils from 'shared/utils/array-utils';
 
 import {
 	Interval,

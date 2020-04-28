@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
 
-import { FileAndGpx } from '@/renderer/components/gpx-file-drop';
+import { FileAndGpx } from 'renderer/components/gpx-file-drop';
 import { ADD_GPX_FILE, CLEAR_ACTIVITY_DATA, ActivityAction } from '../actions/activity-actions';
 
 export interface ActivityState {

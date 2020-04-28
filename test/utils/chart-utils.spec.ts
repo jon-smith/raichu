@@ -1,4 +1,4 @@
-import * as chartUtils from '@/shared/utils/chart-utils';
+import * as chartUtils from 'shared/utils/chart-utils';
 
 describe('findNiceTickInterval', () => {
 	test('10 in 100', () => {

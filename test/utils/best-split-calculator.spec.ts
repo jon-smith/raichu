@@ -2,7 +2,7 @@ import {
 	bestAveragesForDistances,
 	interpolateNullValues,
 	fillMissingIndices
-} from '@/shared/activity-data/best-split-calculator';
+} from 'shared/activity-data/best-split-calculator';
 
 import * as jolteon from 'jolteon';
 

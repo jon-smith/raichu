@@ -1,6 +1,6 @@
 import { Action } from 'redux';
-import { rootReducer } from '@/state/reducers';
-import * as Actions from '@/state/actions/workout-creator-actions';
+import { rootReducer } from 'state/reducers';
+import * as Actions from 'state/actions/workout-creator-actions';
 
 const getInitialState = () => rootReducer(undefined, {} as Action);
 

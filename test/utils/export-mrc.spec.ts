@@ -1,4 +1,4 @@
-import { buildMRCFileString } from '@/shared/activity-data/export-mrc';
+import { buildMRCFileString } from 'shared/activity-data/export-mrc';
 
 describe('MRC Export', () => {
 	it('Should match snapshot', () => {
