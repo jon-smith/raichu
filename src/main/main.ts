@@ -6,6 +6,7 @@ import * as jolteon from 'jolteon';
 let win: BrowserWindow | null;
 
 const installExtensions = async () => {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
 	const installer = require('electron-devtools-installer');
 	const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
 	const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
@@ -48,7 +49,9 @@ const createWindow = async () => {
 	if (process.env.NODE_ENV !== 'production') {
 		// Open DevTools, see https://github.com/electron/electron/issues/12438 for why we wait for dom-ready
 		win.webContents.once('dom-ready', () => {
-			win!.webContents.openDevTools();
+			if (win != null) {
+				win.webContents.openDevTools();
+			}
 		});
 	}
 

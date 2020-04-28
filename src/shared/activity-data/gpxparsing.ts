@@ -1,4 +1,5 @@
-import * as ArrayUtils from '@shared/utils/array-utils';
+/* eslint-disable @typescript-eslint/camelcase */
+import * as ArrayUtils from '@/shared/utils/array-utils';
 
 interface Metadata {
 	time: Date;

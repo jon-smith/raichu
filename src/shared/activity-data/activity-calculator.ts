@@ -3,7 +3,7 @@ import {
 	fillMissingIndices,
 	bestAveragesForDistances as jsBestAveragesForDistances,
 	interpolateNullValues
-} from '@shared/activity-data/best-split-calculator';
+} from '@/shared/activity-data/best-split-calculator';
 import * as jolteon from 'jolteon';
 import { GpxData, Track, Point } from './gpxparsing';
 

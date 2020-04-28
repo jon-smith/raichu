@@ -1,18 +1,17 @@
 import * as React from 'react';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { readFileAsText } from '@shared/utils/file-utils';
-import { GpxData, parseGPXFile } from '@shared/activity-data/gpxparsing';
+import { readFileAsText } from '@/shared/utils/file-utils';
+import { GpxData, parseGPXFile } from '@/shared/activity-data/gpxparsing';
 
 export type FileAndGpx = { file: File; gpx: GpxData };
 
 type GpxFileDropProps = {
-	loadedFiles: FileAndGpx[];
 	onAddFiles(file: FileAndGpx[]): void;
 };
 
 const GpxFileDrop = (props: GpxFileDropProps) => {
-	const { loadedFiles, onAddFiles } = props;
+	const { onAddFiles } = props;
 
 	const addFiles = useCallback(
 		(files: FileAndGpx[]) => {
@@ -37,12 +36,6 @@ const GpxFileDrop = (props: GpxFileDropProps) => {
 	);
 
 	const { getRootProps, getInputProps } = useDropzone({ onDrop });
-
-	const files = loadedFiles.map(file => (
-		<li key={file.file.name}>
-			{file.file.name} - {file.file.size} bytes
-		</li>
-	));
 
 	return (
 		<section className="file-uploader">

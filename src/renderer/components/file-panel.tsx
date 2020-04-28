@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { addGpxFiles } from '@state/actions/activityActions';
-import { useActivitySelector } from '@state/reducers';
+import { addGpxFiles } from '@/state/actions/activity-actions';
+import { useActivitySelector } from '@/state/reducers';
 import GpxFileDrop, { FileAndGpx } from './gpx-file-drop';
 import ActivitySummaryTable from './activity-summary-table';
 
@@ -10,7 +10,7 @@ const FilePanel = () => {
 	const loadedFiles = useActivitySelector(s => s.files);
 
 	const dispatch = useDispatch();
-	const addFiles = useCallback((f: FileAndGpx[]) => dispatch(addGpxFiles(f)), []);
+	const addFiles = useCallback((f: FileAndGpx[]) => dispatch(addGpxFiles(f)), [dispatch]);
 
 	const tableRows = useMemo(
 		() =>
@@ -24,7 +24,7 @@ const FilePanel = () => {
 
 	return (
 		<div className="file-panel">
-			<GpxFileDrop loadedFiles={loadedFiles} onAddFiles={addFiles} />
+			<GpxFileDrop onAddFiles={addFiles} />
 			<ActivitySummaryTable rows={tableRows} />
 		</div>
 	);

@@ -1,4 +1,19 @@
 import { useDispatch } from 'react-redux';
-import { ActivityAction } from './activityActions';
+import { useCallback } from 'react';
+import { Action } from 'redux';
+import { ActivityAction } from './activity-actions';
+import { ViewAction } from './view-actions';
+import { WorkoutCreatorAction } from './workout-creator-actions';
 
-export type RootActions = ActivityAction[keyof ActivityAction];
+export type RootActions =
+	| ActivityAction[keyof ActivityAction]
+	| ViewAction[keyof ViewAction]
+	| WorkoutCreatorAction[keyof WorkoutCreatorAction];
+
+export const useDispatchCallback = <T extends unknown, ActionT extends Action>(
+	action: (t: T) => ActionT
+) => {
+	const dispatch = useDispatch();
+	const callback = useCallback((i: T) => dispatch(action(i)), [dispatch, action]);
+	return callback;
+};
