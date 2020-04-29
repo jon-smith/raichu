@@ -32,7 +32,7 @@ export type DataSeriesT<DataPointT extends DataPoint> = {
 
 interface Props<DataPointT extends DataPoint> {
 	className?: string;
-	series: DataSeriesT<DataPointT>[];
+	series: readonly DataSeriesT<DataPointT>[];
 
 	xType?: 'log';
 	yType?: 'log';
@@ -40,8 +40,11 @@ interface Props<DataPointT extends DataPoint> {
 	xAxisLabel?: string;
 	yAxisLabel?: string;
 
-	xTickValues?: number[];
-	yTickValues?: number[];
+	xDomain?: readonly [number, number];
+	yDomain?: readonly [number, number];
+
+	xTickValues?: readonly number[];
+	yTickValues?: readonly number[];
 
 	xTickFormat?(value: number, index?: number): string | React.ReactSVGElement;
 	yTickFormat?(value: number, index?: number): string | React.ReactSVGElement;
@@ -82,19 +85,19 @@ const borderStyle = {
 };
 
 const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
-	const { series, xType, yType } = props;
+	const { series, xType, yType, xDomain, yDomain } = props;
 
 	const [zoomArea, setZoomArea] = useState<ReactVisArea | null>(null);
 
-	const xDomain = zoomArea && [zoomArea.left, zoomArea.right];
-	const yDomain = zoomArea && [zoomArea.bottom, zoomArea.top];
+	const xDomainToUse = zoomArea ? [zoomArea.left, zoomArea.right] : xDomain;
+	const yDomainToUse = zoomArea ? [zoomArea.bottom, zoomArea.top] : yDomain;
 	const seriesComponents = useMemo(() => buildSeriesComponents(series), [series]);
 
 	return (
 		<FlexibleXYPlot
 			className={props.className}
-			xDomain={xDomain}
-			yDomain={yDomain}
+			xDomain={xDomainToUse}
+			yDomain={yDomainToUse}
 			xType={xType}
 			yType={yType}
 		>

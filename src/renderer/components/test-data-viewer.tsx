@@ -7,6 +7,10 @@ import { findNiceTimeTickInterval } from 'shared/utils/chart-utils';
 import { useActivitySelector } from 'state/reducers';
 import { formatSecondsAsHHMMSS, formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
 
+function frontBack<T>(a: T[]) {
+	return [a[0], a[a.length - 1]] as const;
+}
+
 const defaultSecondTicks = [5, 30];
 
 const defaultMinuteTicks = [1, 2, 5, 10, 20, 30, 45];
@@ -19,7 +23,11 @@ const defaultTimeTicksForBestSplits = [
 	...defaultHourTicks.map(t => t * 60 * 60)
 ];
 
+const defaultTimeAxisRange = frontBack(defaultTimeTicksForBestSplits);
+
 const distancesForPaceCurve = [100, 200, 400, 800, 1000, 1600, 5000, 10000];
+
+const defaultPaceCurveXDomain = frontBack(distancesForPaceCurve);
 
 const timeTicksToDisplay = (maxSeconds: number, maxTicks: number) => {
 	const interval = findNiceTimeTickInterval(maxSeconds, maxTicks);
@@ -118,6 +126,7 @@ const TestDataViewer = () => {
 			<XYPlot
 				className="test-data-chart"
 				series={maxHRIntervalsSeries}
+				xDomain={maxHRIntervalsSeries.length === 0 ? defaultTimeAxisRange : undefined}
 				xTickFormat={formatSecondsAsTimeWords}
 				xTickValues={defaultTimeTicksForBestSplits}
 				xAxisLabel="time"
@@ -127,6 +136,7 @@ const TestDataViewer = () => {
 			<XYPlot
 				className="test-data-chart"
 				series={maxPowerIntervalsSeries}
+				xDomain={maxPowerIntervalsSeries.length === 0 ? defaultTimeAxisRange : undefined}
 				xTickFormat={formatSecondsAsTimeWords}
 				xTickValues={defaultTimeTicksForBestSplits}
 				xAxisLabel="time"
@@ -136,8 +146,11 @@ const TestDataViewer = () => {
 			<XYPlot
 				className="test-data-chart"
 				series={maxPacePerDistanceIntervalsSeries}
+				xDomain={
+					maxPacePerDistanceIntervalsSeries.length === 0 ? defaultPaceCurveXDomain : undefined
+				}
 				xTickValues={distancesForPaceCurve}
-				xTickFormat={t => String(t)}
+				xTickFormat={String}
 				xAxisLabel="distance"
 				yAxisLabel="pace"
 				xType="log"
