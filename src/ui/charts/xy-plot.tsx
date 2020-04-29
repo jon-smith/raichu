@@ -34,6 +34,9 @@ interface Props<DataPointT extends DataPoint> {
 	className?: string;
 	series: DataSeriesT<DataPointT>[];
 
+	xType?: 'log';
+	yType?: 'log';
+
 	xAxisLabel?: string;
 	yAxisLabel?: string;
 
@@ -63,7 +66,7 @@ const buildSeriesComponents = <DataPointT extends DataPoint>(series: DataSeriesT
 	}
 
 	// If we don't have any series, return a dummy one so the chart still displays
-	return <LineMarkSeries size={0} data={[{ x: 0, y: 0 }]} />;
+	return <LineMarkSeries size={0} data={[{ x: 1.0, y: 1.0 }]} />;
 };
 
 const gridStyle = { stroke: 'lightgrey' };
@@ -79,7 +82,7 @@ const borderStyle = {
 };
 
 const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
-	const { series } = props;
+	const { series, xType, yType } = props;
 
 	const [zoomArea, setZoomArea] = useState<ReactVisArea | null>(null);
 
@@ -88,7 +91,13 @@ const XYPlot = <DataPointT extends DataPoint>(props: Props<DataPointT>) => {
 	const seriesComponents = useMemo(() => buildSeriesComponents(series), [series]);
 
 	return (
-		<FlexibleXYPlot className={props.className} xDomain={xDomain} yDomain={yDomain}>
+		<FlexibleXYPlot
+			className={props.className}
+			xDomain={xDomain}
+			yDomain={yDomain}
+			xType={xType}
+			yType={yType}
+		>
 			<HorizontalGridLines style={gridStyle} />
 			<VerticalGridLines style={gridStyle} />
 			{seriesComponents}

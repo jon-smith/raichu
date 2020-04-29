@@ -122,6 +122,7 @@ const TestDataViewer = () => {
 				xTickValues={defaultTimeTicksForBestSplits}
 				xAxisLabel="time"
 				yAxisLabel="HR"
+				xType="log"
 			/>
 			<XYPlot
 				className="test-data-chart"
@@ -130,13 +131,16 @@ const TestDataViewer = () => {
 				xTickValues={defaultTimeTicksForBestSplits}
 				xAxisLabel="time"
 				yAxisLabel="Power"
+				xType="log"
 			/>
 			<XYPlot
 				className="test-data-chart"
 				series={maxPacePerDistanceIntervalsSeries}
 				xTickValues={distancesForPaceCurve}
+				xTickFormat={t => String(t)}
 				xAxisLabel="distance"
 				yAxisLabel="pace"
+				xType="log"
 			/>
 		</div>
 	);
