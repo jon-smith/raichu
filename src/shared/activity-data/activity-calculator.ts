@@ -19,7 +19,7 @@ type ExtendedPoint = Point & {
 	cumulativeDistance_m: number;
 };
 
-interface ActivityData {
+export interface ActivityData {
 	track: Track;
 	flatPoints: ExtendedPoint[];
 	filledPoints: { index: number; data?: ExtendedPoint }[];

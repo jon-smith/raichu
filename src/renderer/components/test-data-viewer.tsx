@@ -26,6 +26,57 @@ const timeTicksToDisplay = (maxSeconds: number, maxTicks: number) => {
 	return lodash.range(0, maxSeconds, interval);
 };
 
+function buildPaceCurve(d: activityCalculator.ActivityData) {
+	const bestSplits = activityCalculator.getMinTimesPerDistance(d, distancesForPaceCurve);
+
+	const bestSplitsDataPoints = bestSplits
+		.filter(r => r.best !== null)
+		.map(r => ({
+			x: r.distance,
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			y: r.distance / r.best!.time
+		}));
+
+	return { name: 'pace-curve', data: bestSplitsDataPoints };
+}
+
+function buildPowerCurve(d: activityCalculator.ActivityData) {
+	const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
+
+	const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'power', timeIntervals, 10);
+
+	const bestSplitsDataPoints = bestSplits.map(r => ({
+		x: r.distance,
+		y: r.best?.average ?? null
+	}));
+
+	return { name: 'power-curve', data: bestSplitsDataPoints };
+}
+
+function buildHRCurve(d: activityCalculator.ActivityData) {
+	const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
+
+	const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'heartrate', timeIntervals, 10);
+
+	const bestSplitsDataPoints = bestSplits.map(r => ({
+		x: r.distance,
+		y: r.best?.average ?? null
+	}));
+
+	return { name: 'hr-best-splits', data: bestSplitsDataPoints };
+}
+
+function buildTimeSeries(
+	d: activityCalculator.ActivityData,
+	v: activityCalculator.Variable,
+	name: string
+) {
+	return {
+		name,
+		data: activityCalculator.getAsTimeSeries(d, v)
+	};
+}
+
 const TestDataViewer = () => {
 	const loadedFiles = useActivitySelector(s => s.files);
 
@@ -34,11 +85,18 @@ const TestDataViewer = () => {
 		[loadedFiles]
 	);
 
-	const timeSeries = useMemo(
-		() =>
-			processedDataPerFile.map(d => {
-				return { name: '', data: activityCalculator.getAsTimeSeries(d, 'heartrate') };
-			}),
+	const {
+		timeSeries,
+		maxHRIntervalsSeries,
+		maxPowerIntervalsSeries,
+		maxPacePerDistanceIntervalsSeries
+	} = useMemo(
+		() => ({
+			timeSeries: processedDataPerFile.map(d => buildTimeSeries(d, 'heartrate', 'hr-series')),
+			maxHRIntervalsSeries: processedDataPerFile.map(buildHRCurve),
+			maxPowerIntervalsSeries: processedDataPerFile.map(buildPowerCurve),
+			maxPacePerDistanceIntervalsSeries: processedDataPerFile.map(buildPaceCurve)
+		}),
 		[processedDataPerFile]
 	);
 
@@ -46,46 +104,6 @@ const TestDataViewer = () => {
 		useMemo(() => lodash.max(timeSeries.flatMap(t => t.data.map(d => d.x))), [timeSeries]) ?? 0;
 
 	const timeTicks = timeTicksToDisplay(maxTimeSeconds, 6);
-
-	const maxHRIntervalsSeries = processedDataPerFile.map(d => {
-		const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
-
-		const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'heartrate', timeIntervals, 10);
-
-		const bestSplitsDataPoints = bestSplits.map(r => ({
-			x: r.distance,
-			y: r.best?.average ?? null
-		}));
-
-		return { name: 'hr-best-splits', data: bestSplitsDataPoints };
-	});
-
-	const maxPowerIntervalsSeries = processedDataPerFile.map(d => {
-		const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
-
-		const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'power', timeIntervals, 10);
-
-		const bestSplitsDataPoints = bestSplits.map(r => ({
-			x: r.distance,
-			y: r.best?.average ?? null
-		}));
-
-		return { name: 'power-curve', data: bestSplitsDataPoints };
-	});
-
-	const maxPacePerDistanceIntervalsSeries = processedDataPerFile.map(d => {
-		const bestSplits = activityCalculator.getMinTimesPerDistance(d, distancesForPaceCurve);
-
-		const bestSplitsDataPoints = bestSplits
-			.filter(r => r.best !== null)
-			.map(r => ({
-				x: r.distance,
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				y: r.distance / r.best!.time
-			}));
-
-		return { name: 'pace-curve', data: bestSplitsDataPoints };
-	});
 
 	return (
 		<div className="test-data-viewer">
