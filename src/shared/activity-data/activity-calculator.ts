@@ -5,7 +5,7 @@ import {
 	bestAveragesForDistances as jsBestAveragesForDistances,
 	interpolateNullValues
 } from 'shared/activity-data/best-split-calculator';
-import { cumulative } from 'shared/utils/array-utils';
+import { cumulative, sortNumeric } from 'shared/utils/array-utils';
 import * as jolteon from 'jolteon';
 import { GpxData, Track, Point } from './gpxparsing';
 
@@ -147,4 +147,37 @@ export const getBestSplitsVsTime = (
 	);
 
 	return bestAveragesForDistances(interpolatedData, timeRanges);
+};
+
+export const getMinTimesPerDistance = (data: ActivityData, distances: number[]) => {
+	const sortedDistances = sortNumeric(distances);
+	const maxDistance = sortedDistances[sortedDistances.length - 1];
+	const results = sortedDistances.map(d => ({
+		distance: d,
+		best: null as null | { time: number; startTime: number }
+	}));
+
+	for (let i = 0; i < data.flatPoints.length; ++i) {
+		const segmentStart = data.flatPoints[i];
+
+		for (let j = i; j < data.flatPoints.length; ++j) {
+			const { secondsSinceStart, cumulativeDistance_m } = data.flatPoints[j];
+			const deltaTime = secondsSinceStart - segmentStart.secondsSinceStart;
+			const deltaDistance = cumulativeDistance_m - segmentStart.cumulativeDistance_m;
+
+			for (let r = 0; r < results.length; ++r) {
+				if (deltaDistance >= results[r].distance) {
+					const currentBest = results[r].best;
+					if (currentBest == null || deltaTime < currentBest.time) {
+						results[r].best = { startTime: segmentStart.secondsSinceStart, time: deltaTime };
+					}
+				}
+			}
+
+			// Once we have exceeded the max distance, no point searching any more
+			if (deltaDistance > maxDistance) break;
+		}
+	}
+
+	return results;
 };

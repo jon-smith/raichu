@@ -19,6 +19,8 @@ const defaultTimeTicksForBestSplits = [
 	...defaultHourTicks.map(t => t * 60 * 60)
 ];
 
+const distancesForPaceCurve = [100, 200, 400, 800, 1000, 1600, 5000, 10000];
+
 const timeTicksToDisplay = (maxSeconds: number, maxTicks: number) => {
 	const interval = findNiceTimeTickInterval(maxSeconds, maxTicks);
 	return lodash.range(0, maxSeconds, interval);
@@ -71,15 +73,16 @@ const TestDataViewer = () => {
 		return { name: 'power-curve', data: bestSplitsDataPoints };
 	});
 
-	const maxAverageSpeedIntervalsSeries = processedDataPerFile.map(d => {
-		const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
+	const maxPacePerDistanceIntervalsSeries = processedDataPerFile.map(d => {
+		const bestSplits = activityCalculator.getMinTimesPerDistance(d, distancesForPaceCurve);
 
-		const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'speed', timeIntervals, 10);
-
-		const bestSplitsDataPoints = bestSplits.map(r => ({
-			x: r.distance,
-			y: r.best?.average ?? null
-		}));
+		const bestSplitsDataPoints = bestSplits
+			.filter(r => r.best !== null)
+			.map(r => ({
+				x: r.distance,
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				y: r.distance / r.best!.time
+			}));
 
 		return { name: 'pace-curve', data: bestSplitsDataPoints };
 	});
@@ -112,11 +115,10 @@ const TestDataViewer = () => {
 			/>
 			<XYPlot
 				className="test-data-chart"
-				series={maxAverageSpeedIntervalsSeries}
-				xTickFormat={formatSecondsAsTimeWords}
-				xTickValues={defaultTimeTicksForBestSplits}
-				xAxisLabel="time"
-				yAxisLabel="Speed"
+				series={maxPacePerDistanceIntervalsSeries}
+				xTickValues={distancesForPaceCurve}
+				xAxisLabel="distance"
+				yAxisLabel="pace"
 			/>
 		</div>
 	);

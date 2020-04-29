@@ -15,3 +15,7 @@ export function cumulative(input: number[]) {
 	}
 	return copy;
 }
+
+export function sortNumeric(input: number[]) {
+	return input.concat().sort((a, b) => a - b);
+}
