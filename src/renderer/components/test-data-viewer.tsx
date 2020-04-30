@@ -81,7 +81,8 @@ function buildTimeSeries(
 ) {
 	return {
 		name,
-		data: activityCalculator.getAsTimeSeries(d, v)
+		data: activityCalculator.getAsTimeSeries(d, v),
+		seriesType: 'mark' as const
 	};
 }
 

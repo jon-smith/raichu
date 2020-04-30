@@ -24,9 +24,39 @@ export type DataPoint = {
 	y: number | null;
 };
 
+type SeriesTypes = 'line' | 'mark' | 'linemark';
+
+const LineSeriesStyle = {
+	lineStyle: { fill: 'none' },
+	markStyle: { fill: 'none', stroke: 'none' }
+};
+
+const MarkSeriesStyle = {
+	lineStyle: { fill: 'none' },
+	markStyle: { fill: 'none', stroke: 'none' }
+};
+
+const LineMarkSeriesStyle = {
+	lineStyle: { fill: 'none' }
+};
+
+function getSeriesStyle(type?: SeriesTypes) {
+	switch (type) {
+		case 'line':
+			return LineSeriesStyle;
+		case 'mark':
+			return MarkSeriesStyle;
+		case 'linemark':
+			return LineMarkSeriesStyle;
+		default:
+			return LineMarkSeriesStyle;
+	}
+}
+
 export type DataSeriesT<DataPointT extends DataPoint> = {
 	name: string;
 	data: DataPointT[];
+	seriesType?: SeriesTypes;
 	color?: string;
 };
 
@@ -50,19 +80,23 @@ interface Props<DataPointT extends DataPoint> {
 	yTickFormat?(value: number, index?: number): string | React.ReactSVGElement;
 }
 
-const buildSeriesComponents = <DataPointT extends DataPoint>(series: DataSeriesT<DataPointT>[]) => {
+const buildSeriesComponents = <DataPointT extends DataPoint>(
+	series: readonly DataSeriesT<DataPointT>[]
+) => {
 	const seriesComponents = series
 		.filter(s => s.data.length > 0)
-		.map((s, i) => (
-			<LineMarkSeries
-				key={i}
-				size={2}
-				data={s.data}
-				color={s.color}
-				lineStyle={{ fill: 'none' }}
-				getNull={(p: DataPoint) => p.y !== null}
-			/>
-		));
+		.map((s, i) => {
+			return (
+				<LineMarkSeries
+					key={i}
+					size={2}
+					data={s.data}
+					color={s.color}
+					getNull={(p: DataPoint) => p.y !== null}
+					{...getSeriesStyle(s.seriesType)}
+				/>
+			);
+		});
 
 	if (seriesComponents.length > 0) {
 		return seriesComponents;
