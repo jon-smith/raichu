@@ -1,14 +1,10 @@
-import { Reducer } from 'redux';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'shared/utils/array-utils';
 
-import {
-	Interval,
-	SET_INTERVALS,
-	SET_SELECTED,
-	UNDO,
-	REDO,
-	WorkoutCreatorAction
-} from './workout-creator-actions';
+export type Interval = {
+	intensity: number;
+	length: number;
+};
 
 export interface WorkoutCreatorState {
 	readonly currentIntervals: readonly Interval[];
@@ -40,25 +36,24 @@ const defaultState: WorkoutCreatorState = {
 	selectedIndex: null
 };
 
-export const workoutCreatorReducer: Reducer<WorkoutCreatorState> = (
-	state = defaultState,
-	action: WorkoutCreatorAction
-) => {
-	switch (action.type) {
-		case SET_INTERVALS: {
-			if (ArrayUtils.areEqual(action.intervals, state.currentIntervals, areEqual)) return state;
+const workoutCreatorSlice = createSlice({
+	name: 'workoutCreator',
+	initialState: defaultState,
+	reducers: {
+		setIntervals(state, action: PayloadAction<Interval[]>) {
+			if (ArrayUtils.areEqual(action.payload, state.currentIntervals, areEqual)) return state;
 			const newHistory = [
 				...state.history.slice(0, state.currentHistoryPosition + 1),
-				action.intervals
+				action.payload
 			];
 			return {
 				...state,
 				history: newHistory,
 				currentHistoryPosition: newHistory.length - 1,
-				currentIntervals: action.intervals
+				currentIntervals: action.payload
 			};
-		}
-		case UNDO:
+		},
+		undo(state) {
 			return state.currentHistoryPosition <= 0
 				? state
 				: {
@@ -66,7 +61,8 @@ export const workoutCreatorReducer: Reducer<WorkoutCreatorState> = (
 						currentHistoryPosition: state.currentHistoryPosition - 1,
 						currentIntervals: state.history[state.currentHistoryPosition - 1]
 				  };
-		case REDO:
+		},
+		redo(state) {
 			return state.currentHistoryPosition >= state.history.length - 1
 				? state
 				: {
@@ -74,15 +70,19 @@ export const workoutCreatorReducer: Reducer<WorkoutCreatorState> = (
 						currentHistoryPosition: state.currentHistoryPosition + 1,
 						currentIntervals: state.history[state.currentHistoryPosition + 1]
 				  };
-		case SET_SELECTED:
+		},
+		setSelectedIndex(state, action: PayloadAction<number | null>) {
 			return {
 				...state,
-				selectedIndex: action.index
+				selectedIndex: action.payload
 			};
-		default:
-			return state;
+		}
 	}
-};
+});
+
+export const { reducer, actions } = workoutCreatorSlice;
+
+export const { setIntervals, undo, redo, setSelectedIndex } = actions;
 
 export const canUndo = (state: WorkoutCreatorState) => state.currentHistoryPosition > 0;
 

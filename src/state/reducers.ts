@@ -4,21 +4,17 @@ import { useSelector } from 'react-redux';
 import { ActivityState, activityReducer } from './activity-data/activity-reducer';
 import { ViewState, viewReducer } from './view/view-reducer';
 import {
-	workoutCreatorReducer,
+	reducer as workoutCreatorReducer,
 	WorkoutCreatorState
-} from './workout-creator/workout-creator-reducer';
+} from './workout-creator/workout-creator-slice';
 
-export interface RootState {
-	activities: ActivityState;
-	view: ViewState;
-	workoutCreator: WorkoutCreatorState;
-}
-
-export const rootReducer = combineReducers<RootState | undefined>({
+export const rootReducer = combineReducers({
 	activities: activityReducer,
 	view: viewReducer,
 	workoutCreator: workoutCreatorReducer
 });
+
+export type RootState = ReturnType<typeof rootReducer>;
 
 export const useRootSelector = <T extends {}>(selector: (s: RootState) => T) =>
 	useSelector<RootState, T>(s => selector(s));
