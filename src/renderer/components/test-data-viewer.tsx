@@ -109,13 +109,11 @@ function calcYDomain(series: readonly DataSeriesT[]) {
 	return [yRange[0] - margin, yRange[1] + margin] as const;
 }
 
-type BestSplitPlotProps = {
-	series: readonly DataSeriesT[];
+type BestSplitPlotProps = Pick<
+	React.ComponentProps<typeof XYPlot>,
+	'xAxisLabel' | 'yAxisLabel' | 'xTickValues' | 'xTickFormat' | 'series'
+> & {
 	defaultXDomain: readonly [number, number];
-	xAxisLabel: string;
-	yAxisLabel: string;
-	xTickValues: number[];
-	xTickFormat: (n: number) => string;
 };
 
 const BestSplitPlot = (props: BestSplitPlotProps) => {
