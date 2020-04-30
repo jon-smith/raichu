@@ -41,41 +41,30 @@ const workoutCreatorSlice = createSlice({
 	initialState: defaultState,
 	reducers: {
 		setIntervals(state, action: PayloadAction<Interval[]>) {
-			if (ArrayUtils.areEqual(action.payload, state.currentIntervals, areEqual)) return state;
-			const newHistory = [
-				...state.history.slice(0, state.currentHistoryPosition + 1),
-				action.payload
-			];
-			return {
-				...state,
-				history: newHistory,
-				currentHistoryPosition: newHistory.length - 1,
-				currentIntervals: action.payload
-			};
+			if (!ArrayUtils.areEqual(action.payload, state.currentIntervals, areEqual)) {
+				const newHistory = [
+					...state.history.slice(0, state.currentHistoryPosition + 1),
+					action.payload
+				];
+				state.history = newHistory;
+				state.currentHistoryPosition = newHistory.length - 1;
+				state.currentIntervals = action.payload;
+			}
 		},
 		undo(state) {
-			return state.currentHistoryPosition <= 0
-				? state
-				: {
-						...state,
-						currentHistoryPosition: state.currentHistoryPosition - 1,
-						currentIntervals: state.history[state.currentHistoryPosition - 1]
-				  };
+			if (state.currentHistoryPosition > 0) {
+				state.currentIntervals = state.history[state.currentHistoryPosition - 1];
+				state.currentHistoryPosition -= 1;
+			}
 		},
 		redo(state) {
-			return state.currentHistoryPosition >= state.history.length - 1
-				? state
-				: {
-						...state,
-						currentHistoryPosition: state.currentHistoryPosition + 1,
-						currentIntervals: state.history[state.currentHistoryPosition + 1]
-				  };
+			if (state.currentHistoryPosition < state.history.length - 1) {
+				state.currentIntervals = state.history[state.currentHistoryPosition + 1];
+				state.currentHistoryPosition += 1;
+			}
 		},
 		setSelectedIndex(state, action: PayloadAction<number | null>) {
-			return {
-				...state,
-				selectedIndex: action.payload
-			};
+			state.selectedIndex = action.payload;
 		}
 	}
 });
