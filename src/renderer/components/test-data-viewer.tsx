@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import * as lodash from 'lodash';
-import XYPlot from 'ui/charts/xy-plot';
+import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
 import * as activityCalculator from 'shared/activity-data/activity-calculator';
 import { findNiceTimeTickInterval } from 'shared/utils/chart-utils';
 import { useActivitySelector } from 'state/reducers';
@@ -78,13 +78,62 @@ function buildTimeSeries(
 	d: activityCalculator.ActivityData,
 	v: activityCalculator.Variable,
 	name: string
-) {
+): DataSeriesT {
 	return {
 		name,
 		data: activityCalculator.getAsTimeSeries(d, v),
-		seriesType: 'mark' as const
+		seriesType: 'mark'
 	};
 }
+
+function calcYDomain(series: readonly DataSeriesT[]) {
+	let yRange = null as [number, number] | null;
+	series.forEach(s =>
+		s.data.forEach(d => {
+			if (d.y !== null) {
+				if (yRange == null) yRange = [d.y, d.y];
+				else {
+					if (d.y < yRange[0]) yRange[0] = d.y;
+					if (d.y > yRange[1]) yRange[1] = d.y;
+				}
+			}
+		})
+	);
+
+	if (yRange == null) return undefined;
+
+	const difference = yRange[1] - yRange[0];
+
+	const margin = difference === 0 ? yRange[0] * 0.1 : difference * 0.1;
+
+	return [yRange[0] - margin, yRange[1] + margin] as const;
+}
+
+type BestSplitPlotProps = {
+	series: readonly DataSeriesT[];
+	defaultXDomain: readonly [number, number];
+	xAxisLabel: string;
+	yAxisLabel: string;
+	xTickValues: number[];
+	xTickFormat: (n: number) => string;
+};
+
+const BestSplitPlot = (props: BestSplitPlotProps) => {
+	const { series, defaultXDomain, ...plotProps } = props;
+
+	const yDomain = useMemo(() => calcYDomain(series), [series]);
+
+	return (
+		<XYPlot
+			className="test-data-chart"
+			series={series}
+			xDomain={series.length === 0 ? defaultXDomain : undefined}
+			yDomain={yDomain}
+			xType="log"
+			{...plotProps}
+		/>
+	);
+};
 
 const TestDataViewer = () => {
 	const loadedFiles = useActivitySelector(s => s.files);
@@ -124,37 +173,29 @@ const TestDataViewer = () => {
 				xAxisLabel="time"
 				yAxisLabel="HR"
 			/>
-			<XYPlot
-				className="test-data-chart"
+			<BestSplitPlot
 				series={maxHRIntervalsSeries}
-				xDomain={maxHRIntervalsSeries.length === 0 ? defaultTimeAxisRange : undefined}
-				xTickFormat={formatSecondsAsTimeWords}
-				xTickValues={defaultTimeTicksForBestSplits}
+				defaultXDomain={defaultTimeAxisRange}
 				xAxisLabel="time"
 				yAxisLabel="HR"
-				xType="log"
-			/>
-			<XYPlot
-				className="test-data-chart"
-				series={maxPowerIntervalsSeries}
-				xDomain={maxPowerIntervalsSeries.length === 0 ? defaultTimeAxisRange : undefined}
 				xTickFormat={formatSecondsAsTimeWords}
 				xTickValues={defaultTimeTicksForBestSplits}
+			/>
+			<BestSplitPlot
+				series={maxPowerIntervalsSeries}
+				defaultXDomain={defaultTimeAxisRange}
 				xAxisLabel="time"
 				yAxisLabel="Power"
-				xType="log"
+				xTickFormat={formatSecondsAsTimeWords}
+				xTickValues={defaultTimeTicksForBestSplits}
 			/>
-			<XYPlot
-				className="test-data-chart"
+			<BestSplitPlot
 				series={maxPacePerDistanceIntervalsSeries}
-				xDomain={
-					maxPacePerDistanceIntervalsSeries.length === 0 ? defaultPaceCurveXDomain : undefined
-				}
-				xTickValues={distancesForPaceCurve}
-				xTickFormat={String}
+				defaultXDomain={defaultPaceCurveXDomain}
 				xAxisLabel="distance"
 				yAxisLabel="pace"
-				xType="log"
+				xTickValues={distancesForPaceCurve}
+				xTickFormat={String}
 			/>
 		</div>
 	);

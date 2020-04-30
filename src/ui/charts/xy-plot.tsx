@@ -53,7 +53,7 @@ function getSeriesStyle(type?: SeriesTypes) {
 	}
 }
 
-export type DataSeriesT<DataPointT extends DataPoint> = {
+export type DataSeriesT<DataPointT extends DataPoint = DataPoint> = {
 	name: string;
 	data: DataPointT[];
 	seriesType?: SeriesTypes;
