@@ -5,8 +5,8 @@ import * as lodash from 'lodash';
 import { withResizeDetector } from 'react-resize-detector';
 import { findNiceTimeTickInterval } from 'shared/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
-import { Interval } from 'state/actions/workout-creator-actions';
-import { IntervalWithColor } from 'state/reducers/workout-creator-reducer';
+import { Interval } from 'state/workout-creator/workout-creator-actions';
+import { IntervalWithColor } from 'state/workout-creator/workout-creator-reducer';
 
 type IntervalChartItem = IntervalWithColor & { startTime: number };
 

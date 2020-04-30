@@ -8,7 +8,7 @@ import {
 	UNDO,
 	REDO,
 	WorkoutCreatorAction
-} from '../actions/workout-creator-actions';
+} from './workout-creator-actions';
 
 export interface WorkoutCreatorState {
 	readonly currentIntervals: readonly Interval[];

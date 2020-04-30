@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
-import configureStore from 'state/store';
+import configureStore from 'state/configureStore';
 import Application from './components/application';
 
 import 'rc-time-picker/assets/index.css';

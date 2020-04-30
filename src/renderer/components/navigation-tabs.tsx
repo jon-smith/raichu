@@ -5,7 +5,7 @@ import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { useViewSelector } from 'state/reducers';
-import * as ViewActions from 'state/actions/view-actions';
+import * as ViewActions from 'state/view/view-actions';
 
 const StyledTabs = withStyles((theme: Theme) => ({
 	root: {

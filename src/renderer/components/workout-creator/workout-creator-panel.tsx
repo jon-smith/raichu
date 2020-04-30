@@ -19,15 +19,14 @@ import TimePicker from 'rc-time-picker';
 
 import { useWorkoutCreatorSelector } from 'state/reducers';
 import { useDispatchCallback } from 'state/actions';
-import * as WorkoutCreatorActions from 'state/actions/workout-creator-actions';
+import * as WorkoutCreatorActions from 'state/workout-creator/workout-creator-actions';
+import { Interval } from 'state/workout-creator/workout-creator-actions';
 import {
 	canUndo,
 	canRedo,
 	selectedInterval,
 	intervalsWithColor
-} from 'state/reducers/workout-creator-reducer';
-import { Interval } from 'state/actions/workout-creator-actions';
-
+} from 'state/workout-creator/workout-creator-reducer';
 import { buildMRCFileString } from 'shared/activity-data/export-mrc';
 
 import WorkoutCreatorChart from './workout-creator-chart';
