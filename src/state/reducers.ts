@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 
 import { ActivityState, reducer as activityReducer } from './activity-data/activity-data-slice';

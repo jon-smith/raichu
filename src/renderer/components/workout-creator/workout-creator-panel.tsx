@@ -6,7 +6,7 @@ import { batchActions } from 'redux-batched-actions';
 import Box from '@material-ui/core/Box';
 
 import { useWorkoutCreatorSelector } from 'state/reducers';
-import { useDispatchCallback } from 'state/actions';
+import { useDispatchCallback } from 'state/dispatch-hooks';
 import {
 	Interval,
 	selectedOrNewInterval,

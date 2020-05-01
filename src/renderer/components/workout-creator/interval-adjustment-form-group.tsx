@@ -1,12 +1,9 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { batchActions } from 'redux-batched-actions';
 
 import { remote } from 'electron';
 import * as fs from 'fs';
 
-import Box from '@material-ui/core/Box';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
@@ -18,7 +15,7 @@ import * as moment from 'moment';
 import TimePicker from 'rc-time-picker';
 
 import { useWorkoutCreatorSelector } from 'state/reducers';
-import { useDispatchCallback } from 'state/actions';
+import { useDispatchCallback } from 'state/dispatch-hooks';
 import {
 	Interval,
 	canUndo,
@@ -125,10 +122,10 @@ const IntervalAdjustmentFormGroup = () => {
 			<IconButton aria-label="save to MRC" onClick={saveToMRC}>
 				<Save />
 			</IconButton>
-			<IconButton aria-label="undo" disabled={!undoEnabled} onClick={undo}>
+			<IconButton aria-label="undo" disabled={!undoEnabled} onClick={() => undo()}>
 				<Undo />
 			</IconButton>
-			<IconButton aria-label="redo" disabled={!redoEnabled} onClick={redo}>
+			<IconButton aria-label="redo" disabled={!redoEnabled} onClick={() => redo()}>
 				<Redo />
 			</IconButton>
 			<FormControlLabel

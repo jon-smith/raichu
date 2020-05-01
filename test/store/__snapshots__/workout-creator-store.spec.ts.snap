@@ -129,6 +129,7 @@ Object {
       "length": 300,
     },
   ],
+  "ftp": 200,
   "history": Array [
     Array [
       Object {
@@ -257,6 +258,10 @@ Object {
       },
     ],
   ],
+  "newInterval": Object {
+    "intensity": 1,
+    "length": 0,
+  },
   "selectedIndex": null,
 }
 `;
