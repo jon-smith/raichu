@@ -16,14 +16,15 @@ export const rootReducer = combineReducers({
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-export const useRootSelector = <T extends {}>(selector: (s: RootState) => T) =>
+export const useRootSelector = <T extends unknown>(selector: (s: RootState) => T) =>
 	useSelector<RootState, T>(s => selector(s));
 
-export const useActivitySelector = <T extends {}>(selector: (s: ActivityState) => T) =>
+export const useActivitySelector = <T extends unknown>(selector: (s: ActivityState) => T) =>
 	useSelector<RootState, T>(s => selector(s.activities));
 
-export const useViewSelector = <T extends {}>(selector: (s: ViewState) => T) =>
+export const useViewSelector = <T extends unknown>(selector: (s: ViewState) => T) =>
 	useSelector<RootState, T>(s => selector(s.view));
 
-export const useWorkoutCreatorSelector = <T extends {}>(selector: (s: WorkoutCreatorState) => T) =>
-	useSelector<RootState, T>(s => selector(s.workoutCreator));
+export const useWorkoutCreatorSelector = <T extends unknown>(
+	selector: (s: WorkoutCreatorState) => T
+) => useSelector<RootState, T>(s => selector(s.workoutCreator));

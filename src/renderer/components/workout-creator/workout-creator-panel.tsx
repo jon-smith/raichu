@@ -15,6 +15,7 @@ import {
 } from 'state/workout-creator/workout-creator-slice';
 
 import WorkoutCreatorChart from './workout-creator-chart';
+import ActivityLoader from './activity-loader';
 import IntervalAdjustmentFormGroup from './interval-adjustment-form-group';
 
 const useActions = () => {
@@ -69,6 +70,7 @@ const WorkoutCreatorPage = () => {
 	return (
 		<div className="workout-creator-panel">
 			<Box display="flex" flexDirection="column">
+				<ActivityLoader />
 				<IntervalAdjustmentFormGroup />
 				<Box>
 					<div className="workout-creator-chart" onWheel={onMouseWheel}>

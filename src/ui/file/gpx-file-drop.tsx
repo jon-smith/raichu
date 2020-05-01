@@ -42,11 +42,15 @@ const GpxFileDrop = (props: GpxFileDropProps) => {
 		multiple: allowMultiple
 	});
 
+	const text = `Drop ${
+		allowMultiple ? 'GPX files' : 'a GPX file'
+	} here, or click to use the file browser`;
+
 	return (
 		<section className="file-uploader">
 			<div {...getRootProps({ className: 'dropzone' })}>
 				<input {...getInputProps()} />
-				<p>Drag and drop GPX files here, or click to use the file browser</p>
+				<p>{text}</p>
 			</div>
 		</section>
 	);

@@ -1,16 +1,15 @@
 import * as React from 'react';
-import { useCallback, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useMemo } from 'react';
+import { useDispatchCallback } from 'state/dispatch-hooks';
 import { addGpxFiles } from 'state/activity-data/activity-data-slice';
 import { useActivitySelector } from 'state/reducers';
-import GpxFileDrop, { FileAndGpx } from 'ui/file/gpx-file-drop';
+import GpxFileDrop from 'ui/file/gpx-file-drop';
 import ActivitySummaryTable from './activity-summary-table';
 
 const FilePanel = () => {
 	const loadedFiles = useActivitySelector(s => s.files);
 
-	const dispatch = useDispatch();
-	const addFiles = useCallback((f: FileAndGpx[]) => dispatch(addGpxFiles(f)), [dispatch]);
+	const addFiles = useDispatchCallback(addGpxFiles);
 
 	const tableRows = useMemo(
 		() =>

@@ -106,6 +106,9 @@ const workoutCreatorSlice = createSlice({
 		},
 		setActivity(state, action: PayloadAction<GpxData>) {
 			state.activity = action.payload;
+		},
+		clearActivity(state) {
+			state.activity = undefined;
 		}
 	}
 });
@@ -120,7 +123,8 @@ export const {
 	setSelectedIntensity,
 	setSelectedLength,
 	setFTP,
-	setActivity
+	setActivity,
+	clearActivity
 } = actions;
 
 export const canUndo = (state: WorkoutCreatorState) => state.currentHistoryPosition > 0;
