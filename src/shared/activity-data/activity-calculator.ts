@@ -72,11 +72,64 @@ export const fromGPXData = (gpx: GpxData): ActivityData => {
 
 export type Variable = 'heartrate' | 'power' | 'time';
 
-export const getAsTimeSeries = (data: ActivityData, y: Variable) =>
-	data.flatPoints.map(p => ({ x: p.secondsSinceStart, y: getVar(p, y) }));
+export function getAsTimeSeries(data: ActivityData, y: Variable, filledPoints = false) {
+	if (filledPoints) {
+		return data.filledPoints.map(p => ({ x: p.index, y: p.data ? getVar(p.data, y) : null }));
+	}
+	return data.flatPoints.map(p => ({ x: p.secondsSinceStart, y: getVar(p, y) }));
+}
 
-export const extractData = (data: ActivityData, v: Variable) =>
-	data.flatPoints.map(p => getVar(p, v));
+export function extractData(data: ActivityData, v: Variable, filledPoints = false) {
+	if (filledPoints) {
+		return data.filledPoints.map(p => (p.data ? getVar(p.data, v) : null));
+	}
+	return data.flatPoints.map(p => getVar(p, v));
+}
+
+type TimeSeriesProcessingOptions = {
+	interpolateNull: boolean;
+	maxGapForInterpolation: number;
+	resolution: number;
+};
+
+export function getProcessedTimeSeries(
+	data: ActivityData,
+	variable: Variable,
+	options: TimeSeriesProcessingOptions
+) {
+	const rawTimeSeries = getAsTimeSeries(data, variable, true);
+	const rawValues = rawTimeSeries.map(v => v.y);
+	const interpolatedValues = options.interpolateNull
+		? interpolateNullValues(rawValues, options.maxGapForInterpolation)
+		: rawValues;
+
+	const interpolatedTimeSeries = interpolatedValues.map((v, i) => ({
+		x: rawTimeSeries[i].x,
+		y: v
+	}));
+	if (options.resolution <= 1) {
+		return interpolatedTimeSeries;
+	}
+
+	type ResultT = typeof interpolatedTimeSeries;
+
+	const result: ResultT = [];
+
+	for (let i = 0; i < interpolatedTimeSeries.length; i += options.resolution) {
+		let sum = null as null | number;
+		const count = Math.min(options.resolution, interpolatedTimeSeries.length - i);
+		for (let j = 0; j < count; ++j) {
+			const value = interpolatedTimeSeries[i + j].y;
+			if (value != null) {
+				sum = value + (sum ?? 0);
+			}
+		}
+		const average = sum === null ? null : sum / count;
+		result.push({ x: interpolatedTimeSeries[i].x, y: average });
+	}
+
+	return result;
+}
 
 export type BestSplitOption = 'heartrate' | 'power' | 'time' | 'speed';
 

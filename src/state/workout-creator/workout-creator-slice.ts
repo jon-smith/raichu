@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'shared/utils/array-utils';
 import { GpxData } from 'shared/activity-data/gpxparsing';
-import { fromGPXData } from 'shared/activity-data/activity-calculator';
+import { fromGPXData, getProcessedTimeSeries } from 'shared/activity-data/activity-calculator';
 
 export type Interval = {
 	intensity: number;
@@ -159,4 +159,15 @@ export const getActivityPowerPerSecond = (state: WorkoutCreatorState) => {
 	const activityData = fromGPXData(state.activity);
 
 	return activityData.filledPoints.map(p => p.data?.power ?? null);
+};
+
+export const getActivityProcessedPowerTimeSeries = (state: WorkoutCreatorState) => {
+	if (!state.activity) return [];
+
+	const activityData = fromGPXData(state.activity);
+	return getProcessedTimeSeries(activityData, 'power', {
+		maxGapForInterpolation: 3,
+		interpolateNull: true,
+		resolution: 10
+	});
 };

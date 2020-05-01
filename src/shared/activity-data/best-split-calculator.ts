@@ -55,11 +55,13 @@ const buildLinearInterpolator = (
 };
 
 export const interpolateNullValues = (
-	dataPoints: (number | null)[],
+	dataPoints: readonly (number | null)[],
 	maxGap: number
 ): (number | null)[] => {
 	// Copy the input
 	const result = [...dataPoints];
+
+	if (maxGap === 0) return result;
 
 	let lastNonNullIndex: number | null = null;
 	for (let i = 0; i < result.length; ++i) {

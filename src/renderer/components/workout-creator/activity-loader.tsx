@@ -15,14 +15,14 @@ import { useDispatchCallback } from 'state/dispatch-hooks';
 import {
 	setActivity,
 	clearActivity,
-	getActivityPowerPerSecond
+	getActivityProcessedPowerTimeSeries
 } from 'state/workout-creator/workout-creator-slice';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 
 const ActivityLoader = () => {
 	const { loadedActivity, powerData } = useWorkoutCreatorSelector(s => ({
 		loadedActivity: s.activity,
-		powerData: getActivityPowerPerSecond(s)
+		powerData: getActivityProcessedPowerTimeSeries(s)
 	}));
 
 	const setActivityDispatcher = useDispatchCallback(setActivity);
@@ -42,12 +42,16 @@ const ActivityLoader = () => {
 		(): DataSeriesT[] => [
 			{
 				name: 'power-vs-time',
-				data: powerData.map((p, i) => ({ x: i, y: p })),
+				data: powerData,
 				seriesType: 'line'
 			}
 		],
 		[powerData]
 	);
+
+	const maxX = useMemo(() => (powerData.length > 0 ? powerData[powerData.length - 1].x : 3600), [
+		powerData
+	]);
 
 	return (
 		<>
@@ -68,7 +72,7 @@ const ActivityLoader = () => {
 					className="test-data-chart"
 					series={powerDataSeries}
 					xTickFormat={formatSecondsAsHHMMSS}
-					xTickValues={buildNiceTimeTicksToDisplay(powerData.length, 5)}
+					xTickValues={buildNiceTimeTicksToDisplay(maxX, 5)}
 					xAxisLabel="time"
 					yAxisLabel="Power"
 				/>
