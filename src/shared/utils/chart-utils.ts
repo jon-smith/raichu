@@ -1,3 +1,5 @@
+import * as lodash from 'lodash';
+
 const defaultSecondTicks = [1, 5, 10, 30];
 
 const defaultMinuteTicks = [1, 2, 5, 10, 20, 30, 45];
@@ -31,4 +33,9 @@ export const findNiceTimeTickInterval = (maxValue: number, maxTicks: number) => 
 		if (nTicks <= maxTicks) return t;
 	}
 	return targetInterval;
+};
+
+export const buildNiceTimeTicksToDisplay = (maxSeconds: number, maxTicks: number) => {
+	const interval = findNiceTimeTickInterval(maxSeconds, maxTicks);
+	return lodash.range(0, maxSeconds, interval);
 };

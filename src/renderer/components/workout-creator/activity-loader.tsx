@@ -5,7 +5,11 @@ import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import { Close } from '@material-ui/icons';
 
+import XYPlot from 'ui/charts/xy-plot';
 import GpxFileDrop, { FileAndGpx } from 'ui/file/gpx-file-drop';
+
+import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
+import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 
 import { useDispatchCallback } from 'state/dispatch-hooks';
 import { setActivity, clearActivity } from 'state/workout-creator/workout-creator-slice';
@@ -28,18 +32,30 @@ const ActivityLoader = () => {
 	);
 
 	return (
-		<Box display="flex" flexDirection="row" alignItems="center" margin="10px" minHeight="2em">
-			{loadedActivity ? (
-				<>
-					<span>{`Loaded activity: ${loadedActivity.track.name}`}</span>
-					<IconButton aria-label="close file" onClick={() => clearActivitityDispatcher()}>
-						<Close />
-					</IconButton>
-				</>
-			) : (
-				<GpxFileDrop onAddFiles={addFiles} allowMultiple={false} />
-			)}
-		</Box>
+		<>
+			<Box display="flex" flexDirection="row" alignItems="center" margin="10px" minHeight="2em">
+				{loadedActivity ? (
+					<>
+						<span>{`Loaded activity: ${loadedActivity.track.name}`}</span>
+						<IconButton aria-label="close file" onClick={() => clearActivitityDispatcher()}>
+							<Close />
+						</IconButton>
+					</>
+				) : (
+					<GpxFileDrop onAddFiles={addFiles} allowMultiple={false} />
+				)}
+			</Box>
+			<Box>
+				<XYPlot
+					className="test-data-chart"
+					series={[]}
+					xTickFormat={formatSecondsAsHHMMSS}
+					xTickValues={buildNiceTimeTicksToDisplay(3600, 5)}
+					xAxisLabel="time"
+					yAxisLabel="Power"
+				/>
+			</Box>
+		</>
 	);
 };
 

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import * as lodash from 'lodash';
 import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
 import * as activityCalculator from 'shared/activity-data/activity-calculator';
-import { findNiceTimeTickInterval } from 'shared/utils/chart-utils';
+import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 import { useActivitySelector } from 'state/reducers';
 import { formatSecondsAsHHMMSS, formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
 
@@ -28,11 +28,6 @@ const defaultTimeAxisRange = frontBack(defaultTimeTicksForBestSplits);
 const distancesForPaceCurve = [100, 200, 400, 800, 1000, 1600, 5000, 10000];
 
 const defaultPaceCurveXDomain = frontBack(distancesForPaceCurve);
-
-const timeTicksToDisplay = (maxSeconds: number, maxTicks: number) => {
-	const interval = findNiceTimeTickInterval(maxSeconds, maxTicks);
-	return lodash.range(0, maxSeconds, interval);
-};
 
 function buildPaceCurve(d: activityCalculator.ActivityData) {
 	const bestSplits = activityCalculator.getMinTimesPerDistance(d, distancesForPaceCurve);
@@ -159,7 +154,7 @@ const TestDataViewer = () => {
 	const maxTimeSeconds =
 		useMemo(() => lodash.max(timeSeries.flatMap(t => t.data.map(d => d.x))), [timeSeries]) ?? 0;
 
-	const timeTicks = timeTicksToDisplay(maxTimeSeconds, 6);
+	const timeTicks = buildNiceTimeTicksToDisplay(maxTimeSeconds, 6);
 
 	return (
 		<div className="test-data-viewer">
