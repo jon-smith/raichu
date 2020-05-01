@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { batchActions } from 'redux-batched-actions';
 
@@ -23,7 +23,7 @@ import {
 	Interval,
 	canUndo,
 	canRedo,
-	selectedInterval,
+	selectedOrNewInterval,
 	intervalsWithColor,
 	actions as WorkoutCreatorActions
 } from 'state/workout-creator/workout-creator-slice';
@@ -47,6 +47,8 @@ const useActions = () => {
 	const setIntervals = useDispatchCallback(WorkoutCreatorActions.setIntervals);
 	const undo = useDispatchCallback(WorkoutCreatorActions.undo);
 	const redo = useDispatchCallback(WorkoutCreatorActions.redo);
+	const setSelectedIntensity = useDispatchCallback(WorkoutCreatorActions.setSelectedIntensity);
+	const setSelectedLength = useDispatchCallback(WorkoutCreatorActions.setSelectedLength);
 
 	const dispatch = useDispatch();
 	const onChange = useCallback(
@@ -66,7 +68,9 @@ const useActions = () => {
 		setIntervals,
 		undo,
 		redo,
-		onChange
+		onChange,
+		setSelectedIntensity,
+		setSelectedLength
 	};
 };
 
@@ -94,75 +98,54 @@ const WorkoutCreatorPage = () => {
 		selectedIndex,
 		currentSelectedInterval,
 		undoEnabled,
-		redoEnabled
+		redoEnabled,
+		newInterval
 	} = useWorkoutCreatorSelector(w => ({
 		intervals: intervalsWithColor(w),
 		selectedIndex: w.selectedIndex,
-		currentSelectedInterval: selectedInterval(w),
 		undoEnabled: canUndo(w),
-		redoEnabled: canRedo(w)
+		redoEnabled: canRedo(w),
+		newInterval: w.newInterval,
+		currentSelectedInterval: selectedOrNewInterval(w)
 	}));
 
-	const { setIntervals, undo, redo, onChange } = useActions();
+	const {
+		setIntervals,
+		undo,
+		redo,
+		onChange,
+		setSelectedIntensity,
+		setSelectedLength
+	} = useActions();
 
 	const saveToMRC = useCallback(() => loadFileDialog(intervals), [intervals]);
 
-	const [newIntervalDuration, setNewIntervalDuration] = useState(0);
-	const [newIntervalIntensity, setNewIntervalIntensity] = useState(1);
-
-	const intervalDuration = currentSelectedInterval?.length ?? newIntervalDuration;
 	const setIntervalDuration = useCallback(
 		(m: moment.Moment | null) => {
 			const seconds = m?.unix() ?? 0;
-			if (currentSelectedInterval === null) {
-				setNewIntervalDuration(seconds);
-			} else if (selectedIndex !== null) {
-				const updatedIntervals = intervals.slice();
-				updatedIntervals[selectedIndex] = {
-					...updatedIntervals[selectedIndex],
-					length: seconds
-				};
-				setIntervals(updatedIntervals);
-			}
+			setSelectedLength(seconds);
 		},
-		[currentSelectedInterval, intervals, selectedIndex, setIntervals]
-	);
-
-	const intervalIntensity = currentSelectedInterval?.intensity ?? newIntervalIntensity;
-	const setIntervalIntensity = useCallback(
-		(i: number) => {
-			if (currentSelectedInterval === null) {
-				setNewIntervalIntensity(i);
-			} else if (selectedIndex !== null) {
-				const updatedIntervals = intervals.slice();
-				updatedIntervals[selectedIndex] = {
-					...updatedIntervals[selectedIndex],
-					intensity: i
-				};
-				setIntervals(updatedIntervals);
-			}
-		},
-		[currentSelectedInterval, intervals, selectedIndex, setIntervals]
+		[setSelectedLength]
 	);
 
 	const onMouseWheel = useCallback(
 		(e: React.WheelEvent) => {
 			if (selectedIndex == null) return;
 			const intensityChange = e.deltaY < 0 ? 0.01 : -0.01;
-			const newIntensity = Math.max(0.01, intervalIntensity + intensityChange).toFixed(2);
-			setIntervalIntensity(parseFloat(newIntensity));
+			const newIntensity = Math.max(
+				0.01,
+				currentSelectedInterval.intensity + intensityChange
+			).toFixed(2);
+			setSelectedIntensity(parseFloat(newIntensity));
 		},
-		[intervalIntensity, selectedIndex, setIntervalIntensity]
+		[currentSelectedInterval, selectedIndex, setSelectedIntensity]
 	);
 
 	const addInterval = useCallback(() => {
-		if (newIntervalDuration > 0) {
-			setIntervals([
-				...intervals,
-				{ intensity: newIntervalIntensity, length: newIntervalDuration }
-			]);
+		if (newInterval.length > 0) {
+			setIntervals([...intervals, newInterval]);
 		}
-	}, [newIntervalDuration, setIntervals, intervals, newIntervalIntensity]);
+	}, [newInterval, setIntervals, intervals]);
 
 	const deleteSelected = useCallback(() => {
 		if (selectedIndex != null) {
@@ -191,7 +174,7 @@ const WorkoutCreatorPage = () => {
 						classes={formControlClasses}
 						control={
 							<TimePicker
-								value={moment.utc(intervalDuration * 1000)}
+								value={moment.utc(currentSelectedInterval.length * 1000)}
 								onChange={d => setIntervalDuration(d)}
 								showHour={false}
 								showMinute={true}
@@ -209,8 +192,8 @@ const WorkoutCreatorPage = () => {
 								variant="outlined"
 								size="small"
 								margin="none"
-								value={intervalIntensity * 100}
-								onChange={e => setIntervalIntensity(parseFloat(e.target.value) * 0.01)}
+								value={currentSelectedInterval.intensity * 100}
+								onChange={e => setSelectedIntensity(parseFloat(e.target.value) * 0.01)}
 							/>
 						}
 						label="Intensity"
@@ -219,7 +202,7 @@ const WorkoutCreatorPage = () => {
 					<IconButton
 						aria-label="add"
 						onClick={addInterval}
-						disabled={newIntervalDuration === 0 || selectedIndex !== null}
+						disabled={newInterval.length === 0 || selectedIndex !== null}
 					>
 						<Add />
 					</IconButton>

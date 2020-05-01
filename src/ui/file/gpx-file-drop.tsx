@@ -7,11 +7,12 @@ import { GpxData, parseGPXFile } from 'shared/activity-data/gpxparsing';
 export type FileAndGpx = { file: File; gpx: GpxData };
 
 type GpxFileDropProps = {
+	allowMultiple?: boolean;
 	onAddFiles(file: FileAndGpx[]): void;
 };
 
 const GpxFileDrop = (props: GpxFileDropProps) => {
-	const { onAddFiles } = props;
+	const { onAddFiles, allowMultiple = true } = props;
 
 	const addFiles = useCallback(
 		(files: FileAndGpx[]) => {
@@ -35,7 +36,11 @@ const GpxFileDrop = (props: GpxFileDropProps) => {
 		[addFiles]
 	);
 
-	const { getRootProps, getInputProps } = useDropzone({ onDrop });
+	const { getRootProps, getInputProps } = useDropzone({
+		onDrop,
+		accept: '.gpx',
+		multiple: allowMultiple
+	});
 
 	return (
 		<section className="file-uploader">

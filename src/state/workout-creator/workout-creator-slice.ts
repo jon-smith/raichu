@@ -1,17 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'shared/utils/array-utils';
+import { GpxData } from 'shared/activity-data/gpxparsing';
+import { fromGPXData } from 'shared/activity-data/activity-calculator';
 
 export type Interval = {
 	intensity: number;
 	length: number;
 };
 
-export interface WorkoutCreatorState {
-	readonly currentIntervals: readonly Interval[];
-	readonly history: readonly Interval[][];
-	readonly currentHistoryPosition: number;
-	readonly selectedIndex: number | null;
+interface MutableWorkoutCreatorState {
+	activity?: GpxData;
+	ftp: number;
+	newInterval: Interval;
+	currentIntervals: readonly Interval[];
+	history: readonly Interval[][];
+	currentHistoryPosition: number;
+	selectedIndex: number | null;
 }
+
+export type WorkoutCreatorState = Readonly<MutableWorkoutCreatorState>;
 
 const defaultIntervals: Interval[] = [
 	{ intensity: 0.3, length: 60 },
@@ -30,26 +37,30 @@ const defaultIntervals: Interval[] = [
 const areEqual = (a: Interval, b: Interval) => a.intensity === b.intensity && a.length === b.length;
 
 const defaultState: WorkoutCreatorState = {
+	ftp: 200,
+	newInterval: { intensity: 1.0, length: 0 },
 	currentIntervals: defaultIntervals,
 	history: [defaultIntervals],
 	currentHistoryPosition: 0,
 	selectedIndex: null
 };
 
+function setIntervalsImpl(state: MutableWorkoutCreatorState, intervals: Interval[]) {
+	if (!ArrayUtils.areEqual(intervals, state.currentIntervals, areEqual)) {
+		const newHistory = [...state.history.slice(0, state.currentHistoryPosition + 1), intervals];
+
+		state.history = newHistory;
+		state.currentHistoryPosition = newHistory.length - 1;
+		state.currentIntervals = intervals;
+	}
+}
+
 const workoutCreatorSlice = createSlice({
 	name: 'workoutCreator',
 	initialState: defaultState,
 	reducers: {
 		setIntervals(state, action: PayloadAction<Interval[]>) {
-			if (!ArrayUtils.areEqual(action.payload, state.currentIntervals, areEqual)) {
-				const newHistory = [
-					...state.history.slice(0, state.currentHistoryPosition + 1),
-					action.payload
-				];
-				state.history = newHistory;
-				state.currentHistoryPosition = newHistory.length - 1;
-				state.currentIntervals = action.payload;
-			}
+			setIntervalsImpl(state, action.payload);
 		},
 		undo(state) {
 			if (state.currentHistoryPosition > 0) {
@@ -65,13 +76,52 @@ const workoutCreatorSlice = createSlice({
 		},
 		setSelectedIndex(state, action: PayloadAction<number | null>) {
 			state.selectedIndex = action.payload;
+		},
+		setSelectedIntensity(state, action: PayloadAction<number>) {
+			if (state.selectedIndex === null) {
+				state.newInterval.intensity = action.payload;
+			} else {
+				const updatedIntervals = state.currentIntervals.slice();
+				updatedIntervals[state.selectedIndex] = {
+					...updatedIntervals[state.selectedIndex],
+					intensity: action.payload
+				};
+				setIntervalsImpl(state, updatedIntervals);
+			}
+		},
+		setSelectedLength(state, action: PayloadAction<number>) {
+			if (state.selectedIndex === null) {
+				state.newInterval.length = action.payload;
+			} else {
+				const updatedIntervals = state.currentIntervals.slice();
+				updatedIntervals[state.selectedIndex] = {
+					...updatedIntervals[state.selectedIndex],
+					length: action.payload
+				};
+				setIntervalsImpl(state, updatedIntervals);
+			}
+		},
+		setFTP(state, action: PayloadAction<number>) {
+			state.ftp = action.payload;
+		},
+		setActivity(state, action: PayloadAction<GpxData>) {
+			state.activity = action.payload;
 		}
 	}
 });
 
 export const { reducer, actions } = workoutCreatorSlice;
 
-export const { setIntervals, undo, redo, setSelectedIndex } = actions;
+export const {
+	setIntervals,
+	undo,
+	redo,
+	setSelectedIndex,
+	setSelectedIntensity,
+	setSelectedLength,
+	setFTP,
+	setActivity
+} = actions;
 
 export const canUndo = (state: WorkoutCreatorState) => state.currentHistoryPosition > 0;
 
@@ -80,6 +130,9 @@ export const canRedo = (state: WorkoutCreatorState) =>
 
 export const selectedInterval = (state: WorkoutCreatorState): Interval | null =>
 	state.selectedIndex === null ? null : state.currentIntervals[state.selectedIndex];
+
+export const selectedOrNewInterval = (state: WorkoutCreatorState): Interval =>
+	selectedInterval(state) ?? state.newInterval;
 
 const getColor = (i: Interval) => {
 	const { intensity } = i;
@@ -95,3 +148,11 @@ export type IntervalWithColor = Interval & { color: string };
 
 export const intervalsWithColor = (state: WorkoutCreatorState) =>
 	state.currentIntervals.map(i => ({ ...i, color: getColor(i) }));
+
+export const getActivityPowerPerSecond = (state: WorkoutCreatorState) => {
+	if (!state.activity) return [];
+
+	const activityData = fromGPXData(state.activity);
+
+	return activityData.filledPoints.map(p => p.data?.power ?? null);
+};
