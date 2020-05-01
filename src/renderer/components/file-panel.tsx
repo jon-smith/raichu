@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { addGpxFiles } from 'state/activity-data/activity-actions';
+import { addGpxFiles } from 'state/activity-data/activity-data-slice';
 import { useActivitySelector } from 'state/reducers';
 import GpxFileDrop, { FileAndGpx } from './gpx-file-drop';
 import ActivitySummaryTable from './activity-summary-table';

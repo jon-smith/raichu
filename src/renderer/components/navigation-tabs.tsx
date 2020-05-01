@@ -5,7 +5,7 @@ import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { useViewSelector } from 'state/reducers';
-import * as ViewActions from 'state/view/view-actions';
+import { Page, setCurrentPage } from 'state/view/view-slice';
 
 const StyledTabs = withStyles((theme: Theme) => ({
 	root: {
@@ -45,23 +45,23 @@ const StyledTab = withStyles((theme: Theme) =>
 	})
 )((props: StyledTabProps) => <Tab disableRipple {...props} />);
 
-const pageOrder: ViewActions.Page[] = ['data', 'workout-creator'];
-const pageToIndex = (p: ViewActions.Page) => pageOrder.findIndex(o => o === p) ?? 0;
+const pageOrder: Page[] = ['data', 'workout-creator'];
+const pageToIndex = (p: Page) => pageOrder.findIndex(o => o === p) ?? 0;
 
 const NavigationTabs = () => {
 	const currentPage = useViewSelector(s => s.currentPage);
 
 	const dispatch = useDispatch();
 
-	const setCurrentPage = useCallback(
+	const setCurrentPageCallback = useCallback(
 		(_: React.ChangeEvent<{}>, newValue: number) => {
-			dispatch(ViewActions.setCurrentPage(pageOrder[newValue]));
+			dispatch(setCurrentPage(pageOrder[newValue]));
 		},
 		[dispatch]
 	);
 
 	return (
-		<StyledTabs value={pageToIndex(currentPage)} onChange={setCurrentPage}>
+		<StyledTabs value={pageToIndex(currentPage)} onChange={setCurrentPageCallback}>
 			<StyledTab label="Data" />
 			<StyledTab label="Workout Creator" />
 		</StyledTabs>
