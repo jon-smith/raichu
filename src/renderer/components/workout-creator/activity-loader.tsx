@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { Close } from '@material-ui/icons';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -16,11 +17,8 @@ import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 
 import { useDispatchCallback } from 'state/dispatch-hooks';
-import {
-	setActivity,
-	clearActivity,
-	getActivityProcessedPowerTimeSeries
-} from 'state/workout-creator/workout-creator-slice';
+import { setActivity, clearActivity } from 'state/workout-creator/actions';
+import { getActivityProcessedPowerTimeSeries } from 'state/workout-creator/selectors';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 
 const ActivityLoader = () => {
@@ -53,9 +51,10 @@ const ActivityLoader = () => {
 		[powerData]
 	);
 
-	const maxX = useMemo(() => (powerData.length > 0 ? powerData[powerData.length - 1].x : 3600), [
-		powerData
-	]);
+	const activityXTicks = useMemo(() => {
+		const maxX = powerData.length > 0 ? powerData[powerData.length - 1].x : 3600;
+		return buildNiceTimeTicksToDisplay(maxX, 5);
+	}, [powerData]);
 
 	return (
 		<>
@@ -66,12 +65,14 @@ const ActivityLoader = () => {
 						flexDirection="row"
 						alignItems="center"
 						minHeight="2em"
+						width="100%"
 						onClick={event => event.stopPropagation()}
 						onFocus={event => event.stopPropagation()}
 					>
 						{loadedActivity ? (
 							<>
 								<span>{`Loaded activity: ${loadedActivity.track.name}`}</span>
+								<Button variant="contained">Generate</Button>
 								<IconButton aria-label="close file" onClick={() => clearActivitityDispatcher()}>
 									<Close />
 								</IconButton>
@@ -86,7 +87,7 @@ const ActivityLoader = () => {
 						<XYPlot
 							series={powerDataSeries}
 							xTickFormat={formatSecondsAsHHMMSS}
-							xTickValues={buildNiceTimeTicksToDisplay(maxX, 5)}
+							xTickValues={activityXTicks}
 							xAxisLabel="time"
 							yAxisLabel="Power"
 						/>

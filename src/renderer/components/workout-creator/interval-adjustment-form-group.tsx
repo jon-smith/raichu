@@ -16,14 +16,14 @@ import TimePicker from 'rc-time-picker';
 
 import { useWorkoutCreatorSelector } from 'state/reducers';
 import { useDispatchCallback } from 'state/dispatch-hooks';
+import { Interval } from 'state/workout-creator/types';
+import * as WorkoutCreatorActions from 'state/workout-creator/actions';
 import {
-	Interval,
 	canUndo,
 	canRedo,
 	selectedOrNewInterval,
-	intervalsWithColor,
-	actions as WorkoutCreatorActions
-} from 'state/workout-creator/workout-creator-slice';
+	intervalsWithColor
+} from 'state/workout-creator/selectors';
 import { buildMRCFileString } from 'shared/activity-data/export-mrc';
 
 const useStyles = makeStyles(theme =>

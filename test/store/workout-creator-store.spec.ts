@@ -1,6 +1,7 @@
 import { Action } from 'redux';
 import { rootReducer } from 'state/reducers';
-import { Interval, actions } from 'state/workout-creator/workout-creator-slice';
+import * as actions from 'state/workout-creator/actions';
+import { Interval } from 'state/workout-creator/types';
 
 const getInitialState = () => rootReducer(undefined, {} as Action);
 
