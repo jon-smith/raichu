@@ -5,7 +5,7 @@ import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { useViewSelector } from 'state/reducers';
-import { Page, setCurrentPage } from 'state/view/view-slice';
+import { Page, setCurrentPage } from 'state/view/slice';
 
 const StyledTabs = withStyles((theme: Theme) => ({
 	root: {

@@ -1,8 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 
-import { ActivityState, reducer as activityReducer } from './activity-data/activity-data-slice';
-import { ViewState, reducer as viewReducer } from './view/view-slice';
+import { ActivityState, reducer as activityReducer } from './activity-data/slice';
+import { ViewState, reducer as viewReducer } from './view/slice';
 import { WorkoutCreatorState, reducer as workoutCreatorReducer } from './workout-creator/slice';
 
 export const rootReducer = combineReducers({

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useDispatchCallback } from 'state/dispatch-hooks';
-import { addGpxFiles } from 'state/activity-data/activity-data-slice';
+import { addGpxFiles } from 'state/activity-data/slice';
 import { useActivitySelector } from 'state/reducers';
 import GpxFileDrop from 'ui/file/gpx-file-drop';
 import ActivitySummaryTable from './activity-summary-table';
