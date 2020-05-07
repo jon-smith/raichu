@@ -1,10 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'shared/utils/array-utils';
 import { GpxData } from 'shared/activity-data/gpxparsing';
 import { Interval } from './types';
+import { calculateActivityProcessedPowerTimeSeries } from './helpers';
 
 interface MutableWorkoutCreatorState {
 	activity?: GpxData;
+	generatingFromActivity: boolean;
 	ftp: number;
 	newInterval: Interval;
 	currentIntervals: readonly Interval[];
@@ -29,10 +31,61 @@ const defaultIntervals: Interval[] = [
 	{ intensity: 0.6, length: 60 * 5 }
 ];
 
-const areEqual = (a: Interval, b: Interval) => a.intensity === b.intensity && a.length === b.length;
+export const generateIntervals = createAsyncThunk(
+	'workoutCreator/generateIntervals',
+	async ({ activity, ftp }: { activity: GpxData; ftp: number }) => {
+		const timeVsPower = calculateActivityProcessedPowerTimeSeries(activity, {
+			interpolateNull: true,
+			maxGapForInterpolation: 3,
+			resolution: 1
+		});
+		// Convert to intensity using FTP, and replace nulls with 0
+		const timeVsIntensity = timeVsPower.map(v => ({ t: v.x, i: v.y ? v.y / ftp : 0.0 }));
+		const result: Interval[] = [];
+
+		function makeBlankIntervalValues() {
+			return {
+				weight: 0.0,
+				sum: 0.0,
+				sumOfSquares: 0.0,
+				timeRange: 0.0
+			};
+		}
+
+		let currentInterval = makeBlankIntervalValues();
+
+		function updateCurrent(duration: number, intensity: number) {
+			return {
+				weight: currentInterval.weight + duration,
+				sum: currentInterval.sum + intensity * duration,
+				sumOfSquares: currentInterval.sumOfSquares + intensity * intensity * duration,
+				timeRange: currentInterval.timeRange + duration
+			};
+		}
+
+		const minIntervalLength = 30;
+
+		for (let i = 0; i < timeVsIntensity.length - 1; ++i) {
+			const duration = timeVsIntensity[i + 1].t - timeVsIntensity[i].t;
+			const intensity = timeVsIntensity[i].i;
+			if (currentInterval.timeRange < minIntervalLength) {
+				currentInterval = updateCurrent(duration, intensity);
+			} else {
+				result.push({
+					length: currentInterval.timeRange,
+					intensity: currentInterval.sum / currentInterval.weight
+				});
+				currentInterval = makeBlankIntervalValues();
+			}
+		}
+
+		return result;
+	}
+);
 
 const defaultState: WorkoutCreatorState = {
 	ftp: 200,
+	generatingFromActivity: false,
 	newInterval: { intensity: 1.0, length: 0 },
 	currentIntervals: defaultIntervals,
 	history: [defaultIntervals],
@@ -41,6 +94,8 @@ const defaultState: WorkoutCreatorState = {
 };
 
 function setIntervalsImpl(state: MutableWorkoutCreatorState, intervals: Interval[]) {
+	const areEqual = (a: Interval, b: Interval) =>
+		a.intensity === b.intensity && a.length === b.length;
 	if (!ArrayUtils.areEqual(intervals, state.currentIntervals, areEqual)) {
 		const newHistory = [...state.history.slice(0, state.currentHistoryPosition + 1), intervals];
 
@@ -105,6 +160,18 @@ const workoutCreatorSlice = createSlice({
 		clearActivity(state) {
 			state.activity = undefined;
 		}
+	},
+	extraReducers: builder => {
+		builder.addCase(generateIntervals.pending, state => {
+			state.generatingFromActivity = true;
+		});
+		builder.addCase(generateIntervals.rejected, state => {
+			state.generatingFromActivity = false;
+		});
+		builder.addCase(generateIntervals.fulfilled, (state, { payload }) => {
+			setIntervalsImpl(state, payload);
+			state.generatingFromActivity = false;
+		});
 	}
 });
 

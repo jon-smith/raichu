@@ -86,7 +86,7 @@ export function extractData(data: ActivityData, v: Variable, filledPoints = fals
 	return data.flatPoints.map(p => getVar(p, v));
 }
 
-type TimeSeriesProcessingOptions = {
+export type TimeSeriesProcessingOptions = {
 	interpolateNull: boolean;
 	maxGapForInterpolation: number;
 	resolution: number;

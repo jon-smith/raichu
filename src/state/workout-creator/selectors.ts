@@ -1,31 +1,21 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { GpxData } from 'shared/activity-data/gpxparsing';
-import { fromGPXData, getProcessedTimeSeries } from 'shared/activity-data/activity-calculator';
+import {
+	calculateActivityPowerPerSecond,
+	calculateActivityProcessedPowerTimeSeries
+} from './helpers';
 import { WorkoutCreatorState } from './slice';
 import { Interval } from './types';
 
 const activitySelector = (state: WorkoutCreatorState) => state.activity;
 
-export const getActivityPowerPerSecond = createSelector(activitySelector, (activity?: GpxData) => {
-	if (!activity) return [];
-
-	const activityData = fromGPXData(activity);
-
-	return activityData.filledPoints.map(p => p.data?.power ?? null);
-});
+export const getActivityPowerPerSecond = createSelector(
+	activitySelector,
+	calculateActivityPowerPerSecond
+);
 
 export const getActivityProcessedPowerTimeSeries = createSelector(
 	activitySelector,
-	(activity?: GpxData) => {
-		if (!activity) return [];
-
-		const activityData = fromGPXData(activity);
-		return getProcessedTimeSeries(activityData, 'power', {
-			maxGapForInterpolation: 3,
-			interpolateNull: true,
-			resolution: 10
-		});
-	}
+	calculateActivityProcessedPowerTimeSeries
 );
 
 const getColor = (i: Interval) => {

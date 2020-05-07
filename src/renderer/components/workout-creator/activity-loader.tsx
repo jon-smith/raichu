@@ -16,18 +16,26 @@ import GpxFileDrop, { FileAndGpx } from 'ui/file/gpx-file-drop';
 import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 
-import { useDispatchCallback } from 'state/dispatch-hooks';
-import { setActivity, clearActivity } from 'state/workout-creator/slice';
+import { useAppDispatch, useDispatchCallback } from 'state/dispatch-hooks';
+import { setActivity, clearActivity, generateIntervals } from 'state/workout-creator/slice';
 import { getActivityProcessedPowerTimeSeries } from 'state/workout-creator/selectors';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 
 const ActivityLoadHeader = () => {
-	const { loadedActivity } = useWorkoutCreatorSelector(s => ({
-		loadedActivity: s.activity
+	const { loadedActivity, isGenerating, ftp } = useWorkoutCreatorSelector(s => ({
+		loadedActivity: s.activity,
+		isGenerating: s.generatingFromActivity,
+		ftp: s.ftp
 	}));
+
+	console.log(isGenerating);
 
 	const setActivityDispatcher = useDispatchCallback(setActivity);
 	const clearActivitityDispatcher = useDispatchCallback(clearActivity);
+	const dispatch = useAppDispatch();
+	const generateIntervalsDispatcher = useCallback(() => {
+		if (loadedActivity) dispatch(generateIntervals({ activity: loadedActivity, ftp }));
+	}, [dispatch, loadedActivity, ftp]);
 
 	const addFiles = useCallback(
 		(files: FileAndGpx[]) => {
@@ -48,7 +56,13 @@ const ActivityLoadHeader = () => {
 				<div style={{ marginRight: '20px' }}>
 					<span>{`Loaded activity: ${loadedActivity.track.name}`}</span>
 				</div>
-				<Button variant="contained">Generate Intervals</Button>
+				<Button
+					variant="contained"
+					onClick={() => generateIntervalsDispatcher()}
+					disabled={isGenerating}
+				>
+					Generate Intervals
+				</Button>
 			</>
 		);
 	}
