@@ -33,6 +33,9 @@ const defaultIntervals: Interval[] = [
 
 export const generateIntervals = createAsyncThunk(
 	'workoutCreator/generateIntervals',
+	// Note this function doesn't actually run asynchronously at the moment
+	// but I intend to use a worker thread in the future
+	// For now I just wanted to try out the usage of createAsyncThunk
 	async ({ activity, ftp }: { activity: GpxData; ftp: number }) => {
 		const timeVsPower = calculateActivityProcessedPowerTimeSeries(activity, {
 			interpolateNull: true,
