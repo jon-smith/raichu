@@ -17,7 +17,7 @@ import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 
 import { useDispatchCallback } from 'state/dispatch-hooks';
-import { setActivity, clearActivity } from 'state/workout-creator/actions';
+import { setActivity, clearActivity } from 'state/workout-creator/slice';
 import { getActivityProcessedPowerTimeSeries } from 'state/workout-creator/selectors';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 

@@ -1,8 +1,8 @@
 import { hot } from 'react-hot-loader/root';
 import * as React from 'react';
 import { useMemo } from 'react';
-import { Page } from 'state/view/view-slice';
 import { useViewSelector } from 'state/reducers';
+import { Page } from 'state/view/view-slice';
 import TestDataViewer from './test-data-viewer';
 import FilePanel from './file-panel';
 import NavigationTabs from './navigation-tabs';

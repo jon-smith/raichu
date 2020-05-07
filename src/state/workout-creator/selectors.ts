@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { GpxData } from 'shared/activity-data/gpxparsing';
 import { fromGPXData, getProcessedTimeSeries } from 'shared/activity-data/activity-calculator';
-import { WorkoutCreatorState } from './reducer';
+import { WorkoutCreatorState } from './slice';
 import { Interval } from './types';
 
 const activitySelector = (state: WorkoutCreatorState) => state.activity;

@@ -17,7 +17,7 @@ import TimePicker from 'rc-time-picker';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 import { useDispatchCallback } from 'state/dispatch-hooks';
 import { Interval } from 'state/workout-creator/types';
-import * as WorkoutCreatorActions from 'state/workout-creator/actions';
+import { actions as WorkoutCreatorActions } from 'state/workout-creator/slice';
 import {
 	canUndo,
 	canRedo,

@@ -2,9 +2,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { FileAndGpx } from 'ui/file/gpx-file-drop';
 
-export interface ActivityState {
-	readonly files: FileAndGpx[];
-}
+export type ActivityState = Readonly<{
+	files: FileAndGpx[];
+}>;
 
 const defaultState: ActivityState = {
 	files: []

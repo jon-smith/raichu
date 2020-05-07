@@ -8,7 +8,7 @@ import Box from '@material-ui/core/Box';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 import { useDispatchCallback } from 'state/dispatch-hooks';
 import { Interval } from 'state/workout-creator/types';
-import * as WorkoutCreatorActions from 'state/workout-creator/actions';
+import { actions as WorkoutCreatorActions } from 'state/workout-creator/slice';
 import { selectedOrNewInterval, intervalsWithColor } from 'state/workout-creator/selectors';
 
 import WorkoutCreatorChart from './workout-creator-chart';
