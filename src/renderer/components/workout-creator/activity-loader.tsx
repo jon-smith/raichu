@@ -21,10 +21,9 @@ import { setActivity, clearActivity } from 'state/workout-creator/slice';
 import { getActivityProcessedPowerTimeSeries } from 'state/workout-creator/selectors';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 
-const ActivityLoader = () => {
-	const { loadedActivity, powerData } = useWorkoutCreatorSelector(s => ({
-		loadedActivity: s.activity,
-		powerData: getActivityProcessedPowerTimeSeries(s)
+const ActivityLoadHeader = () => {
+	const { loadedActivity } = useWorkoutCreatorSelector(s => ({
+		loadedActivity: s.activity
 	}));
 
 	const setActivityDispatcher = useDispatchCallback(setActivity);
@@ -39,6 +38,28 @@ const ActivityLoader = () => {
 		},
 		[setActivityDispatcher]
 	);
+
+	if (loadedActivity) {
+		return (
+			<>
+				<IconButton aria-label="close file" onClick={() => clearActivitityDispatcher()}>
+					<Close />
+				</IconButton>
+				<div style={{ marginRight: '20px' }}>
+					<span>{`Loaded activity: ${loadedActivity.track.name}`}</span>
+				</div>
+				<Button variant="contained">Generate Intervals</Button>
+			</>
+		);
+	}
+
+	return <GpxFileDrop onAddFiles={addFiles} allowMultiple={false} />;
+};
+
+const ActivityLoader = () => {
+	const { powerData } = useWorkoutCreatorSelector(s => ({
+		powerData: getActivityProcessedPowerTimeSeries(s)
+	}));
 
 	const powerDataSeries = useMemo(
 		(): DataSeriesT[] => [
@@ -69,17 +90,7 @@ const ActivityLoader = () => {
 						onClick={event => event.stopPropagation()}
 						onFocus={event => event.stopPropagation()}
 					>
-						{loadedActivity ? (
-							<>
-								<span>{`Loaded activity: ${loadedActivity.track.name}`}</span>
-								<Button variant="contained">Generate</Button>
-								<IconButton aria-label="close file" onClick={() => clearActivitityDispatcher()}>
-									<Close />
-								</IconButton>
-							</>
-						) : (
-							<GpxFileDrop onAddFiles={addFiles} allowMultiple={false} />
-						)}
+						<ActivityLoadHeader />
 					</Box>
 				</ExpansionPanelSummary>
 				<ExpansionPanelDetails>
