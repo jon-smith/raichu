@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import { createSelector } from '@reduxjs/toolkit';
 import { GpxData } from 'shared/activity-data/gpxparsing';
 import { fromGPXData, getProcessedTimeSeries } from 'shared/activity-data/activity-calculator';
 import { WorkoutCreatorState } from './slice';

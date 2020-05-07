@@ -201,7 +201,6 @@
 		"react-resize-detector": "^4.2.1",
 		"react-vis": "^1.11.7",
 		"redux": "^4.0.5",
-		"redux-batched-actions": "^0.5.0",
-		"reselect": "^4.0.0"
+		"redux-batched-actions": "^0.5.0"
 	}
 }
