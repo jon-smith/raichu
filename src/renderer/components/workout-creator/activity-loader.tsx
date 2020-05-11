@@ -28,8 +28,6 @@ const ActivityLoadHeader = () => {
 		ftp: s.ftp
 	}));
 
-	console.log(isGenerating);
-
 	const setActivityDispatcher = useDispatchCallback(setActivity);
 	const clearActivitityDispatcher = useDispatchCallback(clearActivity);
 	const dispatch = useAppDispatch();
