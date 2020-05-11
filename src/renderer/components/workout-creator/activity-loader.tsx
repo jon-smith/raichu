@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
+import Box, { BoxProps } from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import { Close } from '@material-ui/icons';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -16,13 +15,15 @@ import GpxFileDrop, { FileAndGpx } from 'ui/file/gpx-file-drop';
 import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 
-import { useAppDispatch, useDispatchCallback } from 'state/dispatch-hooks';
-import { setActivity, clearActivity, generateIntervals } from 'state/workout-creator/slice';
+import { useDispatchCallback } from 'state/dispatch-hooks';
+import { setActivity, clearActivity } from 'state/workout-creator/slice';
 import { getActivityProcessedPowerTimeSeries } from 'state/workout-creator/selectors';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 
+import SettingsFormGroup from './settings-form-group';
+
 const ActivityLoadHeader = () => {
-	const { loadedActivity, isGenerating, ftp } = useWorkoutCreatorSelector(s => ({
+	const { loadedActivity } = useWorkoutCreatorSelector(s => ({
 		loadedActivity: s.activity,
 		isGenerating: s.generatingFromActivity,
 		ftp: s.ftp
@@ -30,10 +31,6 @@ const ActivityLoadHeader = () => {
 
 	const setActivityDispatcher = useDispatchCallback(setActivity);
 	const clearActivitityDispatcher = useDispatchCallback(clearActivity);
-	const dispatch = useAppDispatch();
-	const generateIntervalsDispatcher = useCallback(() => {
-		if (loadedActivity) dispatch(generateIntervals({ activity: loadedActivity, ftp }));
-	}, [dispatch, loadedActivity, ftp]);
 
 	const addFiles = useCallback(
 		(files: FileAndGpx[]) => {
@@ -54,18 +51,16 @@ const ActivityLoadHeader = () => {
 				<div style={{ marginRight: '20px' }}>
 					<span>{`Loaded activity: ${loadedActivity.track.name}`}</span>
 				</div>
-				<Button
-					variant="contained"
-					onClick={() => generateIntervalsDispatcher()}
-					disabled={isGenerating}
-				>
-					Generate Intervals
-				</Button>
 			</>
 		);
 	}
 
 	return <GpxFileDrop onAddFiles={addFiles} allowMultiple={false} />;
+};
+
+const stopClickFocusPropagation: Partial<BoxProps> = {
+	onClick: event => event.stopPropagation(),
+	onFocus: event => event.stopPropagation()
 };
 
 const ActivityLoader = () => {
@@ -93,16 +88,20 @@ const ActivityLoader = () => {
 		<>
 			<ExpansionPanel>
 				<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-					<Box
-						display="flex"
-						flexDirection="row"
-						alignItems="center"
-						minHeight="2em"
-						width="100%"
-						onClick={event => event.stopPropagation()}
-						onFocus={event => event.stopPropagation()}
-					>
-						<ActivityLoadHeader />
+					<Box display="flex" flexDirection="column" {...stopClickFocusPropagation}>
+						<Box
+							display="flex"
+							flexDirection="row"
+							alignItems="center"
+							minHeight="2em"
+							width="100%"
+							{...stopClickFocusPropagation}
+						>
+							<ActivityLoadHeader />
+						</Box>
+						<Box width="100%" {...stopClickFocusPropagation}>
+							<SettingsFormGroup />
+						</Box>
 					</Box>
 				</ExpansionPanelSummary>
 				<ExpansionPanelDetails>
