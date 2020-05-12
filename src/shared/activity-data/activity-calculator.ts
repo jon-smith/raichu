@@ -41,7 +41,7 @@ function getCumulativeDistances(points: ActivityPoint[]): number[] | undefined {
 			i === 0 ? 0 : getDistance(asGeolibCoord(p.location!), asGeolibCoord(points[i - 1].location!))
 		);
 
-		return distancesBetween ? cumulative(distancesBetween) : undefined;
+		return cumulative(distancesBetween);
 	}
 
 	const hasDistance = !points.some(p => p.distance === undefined);
@@ -230,23 +230,27 @@ export const getMinTimesPerDistance = (data: ActivityData, distances: number[]) 
 
 	for (let i = 0; i < data.flatPoints.length; ++i) {
 		const segmentStart = data.flatPoints[i];
+		const segmentStartDistance = segmentStart.cumulativeDistance;
+		if (segmentStartDistance) {
+			for (let j = i; j < data.flatPoints.length; ++j) {
+				const { secondsSinceStart, cumulativeDistance } = data.flatPoints[j];
+				if (cumulativeDistance) {
+					const deltaTime = secondsSinceStart - segmentStart.secondsSinceStart;
+					const deltaDistance = cumulativeDistance - segmentStartDistance;
 
-		for (let j = i; j < data.flatPoints.length; ++j) {
-			const { secondsSinceStart, cumulativeDistance } = data.flatPoints[j];
-			const deltaTime = secondsSinceStart - segmentStart.secondsSinceStart;
-			const deltaDistance = cumulativeDistance ?? 0 - (segmentStart.cumulativeDistance ?? 0);
-
-			for (let r = 0; r < results.length; ++r) {
-				if (deltaDistance >= results[r].distance) {
-					const currentBest = results[r].best;
-					if (currentBest == null || deltaTime < currentBest.time) {
-						results[r].best = { startTime: segmentStart.secondsSinceStart, time: deltaTime };
+					for (let r = 0; r < results.length; ++r) {
+						if (deltaDistance >= results[r].distance) {
+							const currentBest = results[r].best;
+							if (currentBest == null || deltaTime < currentBest.time) {
+								results[r].best = { startTime: segmentStart.secondsSinceStart, time: deltaTime };
+							}
+						}
 					}
+
+					// Once we have exceeded the max distance, no point searching any more
+					if (deltaDistance > maxDistance) break;
 				}
 			}
-
-			// Once we have exceeded the max distance, no point searching any more
-			if (deltaDistance > maxDistance) break;
 		}
 	}
 
