@@ -7,16 +7,17 @@ import {
 } from 'shared/activity-data/best-split-calculator';
 import { cumulative, sortNumeric } from 'shared/utils/array-utils';
 import * as jolteon from 'jolteon';
-import { GpxData, Track, Point } from '../activity-parsers/gpx-parser';
+import { ActivityPoint } from '../activity-parsers/shared-structures';
+import { GpxData, Track } from '../activity-parsers/gpx-parser';
 
 const useNative = true;
 const bestAveragesForDistances = useNative
 	? jolteon.best_averages_for_distances
 	: jsBestAveragesForDistances;
 
-type ExtendedPoint = Point & {
+type ExtendedPoint = ActivityPoint & {
 	secondsSinceStart: number;
-	cumulativeDistance_m: number;
+	cumulativeDistance?: number; // Metres
 };
 
 export interface ActivityData {
@@ -25,22 +26,39 @@ export interface ActivityData {
 	filledPoints: { index: number; data?: ExtendedPoint }[];
 }
 
-function asGeolibCoord(p: Point) {
+function asGeolibCoord(p: { lat: number; lon: number }) {
 	return {
 		latitude: p.lat,
 		longitude: p.lon
 	};
 }
 
-const buildExtendedPoints = (points: Point[]): ExtendedPoint[] => {
+function getCumulativeDistances(points: ActivityPoint[]): number[] | undefined {
+	const hasLocation = !points.some(p => p.location === undefined);
+	if (hasLocation) {
+		const distancesBetween = points.map((p, i) =>
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			i === 0 ? 0 : getDistance(asGeolibCoord(p.location!), asGeolibCoord(points[i - 1].location!))
+		);
+
+		return distancesBetween ? cumulative(distancesBetween) : undefined;
+	}
+
+	const hasDistance = !points.some(p => p.distance === undefined);
+	if (hasDistance) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return points.map(p => p.distance!);
+	}
+
+	return undefined;
+}
+
+const buildExtendedPoints = (points: ActivityPoint[]): ExtendedPoint[] => {
 	const earliestTime = lodash.min(points.map(p => p.time)) ?? new Date();
-	const distancesBetween = points.map((p, i) =>
-		i === 0 ? 0 : getDistance(asGeolibCoord(p), asGeolibCoord(points[i - 1]))
-	);
-	const cumulativeDistances = cumulative(distancesBetween);
+	const cumulativeDistances = getCumulativeDistances(points);
 	return points.map((p, i) => ({
 		...p,
-		cumulativeDistance_m: cumulativeDistances[i],
+		cumulativeDistance: cumulativeDistances?.[i] ?? 0,
 		secondsSinceStart: (p.time.getTime() - earliestTime.getTime()) * 0.001
 	}));
 };
@@ -162,7 +180,7 @@ function getInterpolatedDataPointsForBestSplits(
 	}
 	if (option === 'speed') {
 		// For speed, we first interpolate cumulative distance and then calc speed from that
-		const distances = data.filledPoints.map(p => p.data?.cumulativeDistance_m ?? null);
+		const distances = data.filledPoints.map(p => p.data?.cumulativeDistance ?? null);
 		const interpolatedDistances = interpolateNullValues(distances, maxGapForInterpolation);
 
 		// Set all speeds to zero
@@ -214,9 +232,9 @@ export const getMinTimesPerDistance = (data: ActivityData, distances: number[]) 
 		const segmentStart = data.flatPoints[i];
 
 		for (let j = i; j < data.flatPoints.length; ++j) {
-			const { secondsSinceStart, cumulativeDistance_m } = data.flatPoints[j];
+			const { secondsSinceStart, cumulativeDistance } = data.flatPoints[j];
 			const deltaTime = secondsSinceStart - segmentStart.secondsSinceStart;
-			const deltaDistance = cumulativeDistance_m - segmentStart.cumulativeDistance_m;
+			const deltaDistance = cumulativeDistance ?? 0 - (segmentStart.cumulativeDistance ?? 0);
 
 			for (let r = 0; r < results.length; ++r) {
 				if (deltaDistance >= results[r].distance) {
