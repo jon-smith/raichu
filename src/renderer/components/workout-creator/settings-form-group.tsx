@@ -7,7 +7,12 @@ import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 import { useWorkoutCreatorSelector } from 'state/reducers';
-import { setFTP, generateIntervals } from 'state/workout-creator/slice';
+import {
+	setFTP,
+	setStepThreshold,
+	setWindowRadius,
+	generateIntervals
+} from 'state/workout-creator/slice';
 import { useAppDispatch, useDispatchCallback } from 'state/dispatch-hooks';
 
 const useStyles = makeStyles(theme =>
@@ -26,18 +31,21 @@ const useStyles = makeStyles(theme =>
 const SettingsFormGroup = () => {
 	const formControlClasses = useStyles();
 
-	const { loadedActivity, isGenerating, ftp } = useWorkoutCreatorSelector(s => ({
+	const { loadedActivity, isGenerating, ftp, params } = useWorkoutCreatorSelector(s => ({
 		loadedActivity: s.activity,
 		isGenerating: s.generatingFromActivity,
-		ftp: s.ftp
+		ftp: s.ftp,
+		params: s.generationParams
 	}));
 
 	const setFTPCallback = useDispatchCallback(setFTP);
+	const setStepThresholdCallback = useDispatchCallback(setStepThreshold);
+	const setWindowRadiusCallback = useDispatchCallback(setWindowRadius);
 
 	const dispatch = useAppDispatch();
 	const generateIntervalsDispatcher = useCallback(() => {
-		if (loadedActivity) dispatch(generateIntervals({ activity: loadedActivity, ftp }));
-	}, [dispatch, loadedActivity, ftp]);
+		if (loadedActivity) dispatch(generateIntervals({ activity: loadedActivity, ftp, params }));
+	}, [dispatch, loadedActivity, ftp, params]);
 
 	return (
 		<FormGroup row>
@@ -54,6 +62,36 @@ const SettingsFormGroup = () => {
 					/>
 				}
 				label="FTP"
+				labelPlacement="start"
+			/>
+			<FormControlLabel
+				classes={formControlClasses}
+				control={
+					<TextField
+						type="number"
+						variant="outlined"
+						size="small"
+						margin="none"
+						value={params.windowRadius}
+						onChange={e => setWindowRadiusCallback(parseFloat(e.target.value))}
+					/>
+				}
+				label="Window Size"
+				labelPlacement="start"
+			/>
+			<FormControlLabel
+				classes={formControlClasses}
+				control={
+					<TextField
+						type="number"
+						variant="outlined"
+						size="small"
+						margin="none"
+						value={params.stepThreshold}
+						onChange={e => setStepThresholdCallback(parseFloat(e.target.value))}
+					/>
+				}
+				label="Step Threshold"
 				labelPlacement="start"
 			/>
 			<Button

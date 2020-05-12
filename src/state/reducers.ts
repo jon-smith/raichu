@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { ActivityState, reducer as activityReducer } from './activity-data/slice';
 import { ViewState, reducer as viewReducer } from './view/slice';
-import { WorkoutCreatorState, reducer as workoutCreatorReducer } from './workout-creator/slice';
+import { WorkoutCreatorState } from './workout-creator/types';
+import { reducer as workoutCreatorReducer } from './workout-creator/slice';
 
 export const rootReducer = combineReducers({
 	activities: activityReducer,

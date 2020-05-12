@@ -19,3 +19,39 @@ export function cumulative(input: number[]) {
 export function sortNumeric(input: number[]) {
 	return input.concat().sort((a, b) => a - b);
 }
+
+export function findPeaksAndTroughs(input: number[]) {
+	const result = input.map(() => null as 'peak' | 'trough' | null);
+
+	if (input.length > 0) {
+		let i = 1;
+		// Determine if the first value is a peak or trough
+		for (; i < input.length; ++i) {
+			if (input[i] > input[i - 1]) {
+				result[0] = 'trough';
+				break;
+			} else if (input[i] < input[i - 1]) {
+				result[0] = 'peak';
+				break;
+			}
+		}
+
+		let previousInflection = result[0];
+		for (; i < input.length; ++i) {
+			// If last point was a peak, we want to find the next increase, which is the next trough
+			if (previousInflection === 'peak') {
+				if (input[i] > input[i - 1]) {
+					result[i - 1] = 'trough';
+					previousInflection = 'trough';
+				}
+			} else if (previousInflection === 'trough') {
+				if (input[i] < input[i - 1]) {
+					result[i - 1] = 'peak';
+					previousInflection = 'peak';
+				}
+			}
+		}
+	}
+
+	return result;
+}

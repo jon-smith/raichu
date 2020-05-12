@@ -1,10 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit';
 import {
 	calculateActivityPowerPerSecond,
-	calculateActivityProcessedPowerTimeSeries
+	calculateActivityProcessedPowerTimeSeries,
+	calculateMovingWindowDiscrepencyCurve
 } from './helpers';
-import { WorkoutCreatorState } from './slice';
-import { Interval } from './types';
+import { Interval, WorkoutCreatorState } from './types';
 
 const activitySelector = (state: WorkoutCreatorState) => state.activity;
 
@@ -16,6 +16,27 @@ export const getActivityPowerPerSecond = createSelector(
 export const getActivityProcessedPowerTimeSeries = createSelector(
 	activitySelector,
 	calculateActivityProcessedPowerTimeSeries
+);
+
+export const getMovingWindowDiscrepencyCurve = createSelector(
+	activitySelector,
+	s => s.generationParams,
+	s => s.ftp,
+	(activity, params, ftp) => {
+		const timeVsPower = calculateActivityProcessedPowerTimeSeries(activity, {
+			interpolateNull: true,
+			maxGapForInterpolation: 3,
+			resolution: 1
+		});
+
+		// Convert to intensity using FTP, and replace nulls with 0
+		const timeVsIntensity = timeVsPower.map(v => ({ t: v.x, i: v.y ? v.y / ftp : 0.0 }));
+
+		return calculateMovingWindowDiscrepencyCurve(
+			timeVsIntensity.map(ti => ti.i),
+			params.windowRadius
+		);
+	}
 );
 
 const getColor = (i: Interval) => {

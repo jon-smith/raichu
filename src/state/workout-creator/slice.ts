@@ -1,21 +1,13 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'shared/utils/array-utils';
+import * as d3 from 'd3';
 import { GpxData } from 'shared/activity-data/gpxparsing';
-import { Interval } from './types';
-import { calculateActivityProcessedPowerTimeSeries } from './helpers';
-
-interface MutableWorkoutCreatorState {
-	activity?: GpxData;
-	generatingFromActivity: boolean;
-	ftp: number;
-	newInterval: Interval;
-	currentIntervals: readonly Interval[];
-	history: readonly Interval[][];
-	currentHistoryPosition: number;
-	selectedIndex: number | null;
-}
-
-export type WorkoutCreatorState = Readonly<MutableWorkoutCreatorState>;
+import { Mutable } from 'shared/utils/type-utils';
+import { Interval, WorkoutCreatorState, ActivityToIntervalParameters } from './types';
+import {
+	calculateActivityProcessedPowerTimeSeries,
+	calculateMovingWindowDiscrepencyCurve
+} from './helpers';
 
 const defaultIntervals: Interval[] = [
 	{ intensity: 0.3, length: 60 },
@@ -31,63 +23,9 @@ const defaultIntervals: Interval[] = [
 	{ intensity: 0.6, length: 60 * 5 }
 ];
 
-export const generateIntervals = createAsyncThunk(
-	'workoutCreator/generateIntervals',
-	// Note this function doesn't actually run asynchronously at the moment
-	// but I intend to use a worker thread in the future
-	// For now I just wanted to try out the usage of createAsyncThunk
-	async ({ activity, ftp }: { activity: GpxData; ftp: number }) => {
-		const timeVsPower = calculateActivityProcessedPowerTimeSeries(activity, {
-			interpolateNull: true,
-			maxGapForInterpolation: 3,
-			resolution: 1
-		});
-		// Convert to intensity using FTP, and replace nulls with 0
-		const timeVsIntensity = timeVsPower.map(v => ({ t: v.x, i: v.y ? v.y / ftp : 0.0 }));
-		const result: Interval[] = [];
-
-		function makeBlankIntervalValues() {
-			return {
-				weight: 0.0,
-				sum: 0.0,
-				sumOfSquares: 0.0,
-				timeRange: 0.0
-			};
-		}
-
-		let currentInterval = makeBlankIntervalValues();
-
-		function updateCurrent(duration: number, intensity: number) {
-			return {
-				weight: currentInterval.weight + duration,
-				sum: currentInterval.sum + intensity * duration,
-				sumOfSquares: currentInterval.sumOfSquares + intensity * intensity * duration,
-				timeRange: currentInterval.timeRange + duration
-			};
-		}
-
-		const minIntervalLength = 30;
-
-		for (let i = 0; i < timeVsIntensity.length - 1; ++i) {
-			const duration = timeVsIntensity[i + 1].t - timeVsIntensity[i].t;
-			const intensity = timeVsIntensity[i].i;
-			if (currentInterval.timeRange < minIntervalLength) {
-				currentInterval = updateCurrent(duration, intensity);
-			} else {
-				result.push({
-					length: currentInterval.timeRange,
-					intensity: currentInterval.sum / currentInterval.weight
-				});
-				currentInterval = makeBlankIntervalValues();
-			}
-		}
-
-		return result;
-	}
-);
-
 const defaultState: WorkoutCreatorState = {
 	ftp: 200,
+	generationParams: { minIntervalDuration: 10, stepThreshold: 0.1, windowRadius: 10 },
 	generatingFromActivity: false,
 	newInterval: { intensity: 1.0, length: 0 },
 	currentIntervals: defaultIntervals,
@@ -96,7 +34,56 @@ const defaultState: WorkoutCreatorState = {
 	selectedIndex: null
 };
 
-function setIntervalsImpl(state: MutableWorkoutCreatorState, intervals: Interval[]) {
+export const generateIntervals = createAsyncThunk(
+	'workoutCreator/generateIntervals',
+	// Note this function doesn't actually run asynchronously at the moment
+	// but I intend to use a worker thread in the future
+	// For now I just wanted to try out the usage of createAsyncThunk
+	async ({
+		activity,
+		ftp,
+		params
+	}: {
+		activity: GpxData;
+		ftp: number;
+		params: ActivityToIntervalParameters;
+	}) => {
+		const timeVsPower = calculateActivityProcessedPowerTimeSeries(activity, {
+			interpolateNull: true,
+			maxGapForInterpolation: 3,
+			resolution: 1
+		});
+
+		// Convert to intensity using FTP, and replace nulls with 0
+		const timeVsIntensity = timeVsPower.map(v => ({ t: v.x, i: v.y ? v.y / ftp : 0.0 }));
+		const intensityPerSecond = timeVsIntensity.map(ti => ti.i);
+		const discrepencyCurve = calculateMovingWindowDiscrepencyCurve(
+			intensityPerSecond,
+			params.windowRadius
+		);
+
+		const peaks = ArrayUtils.findPeaksAndTroughs(
+			discrepencyCurve.map(d => Math.abs(d.delta)).map(d => (d > params.stepThreshold ? d : 0.0))
+		);
+		const indicesOfPeaks = ArrayUtils.filterNullAndUndefined(
+			peaks.map((p, i) => (i !== 0 && (i === peaks.length - 1 || p === 'peak') ? i : null))
+		);
+
+		const result: Interval[] = [];
+
+		for (let i = 1; i < indicesOfPeaks.length; ++i) {
+			const startIndex = indicesOfPeaks[i - 1];
+			const endIndex = indicesOfPeaks[i];
+			const duration = endIndex - startIndex;
+			const thisIntervalData = intensityPerSecond.slice(startIndex, endIndex);
+			result.push({ length: duration, intensity: d3.mean(thisIntervalData) ?? 0 });
+		}
+
+		return result;
+	}
+);
+
+function setIntervalsImpl(state: Mutable<WorkoutCreatorState>, intervals: Interval[]) {
 	const areEqual = (a: Interval, b: Interval) =>
 		a.intensity === b.intensity && a.length === b.length;
 	if (!ArrayUtils.areEqual(intervals, state.currentIntervals, areEqual)) {
@@ -157,6 +144,12 @@ const workoutCreatorSlice = createSlice({
 		setFTP(state, action: PayloadAction<number>) {
 			state.ftp = action.payload;
 		},
+		setWindowRadius(state, action: PayloadAction<number>) {
+			state.generationParams.windowRadius = action.payload;
+		},
+		setStepThreshold(state, action: PayloadAction<number>) {
+			state.generationParams.stepThreshold = action.payload;
+		},
 		setActivity(state, action: PayloadAction<GpxData>) {
 			state.activity = action.payload;
 		},
@@ -188,6 +181,8 @@ export const {
 	setSelectedIntensity,
 	setSelectedLength,
 	setFTP,
+	setWindowRadius,
+	setStepThreshold,
 	setActivity,
 	clearActivity
 } = actions;
