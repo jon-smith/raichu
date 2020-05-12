@@ -32,8 +32,7 @@ const LineSeriesStyle = {
 };
 
 const MarkSeriesStyle = {
-	lineStyle: { fill: 'none' },
-	markStyle: { fill: 'none', stroke: 'none' }
+	lineStyle: { fill: 'none', stroke: 'none' }
 };
 
 const LineMarkSeriesStyle = {

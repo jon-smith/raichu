@@ -6,7 +6,8 @@ import { Mutable } from 'shared/utils/type-utils';
 import { Interval, WorkoutCreatorState, ActivityToIntervalParameters } from './types';
 import {
 	calculateActivityProcessedPowerTimeSeries,
-	calculateMovingWindowDiscrepencyCurve
+	calculateMovingWindowDiscrepencyCurve,
+	calculateDetectedSteps
 } from './helpers';
 
 const defaultIntervals: Interval[] = [
@@ -62,18 +63,13 @@ export const generateIntervals = createAsyncThunk(
 			params.windowRadius
 		);
 
-		const peaks = ArrayUtils.findPeaksAndTroughs(
-			discrepencyCurve.map(d => Math.abs(d.delta)).map(d => (d > params.stepThreshold ? d : 0.0))
-		);
-		const indicesOfPeaks = ArrayUtils.filterNullAndUndefined(
-			peaks.map((p, i) => (i !== 0 && (i === peaks.length - 1 || p === 'peak') ? i : null))
-		);
+		const stepIndices = calculateDetectedSteps(discrepencyCurve, params.stepThreshold);
 
 		const result: Interval[] = [];
 
-		for (let i = 1; i < indicesOfPeaks.length; ++i) {
-			const startIndex = indicesOfPeaks[i - 1];
-			const endIndex = indicesOfPeaks[i];
+		for (let i = 1; i < stepIndices.length; ++i) {
+			const startIndex = stepIndices[i - 1];
+			const endIndex = stepIndices[i];
 			const duration = endIndex - startIndex;
 			const thisIntervalData = intensityPerSecond.slice(startIndex, endIndex);
 			result.push({ length: duration, intensity: d3.mean(thisIntervalData) ?? 0 });

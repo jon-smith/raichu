@@ -23,7 +23,8 @@ import { useDispatchCallback } from 'state/dispatch-hooks';
 import { setActivity, clearActivity } from 'state/workout-creator/slice';
 import {
 	getActivityProcessedPowerTimeSeries,
-	getMovingWindowDiscrepencyCurve
+	getMovingWindowDiscrepencyCurve,
+	getDetectedStepTimePoints
 } from 'state/workout-creator/selectors';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 
@@ -88,14 +89,27 @@ function buildDiscrepencyCurveSeries(data: DataSeriesT['data']): DataSeriesT {
 	};
 }
 
+function buildDetectedStepsSeries(data: DataSeriesT['data']): DataSeriesT {
+	return {
+		name: 'detected-steps',
+		data,
+		seriesType: 'mark',
+		color: 'red'
+	};
+}
+
 const ActivityLoader = () => {
 	const [showDiscrepencyCurve, setShowDiscrepencyCurve] = useState(false);
+	const [showDetectedSteps, setShowDetectedSteps] = useState(false);
 
-	const { powerData, discrepencyCurve, stepThreshold } = useWorkoutCreatorSelector(s => ({
-		powerData: getActivityProcessedPowerTimeSeries(s),
-		discrepencyCurve: getMovingWindowDiscrepencyCurve(s),
-		stepThreshold: s.generationParams.stepThreshold
-	}));
+	const { powerData, discrepencyCurve, stepThreshold, detectedSteps } = useWorkoutCreatorSelector(
+		s => ({
+			powerData: getActivityProcessedPowerTimeSeries(s),
+			discrepencyCurve: getMovingWindowDiscrepencyCurve(s),
+			detectedSteps: getDetectedStepTimePoints(s),
+			stepThreshold: s.generationParams.stepThreshold
+		})
+	);
 
 	const powerDataSeries = useMemo(() => buildPowerSeries(powerData), [powerData]);
 
@@ -111,6 +125,11 @@ const ActivityLoader = () => {
 		}));
 		return buildDiscrepencyCurveSeries(normalised);
 	}, [discrepencyCurve, maxPower, stepThreshold]);
+
+	const detectedStepsSeries = useMemo(() => {
+		const stepVsPower = detectedSteps.map(d => ({ x: d, y: powerData[d].y }));
+		return buildDetectedStepsSeries(stepVsPower);
+	}, [detectedSteps, powerData]);
 
 	const activityXTicks = useMemo(() => {
 		const maxX = powerData.length > 0 ? powerData[powerData.length - 1].x : 3600;
@@ -151,14 +170,24 @@ const ActivityLoader = () => {
 								}
 								label="Show Discrepency Curve"
 							/>
+							<FormControlLabel
+								control={
+									<Switch
+										checked={showDetectedSteps}
+										onChange={e => setShowDetectedSteps(e.target.checked)}
+										name="showSteps"
+									/>
+								}
+								label="Show Steps"
+							/>
 						</FormGroup>
 						<Box className="workout-creator-activity-data-chart">
 							<XYPlot
-								series={
-									showDiscrepencyCurve
-										? [discrepencyCurveSeries, powerDataSeries]
-										: [powerDataSeries]
-								}
+								series={[
+									...(showDiscrepencyCurve ? [discrepencyCurveSeries] : []),
+									powerDataSeries,
+									...(showDetectedSteps ? [detectedStepsSeries] : [])
+								]}
 								xTickFormat={formatSecondsAsHHMMSS}
 								xTickValues={activityXTicks}
 								xAxisLabel="time"

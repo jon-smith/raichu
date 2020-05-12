@@ -2,7 +2,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import {
 	calculateActivityPowerPerSecond,
 	calculateActivityProcessedPowerTimeSeries,
-	calculateMovingWindowDiscrepencyCurve
+	calculateMovingWindowDiscrepencyCurve,
+	calculateDetectedSteps
 } from './helpers';
 import { Interval, WorkoutCreatorState } from './types';
 
@@ -37,6 +38,12 @@ export const getMovingWindowDiscrepencyCurve = createSelector(
 			params.windowRadius
 		);
 	}
+);
+
+export const getDetectedStepTimePoints = createSelector(
+	getMovingWindowDiscrepencyCurve,
+	s => s.generationParams.stepThreshold,
+	calculateDetectedSteps
 );
 
 const getColor = (i: Interval) => {

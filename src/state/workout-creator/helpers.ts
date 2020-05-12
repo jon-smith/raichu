@@ -4,6 +4,7 @@ import {
 	getProcessedTimeSeries,
 	TimeSeriesProcessingOptions
 } from 'shared/activity-data/activity-calculator';
+import * as ArrayUtils from 'shared/utils/array-utils';
 import * as d3 from 'd3';
 import { DiscrepencyCurvePoint } from './types';
 
@@ -48,4 +49,18 @@ export function calculateMovingWindowDiscrepencyCurve(
 	}
 
 	return discrepencyCurve;
+}
+
+export function calculateDetectedSteps(
+	discrepencyCurve: ReturnType<typeof calculateMovingWindowDiscrepencyCurve>,
+	stepThreshold: number
+) {
+	const peaks = ArrayUtils.findPeaksAndTroughs(
+		discrepencyCurve.map(d => Math.abs(d.delta)).map(d => (d > stepThreshold ? d : 0.0))
+	);
+	const indicesOfPeaks = ArrayUtils.filterNullAndUndefined(
+		peaks.map((p, i) => (i !== 0 && (i === peaks.length - 1 || p === 'peak') ? i : null))
+	);
+
+	return indicesOfPeaks;
 }
