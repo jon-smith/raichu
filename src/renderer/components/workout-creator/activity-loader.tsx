@@ -136,6 +136,21 @@ const ActivityLoader = () => {
 		return buildNiceTimeTicksToDisplay(maxX, 5);
 	}, [powerData]);
 
+	const allSeries = useMemo(
+		() => [
+			...(showDiscrepencyCurve ? [discrepencyCurveSeries] : []),
+			powerDataSeries,
+			...(showDetectedSteps ? [detectedStepsSeries] : [])
+		],
+		[
+			detectedStepsSeries,
+			discrepencyCurveSeries,
+			powerDataSeries,
+			showDetectedSteps,
+			showDiscrepencyCurve
+		]
+	);
+
 	return (
 		<>
 			<ExpansionPanel>
@@ -183,11 +198,7 @@ const ActivityLoader = () => {
 						</FormGroup>
 						<Box className="workout-creator-activity-data-chart">
 							<XYPlot
-								series={[
-									...(showDiscrepencyCurve ? [discrepencyCurveSeries] : []),
-									powerDataSeries,
-									...(showDetectedSteps ? [detectedStepsSeries] : [])
-								]}
+								series={allSeries}
 								xTickFormat={formatSecondsAsHHMMSS}
 								xTickValues={activityXTicks}
 								xAxisLabel="time"
