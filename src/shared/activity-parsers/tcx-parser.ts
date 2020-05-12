@@ -33,6 +33,8 @@ function parseTrackPoint(pointElement: Element): ActivityPoint {
 	const hrElement = pointElement.querySelector('HeartRateBpm');
 	const heartRate = hrElement ? Helper.getNumericChildElementValue(hrElement, 'Value') : undefined;
 
+	// note TCX does not support temperature
+
 	return {
 		location: lat !== undefined && lon !== undefined ? { lat, lon } : undefined,
 		time: new Date(time),
