@@ -26,7 +26,7 @@ const getMetadata = (metadataNode: Element) => {
 	return { time: new Date(time) };
 };
 
-const getPoint = (pointNode: Element): ActivityPoint | undefined => {
+const getPoint = (pointNode: Element): ActivityPoint => {
 	const lat = Helper.getNumericAttributeValue(pointNode, 'lat');
 	const lon = Helper.getNumericAttributeValue(pointNode, 'lon');
 	const elevation = Helper.getNumericChildElementValue(pointNode, 'ele');
@@ -36,19 +36,15 @@ const getPoint = (pointNode: Element): ActivityPoint | undefined => {
 	const cadence = Helper.getNumericChildElementValue(pointNode, 'gpxtpx:cad');
 	const heartRate = Helper.getNumericChildElementValue(pointNode, 'gpxtpx:hr');
 
-	if (lat != null && lon != null) {
-		return {
-			location: { lat, lon },
-			time: new Date(time),
-			elevation,
-			temperature,
-			heartRate,
-			cadence,
-			power
-		};
-	}
-
-	return undefined;
+	return {
+		location: lat !== undefined && lon !== undefined ? { lat, lon } : undefined,
+		time: new Date(time),
+		elevation,
+		temperature,
+		heartRate,
+		cadence,
+		power
+	};
 };
 
 const getSegment = (segmentNode: Element): Segment => {
