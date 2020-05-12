@@ -1,4 +1,4 @@
-import { GpxData } from 'shared/activity-data/gpxparsing';
+import { GpxData } from 'shared/activity-parsers/gpx-parser';
 import {
 	fromGPXData,
 	getProcessedTimeSeries,

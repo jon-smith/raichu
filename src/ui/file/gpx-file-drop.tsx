@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { readFileAsText } from 'shared/utils/file-utils';
-import { GpxData, parseGPXFile } from 'shared/activity-data/gpxparsing';
+import { GpxData, parseGPXFile } from 'shared/activity-parsers/gpx-parser';
 
 export type FileAndGpx = { file: File; gpx: GpxData };
 

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'shared/utils/array-utils';
 import * as d3 from 'd3';
-import { GpxData } from 'shared/activity-data/gpxparsing';
+import { GpxData } from 'shared/activity-parsers/gpx-parser';
 import { Mutable } from 'shared/utils/type-utils';
 import { Interval, WorkoutCreatorState, ActivityToIntervalParameters } from './types';
 import {

@@ -7,7 +7,7 @@ import {
 } from 'shared/activity-data/best-split-calculator';
 import { cumulative, sortNumeric } from 'shared/utils/array-utils';
 import * as jolteon from 'jolteon';
-import { GpxData, Track, Point } from './gpxparsing';
+import { GpxData, Track, Point } from '../activity-parsers/gpx-parser';
 
 const useNative = true;
 const bestAveragesForDistances = useNative
