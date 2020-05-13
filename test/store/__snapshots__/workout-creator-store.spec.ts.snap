@@ -130,6 +130,12 @@ Object {
     },
   ],
   "ftp": 200,
+  "generatingFromActivity": false,
+  "generationParams": Object {
+    "minIntervalDuration": 10,
+    "stepThreshold": 0.1,
+    "windowRadius": 10,
+  },
   "history": Array [
     Array [
       Object {
