@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import * as lodash from 'lodash';
 import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
 import * as activityCalculator from 'shared/activity-data/activity-calculator';
+import { ActivityContainer, fromGPXData } from 'shared/activity-data/activity-container';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 import { useActivitySelector } from 'state/reducers';
 import { formatSecondsAsHHMMSS, formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
@@ -29,7 +30,7 @@ const distancesForPaceCurve = [100, 200, 400, 800, 1000, 1600, 5000, 10000];
 
 const defaultPaceCurveXDomain = frontBack(distancesForPaceCurve);
 
-function buildPaceCurve(d: activityCalculator.ActivityData) {
+function buildPaceCurve(d: ActivityContainer) {
 	const bestSplits = activityCalculator.getMinTimesPerDistance(d, distancesForPaceCurve);
 
 	const bestSplitsDataPoints = bestSplits
@@ -43,7 +44,7 @@ function buildPaceCurve(d: activityCalculator.ActivityData) {
 	return { name: 'pace-curve', data: bestSplitsDataPoints };
 }
 
-function buildPowerCurve(d: activityCalculator.ActivityData) {
+function buildPowerCurve(d: ActivityContainer) {
 	const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
 
 	const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'power', timeIntervals, 10);
@@ -56,7 +57,7 @@ function buildPowerCurve(d: activityCalculator.ActivityData) {
 	return { name: 'power-curve', data: bestSplitsDataPoints };
 }
 
-function buildHRCurve(d: activityCalculator.ActivityData) {
+function buildHRCurve(d: ActivityContainer) {
 	const timeIntervals = [1, 5, 10, 30, 60, 120, 240, 360, 600, 900];
 
 	const bestSplits = activityCalculator.getBestSplitsVsTime(d, 'heartrate', timeIntervals, 10);
@@ -70,7 +71,7 @@ function buildHRCurve(d: activityCalculator.ActivityData) {
 }
 
 function buildTimeSeries(
-	d: activityCalculator.ActivityData,
+	d: ActivityContainer,
 	v: activityCalculator.Variable,
 	name: string
 ): DataSeriesT {
@@ -131,10 +132,9 @@ const BestSplitPlot = (props: BestSplitPlotProps) => {
 const TestDataViewer = () => {
 	const loadedFiles = useActivitySelector(s => s.files);
 
-	const processedDataPerFile = useMemo(
-		() => loadedFiles.map(l => activityCalculator.fromGPXData(l.gpx)),
-		[loadedFiles]
-	);
+	const processedDataPerFile = useMemo(() => loadedFiles.map(l => fromGPXData(l.gpx)), [
+		loadedFiles
+	]);
 
 	const {
 		timeSeries,

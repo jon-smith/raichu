@@ -1,67 +1,15 @@
-import * as lodash from 'lodash';
-import { getDistance } from 'geolib';
+import * as jolteon from 'jolteon';
 import {
-	fillMissingIndices,
 	bestAveragesForDistances as jsBestAveragesForDistances,
 	interpolateNullValues
 } from 'shared/activity-data/best-split-calculator';
-import { cumulative, sortNumeric } from 'shared/utils/array-utils';
-import * as jolteon from 'jolteon';
-import { ActivityPoint } from '../activity-parsers/shared-structures';
-import { GpxData, Track } from '../activity-parsers/gpx-parser';
+import { sortNumeric } from 'shared/utils/array-utils';
+import { ActivityContainer, ExtendedPoint } from './activity-container';
 
 const useNative = true;
 const bestAveragesForDistances = useNative
 	? jolteon.best_averages_for_distances
 	: jsBestAveragesForDistances;
-
-type ExtendedPoint = ActivityPoint & {
-	secondsSinceStart: number;
-	cumulativeDistance?: number; // Metres
-};
-
-export interface ActivityData {
-	track: Track;
-	flatPoints: ExtendedPoint[];
-	filledPoints: { index: number; data?: ExtendedPoint }[];
-}
-
-function asGeolibCoord(p: { lat: number; lon: number }) {
-	return {
-		latitude: p.lat,
-		longitude: p.lon
-	};
-}
-
-function getCumulativeDistances(points: ActivityPoint[]): number[] | undefined {
-	const hasLocation = !points.some(p => p.location === undefined);
-	if (hasLocation) {
-		const distancesBetween = points.map((p, i) =>
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			i === 0 ? 0 : getDistance(asGeolibCoord(p.location!), asGeolibCoord(points[i - 1].location!))
-		);
-
-		return cumulative(distancesBetween);
-	}
-
-	const hasDistance = !points.some(p => p.distance === undefined);
-	if (hasDistance) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return points.map(p => p.distance!);
-	}
-
-	return undefined;
-}
-
-const buildExtendedPoints = (points: ActivityPoint[]): ExtendedPoint[] => {
-	const earliestTime = lodash.min(points.map(p => p.time)) ?? new Date();
-	const cumulativeDistances = getCumulativeDistances(points);
-	return points.map((p, i) => ({
-		...p,
-		cumulativeDistance: cumulativeDistances?.[i] ?? 0,
-		secondsSinceStart: (p.time.getTime() - earliestTime.getTime()) * 0.001
-	}));
-};
 
 const getVar = (p: ExtendedPoint, v: Variable) => {
 	switch (v) {
@@ -76,28 +24,16 @@ const getVar = (p: ExtendedPoint, v: Variable) => {
 	}
 };
 
-export const fromGPXData = (gpx: GpxData): ActivityData => {
-	const flatPoints = buildExtendedPoints(gpx.track.segments.flatMap(s => s.points));
-	const filledPoints = fillMissingIndices(
-		flatPoints.map(d => ({ ...d, index: d.secondsSinceStart }))
-	);
-	return {
-		track: gpx.track,
-		flatPoints,
-		filledPoints
-	};
-};
-
 export type Variable = 'heartrate' | 'power' | 'time';
 
-export function getAsTimeSeries(data: ActivityData, y: Variable, filledPoints = false) {
+export function getAsTimeSeries(data: ActivityContainer, y: Variable, filledPoints = false) {
 	if (filledPoints) {
 		return data.filledPoints.map(p => ({ x: p.index, y: p.data ? getVar(p.data, y) : null }));
 	}
 	return data.flatPoints.map(p => ({ x: p.secondsSinceStart, y: getVar(p, y) }));
 }
 
-export function extractData(data: ActivityData, v: Variable, filledPoints = false) {
+export function extractData(data: ActivityContainer, v: Variable, filledPoints = false) {
 	if (filledPoints) {
 		return data.filledPoints.map(p => (p.data ? getVar(p.data, v) : null));
 	}
@@ -111,7 +47,7 @@ export type TimeSeriesProcessingOptions = {
 };
 
 export function getProcessedTimeSeries(
-	data: ActivityData,
+	data: ActivityContainer,
 	variable: Variable,
 	options: TimeSeriesProcessingOptions
 ) {
@@ -165,7 +101,7 @@ function asRawVariable(o: BestSplitOption): Variable | null {
 }
 
 function getInterpolatedDataPointsForBestSplits(
-	data: ActivityData,
+	data: ActivityContainer,
 	option: BestSplitOption,
 	maxGapForInterpolation: number
 ) {
@@ -206,7 +142,7 @@ function getInterpolatedDataPointsForBestSplits(
 }
 
 export const getBestSplitsVsTime = (
-	data: ActivityData,
+	data: ActivityContainer,
 	option: BestSplitOption,
 	timeRanges: number[],
 	maxGapForInterpolation: number
@@ -220,7 +156,7 @@ export const getBestSplitsVsTime = (
 	return bestAveragesForDistances(interpolatedData, timeRanges);
 };
 
-export const getMinTimesPerDistance = (data: ActivityData, distances: number[]) => {
+export const getMinTimesPerDistance = (data: ActivityContainer, distances: number[]) => {
 	const sortedDistances = sortNumeric(distances);
 	const maxDistance = sortedDistances[sortedDistances.length - 1];
 	const results = sortedDistances.map(d => ({
