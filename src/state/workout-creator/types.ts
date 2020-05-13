@@ -1,4 +1,4 @@
-import { GpxData } from 'shared/activity-parsers/gpx-parser';
+import { ActivityContainer } from 'shared/activity-data/activity-container';
 
 export type Interval = {
 	intensity: number;
@@ -16,7 +16,7 @@ export type ActivityToIntervalParameters = {
 };
 
 export type WorkoutCreatorState = Readonly<{
-	activity?: GpxData;
+	activity?: ActivityContainer;
 	generationParams: ActivityToIntervalParameters;
 	generatingFromActivity: boolean;
 	ftp: number;

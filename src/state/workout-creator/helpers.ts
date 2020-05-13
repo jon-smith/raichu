@@ -1,30 +1,26 @@
-import { GpxData } from 'shared/activity-parsers/gpx-parser';
+import * as d3 from 'd3';
 import {
-	fromGPXData,
 	getProcessedTimeSeries,
 	TimeSeriesProcessingOptions
 } from 'shared/activity-data/activity-calculator';
 import * as ArrayUtils from 'shared/utils/array-utils';
-import * as d3 from 'd3';
+import { ActivityContainer } from 'shared/activity-data/activity-container';
 import { DiscrepencyCurvePoint } from './types';
 
-export function calculateActivityPowerPerSecond(activity?: GpxData) {
+export function calculateActivityPowerPerSecond(activity?: ActivityContainer) {
 	if (!activity) return [];
 
-	const activityData = fromGPXData(activity);
-
-	return activityData.filledPoints.map(p => p.data?.power ?? null);
+	return activity.filledPoints.map(p => p.data?.power ?? null);
 }
 
 export function calculateActivityProcessedPowerTimeSeries(
-	activity?: GpxData,
+	activity?: ActivityContainer,
 	options?: TimeSeriesProcessingOptions
 ) {
 	if (!activity) return [];
 
-	const activityData = fromGPXData(activity);
 	return getProcessedTimeSeries(
-		activityData,
+		activity,
 		'power',
 		options ?? {
 			maxGapForInterpolation: 3,

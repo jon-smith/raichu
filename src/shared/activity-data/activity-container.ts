@@ -28,6 +28,28 @@ export type ActivityContainer = {
 	filledPoints: { index: number; data?: ExtendedPoint }[];
 };
 
+type ActivityAttributes = {
+	name: string;
+	date?: Date;
+};
+
+export function getAttributes(activityContainer: ActivityContainer): ActivityAttributes {
+	switch (activityContainer.source.type) {
+		case 'gpx':
+			return {
+				name: activityContainer.source.data.track.name,
+				date: activityContainer.source.data.metadata?.time
+			};
+		case 'tcx':
+			return {
+				name: activityContainer.source.data.id,
+				date: activityContainer.source.data.laps[0]?.tracks[0]?.points[0]?.time
+			};
+		default:
+			return { name: '' };
+	}
+}
+
 function asGeolibCoord(p: { lat: number; lon: number }) {
 	return {
 		latitude: p.lat,

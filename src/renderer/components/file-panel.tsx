@@ -1,24 +1,30 @@
 import * as React from 'react';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useDispatchCallback } from 'state/dispatch-hooks';
-import { addGpxFiles } from 'state/activity-data/slice';
+import { addActivities } from 'state/activity-data/slice';
 import { useActivitySelector } from 'state/reducers';
-import GpxFileDrop from 'ui/file/gpx-file-drop';
+import GpxFileDrop, { FileAndGpx } from 'ui/file/gpx-file-drop';
+import { fromGPXData, getAttributes } from 'shared/activity-data/activity-container';
 import ActivitySummaryTable from './activity-summary-table';
 
 const FilePanel = () => {
-	const loadedFiles = useActivitySelector(s => s.files);
+	const activities = useActivitySelector(s => s.activities);
 
-	const addFiles = useDispatchCallback(addGpxFiles);
+	const addActivitesCallback = useDispatchCallback(addActivities);
+	const addFiles = useCallback(
+		(files: FileAndGpx[]) =>
+			addActivitesCallback(files.map(f => ({ filename: f.file.name, ...fromGPXData(f.gpx) }))),
+		[addActivitesCallback]
+	);
 
 	const tableRows = useMemo(
 		() =>
-			loadedFiles.map(l => ({
-				filename: l.file.name,
-				name: l.gpx.track.name,
-				date: l.gpx.metadata?.time
+			activities.map(l => ({
+				filename: l.filename,
+				name: getAttributes(l).name,
+				date: getAttributes(l).date
 			})),
-		[loadedFiles]
+		[activities]
 	);
 
 	return (

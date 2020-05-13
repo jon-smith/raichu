@@ -1,28 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ActivityContainer } from 'shared/activity-data/activity-container';
 
-import { FileAndGpx } from 'ui/file/gpx-file-drop';
+type ExtendedActivityContainer = ActivityContainer & { filename: string };
 
 export type ActivityState = Readonly<{
-	files: FileAndGpx[];
+	activities: ExtendedActivityContainer[];
 }>;
 
 const defaultState: ActivityState = {
-	files: []
+	activities: []
 };
 
 const slice = createSlice({
 	name: 'activityData',
 	initialState: defaultState,
 	reducers: {
-		addGpxFiles(state, action: PayloadAction<FileAndGpx[]>) {
-			state.files = [...state.files, ...action.payload];
+		addActivities(state, action: PayloadAction<ExtendedActivityContainer[]>) {
+			state.activities = [...state.activities, ...action.payload];
 		},
 		clearActivityData(state) {
-			state.files = [];
+			state.activities = [];
 		}
 	}
 });
 
 export const { reducer, actions } = slice;
 
-export const { addGpxFiles, clearActivityData } = actions;
+export const { addActivities, clearActivityData } = actions;

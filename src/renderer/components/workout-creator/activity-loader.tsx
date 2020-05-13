@@ -18,6 +18,7 @@ import GpxFileDrop, { FileAndGpx } from 'ui/file/gpx-file-drop';
 
 import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
+import { getAttributes, fromGPXData } from 'shared/activity-data/activity-container';
 
 import { useDispatchCallback } from 'state/dispatch-hooks';
 import { setActivity, clearActivity } from 'state/workout-creator/slice';
@@ -44,7 +45,7 @@ const ActivityLoadHeader = () => {
 		(files: FileAndGpx[]) => {
 			if (files.length > 0) {
 				const { gpx } = files[0];
-				setActivityDispatcher(gpx);
+				setActivityDispatcher(fromGPXData(gpx));
 			}
 		},
 		[setActivityDispatcher]
@@ -57,7 +58,7 @@ const ActivityLoadHeader = () => {
 					<Close />
 				</IconButton>
 				<div style={{ marginRight: '20px' }}>
-					<span>{`Loaded activity: ${loadedActivity.track.name}`}</span>
+					<span>{`Loaded activity: ${getAttributes(loadedActivity).name}`}</span>
 				</div>
 			</>
 		);

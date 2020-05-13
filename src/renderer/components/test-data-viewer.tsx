@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import * as lodash from 'lodash';
 import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
 import * as activityCalculator from 'shared/activity-data/activity-calculator';
-import { ActivityContainer, fromGPXData } from 'shared/activity-data/activity-container';
+import { ActivityContainer } from 'shared/activity-data/activity-container';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 import { useActivitySelector } from 'state/reducers';
 import { formatSecondsAsHHMMSS, formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
@@ -130,11 +130,7 @@ const BestSplitPlot = (props: BestSplitPlotProps) => {
 };
 
 const TestDataViewer = () => {
-	const loadedFiles = useActivitySelector(s => s.files);
-
-	const processedDataPerFile = useMemo(() => loadedFiles.map(l => fromGPXData(l.gpx)), [
-		loadedFiles
-	]);
+	const loadedActivities = useActivitySelector(s => s.activities);
 
 	const {
 		timeSeries,
@@ -143,12 +139,12 @@ const TestDataViewer = () => {
 		maxPacePerDistanceIntervalsSeries
 	} = useMemo(
 		() => ({
-			timeSeries: processedDataPerFile.map(d => buildTimeSeries(d, 'heartrate', 'hr-series')),
-			maxHRIntervalsSeries: processedDataPerFile.map(buildHRCurve),
-			maxPowerIntervalsSeries: processedDataPerFile.map(buildPowerCurve),
-			maxPacePerDistanceIntervalsSeries: processedDataPerFile.map(buildPaceCurve)
+			timeSeries: loadedActivities.map(d => buildTimeSeries(d, 'heartrate', 'hr-series')),
+			maxHRIntervalsSeries: loadedActivities.map(buildHRCurve),
+			maxPowerIntervalsSeries: loadedActivities.map(buildPowerCurve),
+			maxPacePerDistanceIntervalsSeries: loadedActivities.map(buildPaceCurve)
 		}),
-		[processedDataPerFile]
+		[loadedActivities]
 	);
 
 	const maxTimeSeconds =

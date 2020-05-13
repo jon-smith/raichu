@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'shared/utils/array-utils';
 import * as d3 from 'd3';
-import { GpxData } from 'shared/activity-parsers/gpx-parser';
 import { Mutable } from 'shared/utils/type-utils';
+import { ActivityContainer } from 'shared/activity-data/activity-container';
 import { Interval, WorkoutCreatorState, ActivityToIntervalParameters } from './types';
 import {
 	calculateActivityProcessedPowerTimeSeries,
@@ -45,7 +45,7 @@ export const generateIntervals = createAsyncThunk(
 		ftp,
 		params
 	}: {
-		activity: GpxData;
+		activity: ActivityContainer;
 		ftp: number;
 		params: ActivityToIntervalParameters;
 	}) => {
@@ -146,7 +146,7 @@ const workoutCreatorSlice = createSlice({
 		setStepThreshold(state, action: PayloadAction<number>) {
 			state.generationParams.stepThreshold = action.payload;
 		},
-		setActivity(state, action: PayloadAction<GpxData>) {
+		setActivity(state, action: PayloadAction<ActivityContainer>) {
 			state.activity = action.payload;
 		},
 		clearActivity(state) {
