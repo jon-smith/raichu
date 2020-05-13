@@ -63,15 +63,15 @@ export const generateIntervals = createAsyncThunk(
 			params.windowRadius
 		);
 
-		const stepIndices = calculateDetectedSteps(discrepencyCurve, params.stepThreshold);
+		const stepTimePoints = calculateDetectedSteps(discrepencyCurve, params.stepThreshold);
 
 		const result: Interval[] = [];
 
-		for (let i = 1; i < stepIndices.length; ++i) {
-			const startIndex = stepIndices[i - 1];
-			const endIndex = stepIndices[i];
-			const duration = endIndex - startIndex;
-			const thisIntervalData = intensityPerSecond.slice(startIndex, endIndex);
+		for (let i = 1; i < stepTimePoints.length; ++i) {
+			const startTime = stepTimePoints[i - 1];
+			const endTime = stepTimePoints[i];
+			const duration = endTime - startTime;
+			const thisIntervalData = intensityPerSecond.slice(startTime, endTime);
 			result.push({ length: duration, intensity: d3.mean(thisIntervalData) ?? 0 });
 		}
 

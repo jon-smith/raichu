@@ -58,5 +58,5 @@ export function calculateDetectedSteps(
 		peaks.map((p, i) => (i !== 0 && (i === peaks.length - 1 || p === 'peak') ? i : null))
 	);
 
-	return indicesOfPeaks;
+	return indicesOfPeaks.map(i => discrepencyCurve[i].t);
 }
