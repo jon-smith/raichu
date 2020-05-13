@@ -47,7 +47,7 @@ function parseTrackPoint(pointElement: Element): ActivityPoint {
 }
 
 function parseTrack(trackElement: Element) {
-	return { points: Array.from(trackElement.querySelectorAll('TrackPoint')).map(parseTrackPoint) };
+	return { points: Array.from(trackElement.querySelectorAll('Trackpoint')).map(parseTrackPoint) };
 }
 
 function parseLap(lapElement: Element) {
@@ -55,17 +55,16 @@ function parseLap(lapElement: Element) {
 }
 
 function parseActivity(activityElement: Element) {
-	const id = Helper.getElementValue(activityElement, 'ID') || '';
+	const id = Helper.getElementValue(activityElement, 'Id') || '';
 	return { id, laps: Array.from(activityElement.querySelectorAll('Lap')).map(parseLap) };
 }
 
 export function parseTCXFile(file: string): TcxData {
 	const xmlParser = new DOMParser();
 	const tcxXml = xmlParser.parseFromString(file, 'text/xml');
-
-	const activitiesNode = tcxXml.querySelector('activities');
+	const activitiesNode = tcxXml.querySelector('Activities');
 	if (activitiesNode) {
-		const activities = activitiesNode.querySelectorAll('activity');
+		const activities = activitiesNode.querySelectorAll('Activity');
 		return {
 			activities: ArrayUtils.filterNullAndUndefined(Array.from(activities).map(parseActivity))
 		};

@@ -14,11 +14,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
 import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
-import GpxFileDrop, { FileAndGpx } from 'ui/file/gpx-file-drop';
+import ActivityFileDrop, { FileAndData, extractActivityData } from 'ui/file/activity-file-drop';
 
 import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
-import { getAttributes, fromGPXData } from 'shared/activity-data/activity-container';
+import { getAttributes } from 'shared/activity-data/activity-container';
 
 import { useDispatchCallback } from 'state/dispatch-hooks';
 import { setActivity, clearActivity } from 'state/workout-creator/slice';
@@ -42,10 +42,13 @@ const ActivityLoadHeader = () => {
 	const clearActivitityDispatcher = useDispatchCallback(clearActivity);
 
 	const addFiles = useCallback(
-		(files: FileAndGpx[]) => {
+		(files: FileAndData[]) => {
 			if (files.length > 0) {
-				const { gpx } = files[0];
-				setActivityDispatcher(fromGPXData(gpx));
+				const { data } = files[0];
+				const activities = extractActivityData(data);
+				if (activities.length > 0) {
+					setActivityDispatcher(activities[0]);
+				}
 			}
 		},
 		[setActivityDispatcher]
@@ -64,7 +67,7 @@ const ActivityLoadHeader = () => {
 		);
 	}
 
-	return <GpxFileDrop onAddFiles={addFiles} allowMultiple={false} />;
+	return <ActivityFileDrop onAddFiles={addFiles} allowMultiple={false} />;
 };
 
 const stopClickFocusPropagation: Partial<BoxProps> = {
