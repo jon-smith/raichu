@@ -121,7 +121,7 @@ const FormSwitch = (params: {
 	);
 };
 
-const ActivityLoader = () => {
+const ActivityChart = () => {
 	const [showDiscrepencyCurve, setShowDiscrepencyCurve] = useState(false);
 	const [showDetectedSteps, setShowDetectedSteps] = useState(false);
 	const [showSmoothedInput, setShowSmoothedInput] = useState(false);
@@ -180,63 +180,67 @@ const ActivityLoader = () => {
 	);
 
 	return (
-		<>
-			<ExpansionPanel>
-				<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-					<Box display="flex" flexDirection="column" {...stopClickFocusPropagation}>
-						<Box
-							display="flex"
-							flexDirection="row"
-							alignItems="center"
-							minHeight="2em"
-							width="100%"
-							{...stopClickFocusPropagation}
-						>
-							<ActivityLoadHeader />
-						</Box>
-						<Box width="100%" {...stopClickFocusPropagation}>
-							<SettingsFormGroup />
-						</Box>
-					</Box>
-				</ExpansionPanelSummary>
-				<ExpansionPanelDetails>
-					<Box display="flex" flexDirection="column" width="100%">
-						<FormGroup row>
-							<FormSwitch
-								label="Show Smoothed Power"
-								name="showSmooth"
-								color="secondary"
-								value={showSmoothedInput}
-								setValue={setShowSmoothedInput}
-							/>
-							<FormSwitch
-								label="Show Discrepency Curve"
-								name="showDCurve"
-								color="secondary"
-								value={showDiscrepencyCurve}
-								setValue={setShowDiscrepencyCurve}
-							/>
-							<FormSwitch
-								label="Show Steps"
-								name="showSteps"
-								value={showDetectedSteps}
-								setValue={setShowDetectedSteps}
-							/>
-						</FormGroup>
-						<Box className="workout-creator-activity-data-chart">
-							<XYPlot
-								series={allSeries}
-								xTickFormat={formatSecondsAsHHMMSS}
-								xTickValues={activityXTicks}
-								xAxisLabel="time"
-								yAxisLabel="Power"
-							/>
-						</Box>
-					</Box>
-				</ExpansionPanelDetails>
-			</ExpansionPanel>
-		</>
+		<Box display="flex" flexDirection="column" width="100%">
+			<FormGroup row>
+				<FormSwitch
+					label="Show Smoothed Power"
+					name="showSmooth"
+					color="secondary"
+					value={showSmoothedInput}
+					setValue={setShowSmoothedInput}
+				/>
+				<FormSwitch
+					label="Show Discrepency Curve"
+					name="showDCurve"
+					color="secondary"
+					value={showDiscrepencyCurve}
+					setValue={setShowDiscrepencyCurve}
+				/>
+				<FormSwitch
+					label="Show Steps"
+					name="showSteps"
+					value={showDetectedSteps}
+					setValue={setShowDetectedSteps}
+				/>
+			</FormGroup>
+			<Box className="workout-creator-activity-data-chart">
+				<XYPlot
+					series={allSeries}
+					xTickFormat={formatSecondsAsHHMMSS}
+					xTickValues={activityXTicks}
+					xAxisLabel="time"
+					yAxisLabel="Power"
+				/>
+			</Box>
+		</Box>
 	);
 };
+
+const ActivityLoader = () => (
+	<>
+		<ExpansionPanel>
+			<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+				<Box display="flex" flexDirection="column" {...stopClickFocusPropagation}>
+					<Box
+						display="flex"
+						flexDirection="row"
+						alignItems="center"
+						minHeight="2em"
+						width="100%"
+						{...stopClickFocusPropagation}
+					>
+						<ActivityLoadHeader />
+					</Box>
+					<Box width="100%" {...stopClickFocusPropagation}>
+						<SettingsFormGroup />
+					</Box>
+				</Box>
+			</ExpansionPanelSummary>
+			<ExpansionPanelDetails>
+				<ActivityChart />
+			</ExpansionPanelDetails>
+		</ExpansionPanel>
+	</>
+);
 
 export default ActivityLoader;
