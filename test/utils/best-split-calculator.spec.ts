@@ -1,5 +1,6 @@
 import {
 	calculateMaxAveragesForDistances,
+	calculateMinTimesForDistances,
 	interpolateNullValues,
 	fillMissingIndices
 } from 'shared/activity-data/best-split-calculator';
@@ -116,5 +117,76 @@ describe('maxAveragesForDistances', () => {
 		const nativeResult = jolteon.best_averages_for_distances(input, distances);
 
 		expect(result).toEqual(nativeResult);
+	});
+});
+
+describe('minTimesForDistances', () => {
+	const convertInput = (input: number[]) =>
+		input.map((d, i) => ({ time: i, cumulativeDistance: d }));
+
+	test('constant speed', () => {
+		const cumulativeDist = [1, 2, 3, 4, 5, 6];
+		const distances = [1, 2, 3, 4, 5];
+
+		const result = calculateMinTimesForDistances(convertInput(cumulativeDist), distances);
+
+		expect(result.length).toEqual(distances.length);
+		for (let i = 0; i < distances.length; ++i) {
+			expect(result[i].distance).toEqual(distances[i]);
+			expect(result[i].best).toBeTruthy();
+			expect(result[i].best?.startTime).toEqual(0);
+			expect(result[i].best?.time).toEqual(i + 1);
+		}
+	});
+
+	test('invalid distance', () => {
+		const cumulativeDist = [1, 2, 3, 4, 5, 6];
+		// 10 and 15 shouldn't have data at the input range isn't that high
+		const distances = [5, 10, 15];
+
+		const result = calculateMinTimesForDistances(convertInput(cumulativeDist), distances);
+
+		expect(result.length).toEqual(distances.length);
+
+		expect(result[0].best).toEqual({ time: 5, startTime: 0 });
+		expect(result[0].distance).toEqual(5);
+
+		expect(result[1].best).toBeNull();
+		expect(result[1].distance).toEqual(10);
+
+		expect(result[2].best).toBeNull();
+		expect(result[2].distance).toEqual(15);
+	});
+
+	test('vary pace', () => {
+		const cumulativeDist = [1, 2, 3, 5, 7, 8, 8, 8];
+		const distances = [1, 2, 3, 4, 5, 6];
+
+		const result = calculateMinTimesForDistances(convertInput(cumulativeDist), distances);
+		expect(result.length).toEqual(distances.length);
+
+		// 1 to 2
+		expect(result[0].best?.time).toEqual(1);
+		expect(result[0].best?.startTime).toEqual(0);
+
+		// 3 to 5
+		expect(result[1].best?.time).toEqual(1);
+		expect(result[1].best?.startTime).toEqual(2);
+
+		// 2 to 5
+		expect(result[2].best?.time).toEqual(2);
+		expect(result[2].best?.startTime).toEqual(1);
+
+		// 3 to 7
+		expect(result[3].best?.time).toEqual(2);
+		expect(result[3].best?.startTime).toEqual(2);
+
+		// 2 to 7
+		expect(result[4].best?.time).toEqual(3);
+		expect(result[4].best?.startTime).toEqual(1);
+
+		// 1 to 7
+		expect(result[5].best?.time).toEqual(4);
+		expect(result[5].best?.startTime).toEqual(0);
 	});
 });
