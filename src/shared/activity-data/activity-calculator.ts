@@ -1,15 +1,15 @@
 import * as jolteon from 'jolteon';
 import {
-	bestAveragesForDistances as jsBestAveragesForDistances,
+	calculateMaxAveragesForDistances as jsMaxAveragesForDistances,
+	calculateMinTimesForDistances,
 	interpolateNullValues
 } from 'shared/activity-data/best-split-calculator';
-import { sortNumeric } from 'shared/utils/array-utils';
 import { ActivityContainer, ExtendedPoint } from './activity-container';
 
 const useNative = true;
-const bestAveragesForDistances = useNative
+const maxAveragesForDistances = useNative
 	? jolteon.best_averages_for_distances
-	: jsBestAveragesForDistances;
+	: jsMaxAveragesForDistances;
 
 const getVar = (p: ExtendedPoint, v: Variable) => {
 	switch (v) {
@@ -153,42 +153,15 @@ export const getBestSplitsVsTime = (
 		maxGapForInterpolation
 	);
 
-	return bestAveragesForDistances(interpolatedData, timeRanges);
+	return maxAveragesForDistances(interpolatedData, timeRanges);
 };
 
-export const getMinTimesPerDistance = (data: ActivityContainer, distances: number[]) => {
-	const sortedDistances = sortNumeric(distances);
-	const maxDistance = sortedDistances[sortedDistances.length - 1];
-	const results = sortedDistances.map(d => ({
-		distance: d,
-		best: null as null | { time: number; startTime: number }
-	}));
-
-	for (let i = 0; i < data.flatPoints.length; ++i) {
-		const segmentStart = data.flatPoints[i];
-		const segmentStartDistance = segmentStart.cumulativeDistance;
-		if (segmentStartDistance) {
-			for (let j = i; j < data.flatPoints.length; ++j) {
-				const { secondsSinceStart, cumulativeDistance } = data.flatPoints[j];
-				if (cumulativeDistance) {
-					const deltaTime = secondsSinceStart - segmentStart.secondsSinceStart;
-					const deltaDistance = cumulativeDistance - segmentStartDistance;
-
-					for (let r = 0; r < results.length; ++r) {
-						if (deltaDistance >= results[r].distance) {
-							const currentBest = results[r].best;
-							if (currentBest == null || deltaTime < currentBest.time) {
-								results[r].best = { startTime: segmentStart.secondsSinceStart, time: deltaTime };
-							}
-						}
-					}
-
-					// Once we have exceeded the max distance, no point searching any more
-					if (deltaDistance > maxDistance) break;
-				}
-			}
-		}
-	}
-
-	return results;
-};
+export function getMinTimesPerDistance(data: ActivityContainer, distances: number[]) {
+	return calculateMinTimesForDistances(
+		data.flatPoints.map(d => ({
+			time: d.secondsSinceStart,
+			cumulativeDistance: d.cumulativeDistance
+		})),
+		distances
+	);
+}

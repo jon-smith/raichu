@@ -1,5 +1,5 @@
 import {
-	bestAveragesForDistances,
+	calculateMaxAveragesForDistances,
 	interpolateNullValues,
 	fillMissingIndices
 } from 'shared/activity-data/best-split-calculator';
@@ -47,12 +47,12 @@ describe('interpolateNullValues', () => {
 	});
 });
 
-describe('bestAveragesForDistance', () => {
+describe('maxAveragesForDistances', () => {
 	test('all equal input', () => {
 		const input = [1, 1, 1, 1, 1, 1];
 		const distances = [1, 2, 3, 4, 5];
 
-		const result = bestAveragesForDistances(input, distances);
+		const result = calculateMaxAveragesForDistances(input, distances);
 
 		expect(result.length).toEqual(distances.length);
 		for (let i = 0; i < distances.length; ++i) {
@@ -68,7 +68,7 @@ describe('bestAveragesForDistance', () => {
 		// 10 and 15 shouldn't have data at the input range isn't that high
 		const distances = [5, 10, 15];
 
-		const result = bestAveragesForDistances(input, distances);
+		const result = calculateMaxAveragesForDistances(input, distances);
 
 		expect(result.length).toEqual(distances.length);
 
@@ -86,7 +86,7 @@ describe('bestAveragesForDistance', () => {
 		const input = [1, 1, 5, 5, 1, 1, 5, 5];
 		const distances = [1, 2, 3, 4, 5, 6];
 
-		const result = bestAveragesForDistances(input, distances);
+		const result = calculateMaxAveragesForDistances(input, distances);
 		expect(result.length).toEqual(distances.length);
 
 		expect(result[0].best?.average).toEqual(5);
@@ -112,7 +112,7 @@ describe('bestAveragesForDistance', () => {
 		const input = [1, 1, 5, 5, 1, 1, 5, 5];
 		const distances = [1, 2, 3, 4, 5, 6];
 
-		const result = bestAveragesForDistances(input, distances);
+		const result = calculateMaxAveragesForDistances(input, distances);
 		const nativeResult = jolteon.best_averages_for_distances(input, distances);
 
 		expect(result).toEqual(nativeResult);

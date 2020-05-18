@@ -1,3 +1,5 @@
+import { sortNumeric } from 'shared/utils/array-utils';
+
 export type BestAverage = {
 	startIndex: number;
 	average: number;
@@ -97,10 +99,10 @@ export const interpolateNullValues = (
 
 // Calculate the best average of the data points when the distance between indices is equal to the supplied distance
 // Return results will be ordered by distance
-export const bestAveragesForDistances = (
+export function calculateMaxAveragesForDistances(
 	dataPoints: (number | null)[],
 	indexDistances: number[]
-): Result[] => {
+): Result[] {
 	if (indexDistances.length === 0) return [];
 
 	let currentMaxSumsForDistances = indexDistances
@@ -125,4 +127,50 @@ export const bestAveragesForDistances = (
 		distance: b.distance,
 		best: b.bestIndex === null ? null : { startIndex: b.bestIndex, average: b.bestSum / b.distance }
 	}));
-};
+}
+
+export function calculateMinTimesForDistances(
+	dataPoints: { time: number; cumulativeDistance?: number }[],
+	distances: number[]
+) {
+	if (distances.length === 0) return [];
+
+	const sortedDistances = sortNumeric(distances);
+
+	const maxDistance = sortedDistances[sortedDistances.length - 1];
+	const currentMinTimesForDistances = sortedDistances.map(d => ({
+		distance: d,
+		best: null as null | { time: number; startTime: number }
+	}));
+
+	for (let i = 0; i < dataPoints.length; ++i) {
+		const segmentStart = dataPoints[i];
+		const segmentStartDistance = segmentStart.cumulativeDistance;
+		if (segmentStartDistance !== undefined) {
+			for (let j = i; j < dataPoints.length; ++j) {
+				const { time, cumulativeDistance } = dataPoints[j];
+				if (cumulativeDistance) {
+					const deltaTime = time - segmentStart.time;
+					const deltaDistance = cumulativeDistance - segmentStartDistance;
+
+					for (let r = 0; r < currentMinTimesForDistances.length; ++r) {
+						if (deltaDistance >= currentMinTimesForDistances[r].distance) {
+							const currentBest = currentMinTimesForDistances[r].best;
+							if (currentBest == null || deltaTime < currentBest.time) {
+								currentMinTimesForDistances[r].best = {
+									startTime: segmentStart.time,
+									time: deltaTime
+								};
+							}
+						}
+					}
+
+					// Once we have exceeded the max distance, no point searching any more
+					if (deltaDistance > maxDistance) break;
+				}
+			}
+		}
+	}
+
+	return currentMinTimesForDistances;
+}
