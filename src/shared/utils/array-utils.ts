@@ -71,7 +71,7 @@ export function movingAverage(values: number[], movingAverageRadius?: number) {
 	let count = radius;
 
 	for (let i = 0; i < values.length; ++i) {
-		const indexToRemove = i - radius;
+		const indexToRemove = i - radius - 1;
 		const indexToAdd = i + radius;
 
 		if (indexToAdd < values.length) {
@@ -108,7 +108,7 @@ export function movingAverageObj<T extends { [k: string]: number }>(
 	let count = radius;
 
 	for (let i = 0; i < values.length; ++i) {
-		const indexToRemove = i - radius;
+		const indexToRemove = i - radius - 1;
 		const indexToAdd = i + radius;
 
 		if (indexToAdd < values.length) {
