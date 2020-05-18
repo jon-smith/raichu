@@ -11,6 +11,8 @@ import {
 	setFTP,
 	setStepThreshold,
 	setWindowRadius,
+	setInputSmoothing,
+	setDiscrepencySmoothing,
 	generateIntervals
 } from 'state/workout-creator/slice';
 import { useAppDispatch, useDispatchCallback } from 'state/dispatch-hooks';
@@ -28,9 +30,34 @@ const useStyles = makeStyles(theme =>
 	})
 );
 
-const SettingsFormGroup = () => {
+const NumericFormControlLabel = (props: {
+	label: string;
+	value: number;
+	onChange: (v: number) => void;
+}) => {
+	const { label, value, onChange } = props;
 	const formControlClasses = useStyles();
 
+	return (
+		<FormControlLabel
+			classes={formControlClasses}
+			control={
+				<TextField
+					type="number"
+					variant="outlined"
+					size="small"
+					margin="none"
+					value={value}
+					onChange={e => onChange(parseFloat(e.target.value))}
+				/>
+			}
+			label={label}
+			labelPlacement="start"
+		/>
+	);
+};
+
+const SettingsFormGroup = () => {
 	const { loadedActivity, isGenerating, ftp, params } = useWorkoutCreatorSelector(s => ({
 		loadedActivity: s.activity,
 		isGenerating: s.generatingFromActivity,
@@ -41,6 +68,8 @@ const SettingsFormGroup = () => {
 	const setFTPCallback = useDispatchCallback(setFTP);
 	const setStepThresholdCallback = useDispatchCallback(setStepThreshold);
 	const setWindowRadiusCallback = useDispatchCallback(setWindowRadius);
+	const setInputSmoothingCallback = useDispatchCallback(setInputSmoothing);
+	const setDiscrepencySmoothingCallback = useDispatchCallback(setDiscrepencySmoothing);
 
 	const dispatch = useAppDispatch();
 	const generateIntervalsDispatcher = useCallback(() => {
@@ -49,50 +78,26 @@ const SettingsFormGroup = () => {
 
 	return (
 		<FormGroup row>
-			<FormControlLabel
-				classes={formControlClasses}
-				control={
-					<TextField
-						type="number"
-						variant="outlined"
-						size="small"
-						margin="none"
-						value={ftp}
-						onChange={e => setFTPCallback(parseFloat(e.target.value))}
-					/>
-				}
-				label="FTP"
-				labelPlacement="start"
-			/>
-			<FormControlLabel
-				classes={formControlClasses}
-				control={
-					<TextField
-						type="number"
-						variant="outlined"
-						size="small"
-						margin="none"
-						value={params.windowRadius}
-						onChange={e => setWindowRadiusCallback(parseFloat(e.target.value))}
-					/>
-				}
+			<NumericFormControlLabel label="FTP" value={ftp} onChange={setFTPCallback} />
+			<NumericFormControlLabel
 				label="Window Size"
-				labelPlacement="start"
+				value={params.windowRadius}
+				onChange={setWindowRadiusCallback}
 			/>
-			<FormControlLabel
-				classes={formControlClasses}
-				control={
-					<TextField
-						type="number"
-						variant="outlined"
-						size="small"
-						margin="none"
-						value={params.stepThreshold}
-						onChange={e => setStepThresholdCallback(parseFloat(e.target.value))}
-					/>
-				}
+			<NumericFormControlLabel
+				label="Pre Smooth"
+				value={params.inputSmoothingRadius}
+				onChange={setInputSmoothingCallback}
+			/>
+			<NumericFormControlLabel
+				label="Post Smooth"
+				value={params.discrepencySmoothingRadius}
+				onChange={setDiscrepencySmoothingCallback}
+			/>
+			<NumericFormControlLabel
 				label="Step Threshold"
-				labelPlacement="start"
+				value={params.stepThreshold}
+				onChange={setStepThresholdCallback}
 			/>
 			<Button
 				variant="contained"

@@ -32,7 +32,8 @@ export function calculateActivityProcessedPowerTimeSeries(
 
 export function calculateMovingWindowDiscrepencyCurve(
 	intensityPerSecond: number[],
-	windowRadius: number
+	windowRadius: number,
+	smoothingRadius: number
 ) {
 	const multiplier = 1.0 / windowRadius;
 	const discrepencyCurve = Array<DiscrepencyCurvePoint>(0);
@@ -44,7 +45,7 @@ export function calculateMovingWindowDiscrepencyCurve(
 		discrepencyCurve.push({ t: i, delta: difference * multiplier });
 	}
 
-	return discrepencyCurve;
+	return ArrayUtils.movingAverageObj(discrepencyCurve, 'delta', smoothingRadius);
 }
 
 export function calculateDetectedSteps(

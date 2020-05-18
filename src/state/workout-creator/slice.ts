@@ -26,7 +26,13 @@ const defaultIntervals: Interval[] = [
 
 const defaultState: WorkoutCreatorState = {
 	ftp: 200,
-	generationParams: { minIntervalDuration: 10, stepThreshold: 0.1, windowRadius: 10 },
+	generationParams: {
+		minIntervalDuration: 10,
+		stepThreshold: 0.1,
+		windowRadius: 10,
+		discrepencySmoothingRadius: 1,
+		inputSmoothingRadius: 1
+	},
 	generatingFromActivity: false,
 	newInterval: { intensity: 1.0, length: 0 },
 	currentIntervals: defaultIntervals,
@@ -58,9 +64,15 @@ export const generateIntervals = createAsyncThunk(
 		// Convert to intensity using FTP, and replace nulls with 0
 		const timeVsIntensity = timeVsPower.map(v => ({ t: v.x, i: v.y ? v.y / ftp : 0.0 }));
 		const intensityPerSecond = timeVsIntensity.map(ti => ti.i);
-		const discrepencyCurve = calculateMovingWindowDiscrepencyCurve(
+		const smoothedIntensityPerSecond = ArrayUtils.movingAverage(
 			intensityPerSecond,
-			params.windowRadius
+			params.inputSmoothingRadius
+		);
+
+		const discrepencyCurve = calculateMovingWindowDiscrepencyCurve(
+			smoothedIntensityPerSecond,
+			params.windowRadius,
+			params.discrepencySmoothingRadius
 		);
 
 		const stepTimePoints = calculateDetectedSteps(discrepencyCurve, params.stepThreshold);
@@ -146,6 +158,12 @@ const workoutCreatorSlice = createSlice({
 		setStepThreshold(state, action: PayloadAction<number>) {
 			state.generationParams.stepThreshold = action.payload;
 		},
+		setInputSmoothing(state, action: PayloadAction<number>) {
+			state.generationParams.inputSmoothingRadius = action.payload;
+		},
+		setDiscrepencySmoothing(state, action: PayloadAction<number>) {
+			state.generationParams.discrepencySmoothingRadius = action.payload;
+		},
 		setActivity(state, action: PayloadAction<ActivityContainer>) {
 			state.activity = action.payload;
 		},
@@ -179,6 +197,8 @@ export const {
 	setFTP,
 	setWindowRadius,
 	setStepThreshold,
+	setInputSmoothing,
+	setDiscrepencySmoothing,
 	setActivity,
 	clearActivity
 } = actions;

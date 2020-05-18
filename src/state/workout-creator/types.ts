@@ -11,6 +11,8 @@ export type DiscrepencyCurvePoint = { t: number; delta: number };
 
 export type ActivityToIntervalParameters = {
 	minIntervalDuration: number;
+	inputSmoothingRadius: number;
+	discrepencySmoothingRadius: number;
 	windowRadius: number;
 	stepThreshold: number;
 };

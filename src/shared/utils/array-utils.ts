@@ -55,3 +55,73 @@ export function findPeaksAndTroughs(input: number[]) {
 
 	return result;
 }
+
+export function movingAverage(values: number[], movingAverageRadius?: number) {
+	const radius = movingAverageRadius ?? 0;
+	if (radius === 0) return values;
+
+	const result: number[] = [];
+
+	let sum = 0;
+
+	for (let i = 0; i < radius && i < values.length; ++i) {
+		sum += values[i];
+	}
+
+	let count = radius;
+
+	for (let i = 0; i < values.length; ++i) {
+		const indexToRemove = i - radius;
+		const indexToAdd = i + radius;
+
+		if (indexToAdd < values.length) {
+			sum += values[indexToAdd];
+			count += 1;
+		}
+		if (indexToRemove >= 0) {
+			sum -= values[indexToRemove];
+			count -= 1;
+		}
+
+		result.push(sum / count);
+	}
+
+	return result;
+}
+
+export function movingAverageObj<T extends { [k: string]: number }>(
+	values: T[],
+	accessor: keyof T,
+	movingAverageRadius?: number
+) {
+	const radius = movingAverageRadius ?? 0;
+	if (radius === 0) return values;
+
+	const result: T[] = [];
+
+	let sum = 0;
+
+	for (let i = 0; i < radius && i < values.length; ++i) {
+		sum += values[i][accessor];
+	}
+
+	let count = radius;
+
+	for (let i = 0; i < values.length; ++i) {
+		const indexToRemove = i - radius;
+		const indexToAdd = i + radius;
+
+		if (indexToAdd < values.length) {
+			sum += values[indexToAdd][accessor];
+			count += 1;
+		}
+		if (indexToRemove >= 0) {
+			sum -= values[indexToRemove][accessor];
+			count -= 1;
+		}
+
+		result.push({ ...values[i], [accessor]: sum / count });
+	}
+
+	return result;
+}

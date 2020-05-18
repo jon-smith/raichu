@@ -35,7 +35,8 @@ export const getMovingWindowDiscrepencyCurve = createSelector(
 
 		return calculateMovingWindowDiscrepencyCurve(
 			timeVsIntensity.map(ti => ti.i),
-			params.windowRadius
+			params.windowRadius,
+			params.discrepencySmoothingRadius
 		);
 	}
 );
