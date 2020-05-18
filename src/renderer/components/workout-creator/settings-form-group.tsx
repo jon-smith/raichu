@@ -58,7 +58,8 @@ const NumericFormControlLabel = (props: {
 };
 
 const SettingsFormGroup = () => {
-	const { loadedActivity, isGenerating, ftp, params } = useWorkoutCreatorSelector(s => ({
+	const { state, loadedActivity, isGenerating, ftp, params } = useWorkoutCreatorSelector(s => ({
+		state: s,
 		loadedActivity: s.activity,
 		isGenerating: s.generatingFromActivity,
 		ftp: s.ftp,
@@ -73,8 +74,8 @@ const SettingsFormGroup = () => {
 
 	const dispatch = useAppDispatch();
 	const generateIntervalsDispatcher = useCallback(() => {
-		if (loadedActivity) dispatch(generateIntervals({ activity: loadedActivity, ftp, params }));
-	}, [dispatch, loadedActivity, ftp, params]);
+		if (loadedActivity) dispatch(generateIntervals(state));
+	}, [dispatch, loadedActivity, state]);
 
 	return (
 		<FormGroup row>

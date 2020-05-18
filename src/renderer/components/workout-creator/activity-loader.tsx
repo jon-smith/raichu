@@ -22,11 +22,7 @@ import { getAttributes } from 'shared/activity-data/activity-container';
 
 import { useDispatchCallback } from 'state/dispatch-hooks';
 import { setActivity, clearActivity } from 'state/workout-creator/slice';
-import {
-	getActivityProcessedPowerTimeSeries,
-	getMovingWindowDiscrepencyCurve,
-	getDetectedStepTimePoints
-} from 'state/workout-creator/selectors';
+import { getDetectedIntervals } from 'state/workout-creator/selectors';
 import { useWorkoutCreatorSelector } from 'state/reducers';
 
 import SettingsFormGroup from './settings-form-group';
@@ -102,22 +98,50 @@ function buildDetectedStepsSeries(data: DataSeriesT['data']): DataSeriesT {
 	};
 }
 
+const FormSwitch = (params: {
+	label: string;
+	value: boolean;
+	setValue: (v: boolean) => void;
+	name: string;
+	color?: 'primary' | 'secondary';
+}) => {
+	const { label, value, setValue, name, color } = params;
+	return (
+		<FormControlLabel
+			control={
+				<Switch
+					checked={value}
+					onChange={e => setValue(e.target.checked)}
+					name={name}
+					color={color}
+				/>
+			}
+			label={label}
+		/>
+	);
+};
+
 const ActivityLoader = () => {
 	const [showDiscrepencyCurve, setShowDiscrepencyCurve] = useState(false);
 	const [showDetectedSteps, setShowDetectedSteps] = useState(false);
+	const [showSmoothedInput, setShowSmoothedInput] = useState(false);
 
-	const { powerData, discrepencyCurve, stepThreshold, detectedSteps } = useWorkoutCreatorSelector(
-		s => ({
-			powerData: getActivityProcessedPowerTimeSeries(s),
-			discrepencyCurve: getMovingWindowDiscrepencyCurve(s),
-			detectedSteps: getDetectedStepTimePoints(s),
-			stepThreshold: s.generationParams.stepThreshold
-		})
-	);
+	const {
+		rawInput,
+		smoothedInput,
+		discrepencyCurve,
+		stepThreshold,
+		detectedStepTimePoints
+	} = useWorkoutCreatorSelector(s => ({
+		...getDetectedIntervals(s),
+		stepThreshold: s.generationParams.stepThreshold
+	}));
+
+	const powerData = showSmoothedInput ? smoothedInput : rawInput;
+
+	const maxPower = useMemo(() => d3.max(rawInput, p => p.y ?? 0) ?? 0, [rawInput]);
 
 	const powerDataSeries = useMemo(() => buildPowerSeries(powerData), [powerData]);
-
-	const maxPower = useMemo(() => d3.max(powerData, p => p.y ?? 0) ?? 0, [powerData]);
 
 	const discrepencyCurveSeries = useMemo(() => {
 		const absolute = discrepencyCurve.map(d => ({ x: d.t, y: Math.abs(d.delta) }));
@@ -131,9 +155,9 @@ const ActivityLoader = () => {
 	}, [discrepencyCurve, maxPower, stepThreshold]);
 
 	const detectedStepsSeries = useMemo(() => {
-		const stepVsPower = detectedSteps.map(d => ({ x: d, y: powerData[d].y }));
+		const stepVsPower = detectedStepTimePoints.map(d => ({ x: d, y: powerData[d].y }));
 		return buildDetectedStepsSeries(stepVsPower);
-	}, [detectedSteps, powerData]);
+	}, [detectedStepTimePoints, powerData]);
 
 	const activityXTicks = useMemo(() => {
 		const maxX = powerData.length > 0 ? powerData[powerData.length - 1].x : 3600;
@@ -178,26 +202,25 @@ const ActivityLoader = () => {
 				<ExpansionPanelDetails>
 					<Box display="flex" flexDirection="column" width="100%">
 						<FormGroup row>
-							<FormControlLabel
-								control={
-									<Switch
-										checked={showDiscrepencyCurve}
-										onChange={e => setShowDiscrepencyCurve(e.target.checked)}
-										name="showDCurve"
-										color="secondary"
-									/>
-								}
-								label="Show Discrepency Curve"
+							<FormSwitch
+								label="Show Smoothed Power"
+								name="showSmooth"
+								color="secondary"
+								value={showSmoothedInput}
+								setValue={setShowSmoothedInput}
 							/>
-							<FormControlLabel
-								control={
-									<Switch
-										checked={showDetectedSteps}
-										onChange={e => setShowDetectedSteps(e.target.checked)}
-										name="showSteps"
-									/>
-								}
+							<FormSwitch
+								label="Show Discrepency Curve"
+								name="showDCurve"
+								color="secondary"
+								value={showDiscrepencyCurve}
+								setValue={setShowDiscrepencyCurve}
+							/>
+							<FormSwitch
 								label="Show Steps"
+								name="showSteps"
+								value={showDetectedSteps}
+								setValue={setShowDetectedSteps}
 							/>
 						</FormGroup>
 						<Box className="workout-creator-activity-data-chart">

@@ -5,7 +5,7 @@ import {
 } from 'shared/activity-data/activity-calculator';
 import * as ArrayUtils from 'shared/utils/array-utils';
 import { ActivityContainer } from 'shared/activity-data/activity-container';
-import { DiscrepencyCurvePoint } from './types';
+import { DiscrepencyCurvePoint, ActivityToIntervalParameters, Interval } from './types';
 
 export function calculateActivityPowerPerSecond(activity?: ActivityContainer) {
 	if (!activity) return [];
@@ -27,6 +27,17 @@ export function calculateActivityProcessedPowerTimeSeries(
 			interpolateNull: true,
 			resolution: 1
 		}
+	);
+}
+
+export function calculateActivitySmoothedPowerTimeSeries(
+	processedPowerTimeSeries: { x: number; y: number | null }[],
+	movingAverageRadius?: number
+) {
+	return ArrayUtils.movingAverageObj(
+		processedPowerTimeSeries.map(t => ({ x: t.x, y: t.y ?? 0 })),
+		'y',
+		movingAverageRadius
 	);
 }
 
@@ -60,4 +71,41 @@ export function calculateDetectedSteps(
 	);
 
 	return indicesOfPeaks.map(i => discrepencyCurve[i].t);
+}
+
+export function performIntervalDetection(
+	activity: ActivityContainer | undefined,
+	ftp: number,
+	params: ActivityToIntervalParameters
+) {
+	const timeSeries = calculateActivityProcessedPowerTimeSeries(activity);
+	const smoothedTimeSeries = calculateActivitySmoothedPowerTimeSeries(
+		timeSeries,
+		params.inputSmoothingRadius
+	);
+	const intensityPerSecond = smoothedTimeSeries.map(v => v.y / ftp);
+	const discrepencyCurve = calculateMovingWindowDiscrepencyCurve(
+		intensityPerSecond,
+		params.windowRadius,
+		params.discrepencySmoothingRadius
+	);
+	const detectedStepTimePoints = calculateDetectedSteps(discrepencyCurve, params.stepThreshold);
+
+	const result: Interval[] = [];
+
+	for (let i = 1; i < detectedStepTimePoints.length; ++i) {
+		const startTime = detectedStepTimePoints[i - 1];
+		const endTime = detectedStepTimePoints[i];
+		const duration = endTime - startTime;
+		const thisIntervalData = intensityPerSecond.slice(startTime, endTime);
+		result.push({ length: duration, intensity: d3.mean(thisIntervalData) ?? 0 });
+	}
+
+	return {
+		intervals: result,
+		rawInput: timeSeries,
+		smoothedInput: smoothedTimeSeries,
+		discrepencyCurve,
+		detectedStepTimePoints
+	};
 }

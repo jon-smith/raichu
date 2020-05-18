@@ -1,14 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'shared/utils/array-utils';
-import * as d3 from 'd3';
 import { Mutable } from 'shared/utils/type-utils';
 import { ActivityContainer } from 'shared/activity-data/activity-container';
-import { Interval, WorkoutCreatorState, ActivityToIntervalParameters } from './types';
-import {
-	calculateActivityProcessedPowerTimeSeries,
-	calculateMovingWindowDiscrepencyCurve,
-	calculateDetectedSteps
-} from './helpers';
+import { Interval, WorkoutCreatorState } from './types';
+import { getDetectedIntervals } from './selectors';
 
 const defaultIntervals: Interval[] = [
 	{ intensity: 0.3, length: 60 },
@@ -46,48 +41,8 @@ export const generateIntervals = createAsyncThunk(
 	// Note this function doesn't actually run asynchronously at the moment
 	// but I intend to use a worker thread in the future
 	// For now I just wanted to try out the usage of createAsyncThunk
-	async ({
-		activity,
-		ftp,
-		params
-	}: {
-		activity: ActivityContainer;
-		ftp: number;
-		params: ActivityToIntervalParameters;
-	}) => {
-		const timeVsPower = calculateActivityProcessedPowerTimeSeries(activity, {
-			interpolateNull: true,
-			maxGapForInterpolation: 3,
-			resolution: 1
-		});
-
-		// Convert to intensity using FTP, and replace nulls with 0
-		const timeVsIntensity = timeVsPower.map(v => ({ t: v.x, i: v.y ? v.y / ftp : 0.0 }));
-		const intensityPerSecond = timeVsIntensity.map(ti => ti.i);
-		const smoothedIntensityPerSecond = ArrayUtils.movingAverage(
-			intensityPerSecond,
-			params.inputSmoothingRadius
-		);
-
-		const discrepencyCurve = calculateMovingWindowDiscrepencyCurve(
-			smoothedIntensityPerSecond,
-			params.windowRadius,
-			params.discrepencySmoothingRadius
-		);
-
-		const stepTimePoints = calculateDetectedSteps(discrepencyCurve, params.stepThreshold);
-
-		const result: Interval[] = [];
-
-		for (let i = 1; i < stepTimePoints.length; ++i) {
-			const startTime = stepTimePoints[i - 1];
-			const endTime = stepTimePoints[i];
-			const duration = endTime - startTime;
-			const thisIntervalData = intensityPerSecond.slice(startTime, endTime);
-			result.push({ length: duration, intensity: d3.mean(thisIntervalData) ?? 0 });
-		}
-
-		return result;
+	async (state: WorkoutCreatorState) => {
+		return getDetectedIntervals(state).intervals;
 	}
 );
 
