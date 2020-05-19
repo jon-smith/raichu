@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import * as lodash from 'lodash';
 import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
 import * as activityCalculator from 'shared/activity-data/activity-calculator';
@@ -7,6 +6,9 @@ import { ActivityContainer } from 'shared/activity-data/activity-container';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 import { useActivitySelector } from 'state/reducers';
 import { formatSecondsAsHHMMSS, formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
+import BestSplitCurveSelection, {
+	BestSplitOptions
+} from './activity-view/best-split-curve-selection';
 
 function frontBack<T>(a: T[]) {
 	return [a[0], a[a.length - 1]] as const;
@@ -78,7 +80,7 @@ function buildTimeSeries(
 	return {
 		name,
 		data: activityCalculator.getAsTimeSeries(d, v),
-		seriesType: 'mark'
+		seriesType: 'line'
 	};
 }
 
@@ -129,20 +131,78 @@ const BestSplitPlot = (props: BestSplitPlotProps) => {
 	);
 };
 
+function bestSplitChartProps(o: BestSplitOptions) {
+	switch (o) {
+		case 'HR':
+			return {
+				defaultXDomain: defaultTimeAxisRange,
+				xAxisLabel: 'time',
+				yAxisLabel: 'HR',
+				xTickFormat: formatSecondsAsTimeWords,
+				xTickValues: defaultTimeTicksForBestSplits
+			};
+		case 'power':
+			return {
+				defaultXDomain: defaultTimeAxisRange,
+				xAxisLabel: 'time',
+				yAxisLabel: 'power',
+				xTickFormat: formatSecondsAsTimeWords,
+				xTickValues: defaultTimeTicksForBestSplits
+			};
+		case 'pace':
+			return {
+				defaultXDomain: defaultPaceCurveXDomain,
+				xAxisLabel: 'distance',
+				yAxisLabel: 'pace',
+				xTickFormat: String,
+				xTickValues: distancesForPaceCurve
+			};
+		default:
+			return {
+				defaultXDomain: defaultPaceCurveXDomain,
+				xAxisLabel: '',
+				yAxisLabel: '',
+				xTickFormat: String,
+				xTickValues: distancesForPaceCurve
+			};
+	}
+}
+
+function useBestSplitChartData(o: BestSplitOptions) {
+	const loadedActivities = useActivitySelector(s => s.activities);
+	return useMemo(() => {
+		switch (o) {
+			case 'HR':
+				return loadedActivities.map(buildHRCurve);
+			case 'power':
+				return loadedActivities.map(buildPowerCurve);
+			case 'pace':
+				return loadedActivities.map(buildPaceCurve);
+			default:
+				return [];
+		}
+	}, [loadedActivities, o]);
+}
+
+const BestSplitPlotViewer = () => {
+	const [bestSplitOption, setBestSplitOption] = useState<BestSplitOptions>('power');
+
+	const data = useBestSplitChartData(bestSplitOption);
+
+	return (
+		<>
+			<BestSplitCurveSelection option={bestSplitOption} onChange={setBestSplitOption} />
+			<BestSplitPlot series={data} {...bestSplitChartProps(bestSplitOption)} />
+		</>
+	);
+};
+
 const TestDataViewer = () => {
 	const loadedActivities = useActivitySelector(s => s.activities);
 
-	const {
-		timeSeries,
-		maxHRIntervalsSeries,
-		maxPowerIntervalsSeries,
-		maxPacePerDistanceIntervalsSeries
-	} = useMemo(
+	const { timeSeries } = useMemo(
 		() => ({
-			timeSeries: loadedActivities.map(d => buildTimeSeries(d, 'heartrate', 'hr-series')),
-			maxHRIntervalsSeries: loadedActivities.map(buildHRCurve),
-			maxPowerIntervalsSeries: loadedActivities.map(buildPowerCurve),
-			maxPacePerDistanceIntervalsSeries: loadedActivities.map(buildPaceCurve)
+			timeSeries: loadedActivities.map(d => buildTimeSeries(d, 'heartrate', 'hr-series'))
 		}),
 		[loadedActivities]
 	);
@@ -162,30 +222,7 @@ const TestDataViewer = () => {
 				xAxisLabel="time"
 				yAxisLabel="HR"
 			/>
-			<BestSplitPlot
-				series={maxHRIntervalsSeries}
-				defaultXDomain={defaultTimeAxisRange}
-				xAxisLabel="time"
-				yAxisLabel="HR"
-				xTickFormat={formatSecondsAsTimeWords}
-				xTickValues={defaultTimeTicksForBestSplits}
-			/>
-			<BestSplitPlot
-				series={maxPowerIntervalsSeries}
-				defaultXDomain={defaultTimeAxisRange}
-				xAxisLabel="time"
-				yAxisLabel="Power"
-				xTickFormat={formatSecondsAsTimeWords}
-				xTickValues={defaultTimeTicksForBestSplits}
-			/>
-			<BestSplitPlot
-				series={maxPacePerDistanceIntervalsSeries}
-				defaultXDomain={defaultPaceCurveXDomain}
-				xAxisLabel="distance"
-				yAxisLabel="pace"
-				xTickValues={distancesForPaceCurve}
-				xTickFormat={String}
-			/>
+			<BestSplitPlotViewer />
 		</div>
 	);
 };
