@@ -7,6 +7,7 @@ import { useActivitySelector } from 'state/reducers';
 import { formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
 import { getSelectedActivity } from 'state/activity-data/selectors';
 import BestSplitCurveSelection from './best-split-curve-selection';
+import { primaryColourForBestSplitOption } from '../activity-data-component-helpers';
 
 function frontBack<T>(a: T[]) {
 	return [a[0], a[a.length - 1]] as const;
@@ -41,7 +42,11 @@ function buildPaceCurve(d: ActivityContainer) {
 			y: r.distance / r.best!.time
 		}));
 
-	return { name: 'pace-curve', data: bestSplitsDataPoints };
+	return {
+		name: 'pace-curve',
+		data: bestSplitsDataPoints,
+		color: primaryColourForBestSplitOption('speed')
+	};
 }
 
 function buildPowerCurve(d: ActivityContainer) {
@@ -54,7 +59,11 @@ function buildPowerCurve(d: ActivityContainer) {
 		y: r.best?.average ?? null
 	}));
 
-	return { name: 'power-curve', data: bestSplitsDataPoints };
+	return {
+		name: 'power-curve',
+		data: bestSplitsDataPoints,
+		color: primaryColourForBestSplitOption('power')
+	};
 }
 
 function buildHRCurve(d: ActivityContainer) {
@@ -67,7 +76,11 @@ function buildHRCurve(d: ActivityContainer) {
 		y: r.best?.average ?? null
 	}));
 
-	return { name: 'hr-best-splits', data: bestSplitsDataPoints };
+	return {
+		name: 'hr-best-splits',
+		data: bestSplitsDataPoints,
+		color: primaryColourForBestSplitOption('heartrate')
+	};
 }
 
 function calcYDomain(series: readonly DataSeriesT[]) {

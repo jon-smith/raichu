@@ -91,7 +91,7 @@ export function getProcessedTimeSeries(
 
 export type BestSplitOption = 'heartrate' | 'power' | 'cadence' | 'time' | 'speed';
 
-function asRawVariable(o: BestSplitOption): Variable | null {
+export function asRawVariable(o: BestSplitOption): Variable | null {
 	switch (o) {
 		case 'heartrate':
 			return 'heartrate';

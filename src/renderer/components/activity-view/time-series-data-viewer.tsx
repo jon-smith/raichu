@@ -7,29 +7,18 @@ import { ActivityContainer } from 'shared/activity-data/activity-container';
 import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
 import { useActivitySelector } from 'state/reducers';
-
 import { getSelectedActivity } from 'state/activity-data/selectors';
+
 import TimeSeriesSelection from './time-series-selection';
+import { primaryColourForVariable, axisLabelForVariable } from '../activity-data-component-helpers';
 
 function buildTimeSeries(d: ActivityContainer | undefined, v: Variable, name: string): DataSeriesT {
 	return {
 		name,
 		data: d ? getAsTimeSeries(d, v) : [],
-		seriesType: 'line'
+		seriesType: 'line',
+		color: primaryColourForVariable(v)
 	};
-}
-
-function yAxisLabel(o: Variable) {
-	switch (o) {
-		case 'heartrate':
-			return 'HR';
-		case 'cadence':
-			return 'Cadence';
-		case 'power':
-			return 'Power (W)';
-		default:
-			return '';
-	}
 }
 
 const TimeSeriesDataViewer = () => {
@@ -56,7 +45,7 @@ const TimeSeriesDataViewer = () => {
 				xTickFormat={formatSecondsAsHHMMSS}
 				xTickValues={timeTicks}
 				xAxisLabel="time"
-				yAxisLabel={yAxisLabel(variableOption)}
+				yAxisLabel={axisLabelForVariable(variableOption)}
 			/>
 		</>
 	);
