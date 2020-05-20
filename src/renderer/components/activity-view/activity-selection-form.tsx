@@ -5,25 +5,15 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
+import { useFormStyles } from 'renderer/styles/form-styles';
+
 import { useActivitySelector } from 'state/reducers';
 import { getActivityAttributes } from 'state/activity-data/selectors';
 import { setSelectedIndex } from 'state/activity-data/slice';
 import { useDispatchCallback } from 'state/dispatch-hooks';
 
-const useStyles = makeStyles((theme: Theme) =>
-	createStyles({
-		formControl: {
-			margin: theme.spacing(1),
-			minWidth: 120
-		},
-		selectEmpty: {
-			marginTop: theme.spacing(2)
-		}
-	})
-);
-
 export default function SimpleSelect() {
-	const classes = useStyles();
+	const classes = useFormStyles();
 
 	const { activities, selectedIndex } = useActivitySelector(s => ({
 		activities: getActivityAttributes(s),
