@@ -5,6 +5,7 @@ type ExtendedActivityContainer = ActivityContainer & { filename: string };
 
 export type ActivityState = Readonly<{
 	activities: ExtendedActivityContainer[];
+	selectedIndex?: number;
 }>;
 
 const defaultState: ActivityState = {
@@ -20,10 +21,13 @@ const slice = createSlice({
 		},
 		clearActivityData(state) {
 			state.activities = [];
+		},
+		setSelectedIndex(state, action: PayloadAction<number | undefined>) {
+			state.selectedIndex = action.payload;
 		}
 	}
 });
 
 export const { reducer, actions } = slice;
 
-export const { addActivities, clearActivityData } = actions;
+export const { addActivities, clearActivityData, setSelectedIndex } = actions;

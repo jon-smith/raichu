@@ -4,6 +4,7 @@ import * as activityCalculator from 'shared/activity-data/activity-calculator';
 import { ActivityContainer } from 'shared/activity-data/activity-container';
 import { useActivitySelector } from 'state/reducers';
 import { formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
+import { getSelectedActivity } from 'state/activity-data/selectors';
 import BestSplitCurveSelection, { BestSplitOptions } from './best-split-curve-selection';
 
 function frontBack<T>(a: T[]) {
@@ -153,19 +154,20 @@ function bestSplitChartProps(o: BestSplitOptions) {
 }
 
 function useBestSplitChartData(o: BestSplitOptions) {
-	const loadedActivities = useActivitySelector(s => s.activities);
+	const selectedActivity = useActivitySelector(s => getSelectedActivity(s));
 	return useMemo(() => {
+		const selectedActivities = selectedActivity ? [selectedActivity] : [];
 		switch (o) {
 			case 'HR':
-				return loadedActivities.map(buildHRCurve);
+				return selectedActivities.map(buildHRCurve);
 			case 'power':
-				return loadedActivities.map(buildPowerCurve);
+				return selectedActivities.map(buildPowerCurve);
 			case 'pace':
-				return loadedActivities.map(buildPaceCurve);
+				return selectedActivities.map(buildPaceCurve);
 			default:
 				return [];
 		}
-	}, [loadedActivities, o]);
+	}, [selectedActivity, o]);
 }
 
 export default function BestSplitPlotComponent() {

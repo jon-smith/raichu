@@ -8,40 +8,40 @@ import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
 import { useActivitySelector } from 'state/reducers';
 
+import { getSelectedActivity } from 'state/activity-data/selectors';
 import BestSplitPlotViewer from './activity-view/best-split-plot';
+import ActivitySelectionForm from './activity-view/activity-selection-form';
 
 function buildTimeSeries(
-	d: ActivityContainer,
+	d: ActivityContainer | undefined,
 	v: activityCalculator.Variable,
 	name: string
 ): DataSeriesT {
 	return {
 		name,
-		data: activityCalculator.getAsTimeSeries(d, v),
+		data: d ? activityCalculator.getAsTimeSeries(d, v) : [],
 		seriesType: 'line'
 	};
 }
 
 const TestDataViewer = () => {
-	const loadedActivities = useActivitySelector(s => s.activities);
+	const selectedActivity = useActivitySelector(s => getSelectedActivity(s));
 
-	const { timeSeries } = useMemo(
-		() => ({
-			timeSeries: loadedActivities.map(d => buildTimeSeries(d, 'heartrate', 'hr-series'))
-		}),
-		[loadedActivities]
-	);
+	const timeSeries = useMemo(() => buildTimeSeries(selectedActivity, 'heartrate', 'hr-series'), [
+		selectedActivity
+	]);
 
 	const maxTimeSeconds =
-		useMemo(() => lodash.max(timeSeries.flatMap(t => t.data.map(d => d.x))), [timeSeries]) ?? 0;
+		useMemo(() => lodash.max(timeSeries.data.map(d => d.x)), [timeSeries]) ?? 0;
 
 	const timeTicks = buildNiceTimeTicksToDisplay(maxTimeSeconds, 6);
 
 	return (
 		<div className="test-data-viewer">
+			<ActivitySelectionForm />
 			<XYPlot
 				className="test-data-chart"
-				series={timeSeries}
+				series={[timeSeries]}
 				xTickFormat={formatSecondsAsHHMMSS}
 				xTickValues={timeTicks}
 				xAxisLabel="time"
