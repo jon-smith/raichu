@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
 import * as activityCalculator from 'shared/activity-data/activity-calculator';
+import { BestSplitOption } from 'shared/activity-data/activity-calculator';
 import { ActivityContainer } from 'shared/activity-data/activity-container';
 import { useActivitySelector } from 'state/reducers';
 import { formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
 import { getSelectedActivity } from 'state/activity-data/selectors';
-import BestSplitCurveSelection, { BestSplitOptions } from './best-split-curve-selection';
+import BestSplitCurveSelection from './best-split-curve-selection';
 
 function frontBack<T>(a: T[]) {
 	return [a[0], a[a.length - 1]] as const;
@@ -116,9 +117,9 @@ const BestSplitPlot = (props: BestSplitPlotProps) => {
 	);
 };
 
-function bestSplitChartProps(o: BestSplitOptions) {
+function bestSplitChartProps(o: BestSplitOption) {
 	switch (o) {
-		case 'HR':
+		case 'heartrate':
 			return {
 				defaultXDomain: defaultTimeAxisRange,
 				xAxisLabel: 'time',
@@ -134,7 +135,7 @@ function bestSplitChartProps(o: BestSplitOptions) {
 				xTickFormat: formatSecondsAsTimeWords,
 				xTickValues: defaultTimeTicksForBestSplits
 			};
-		case 'pace':
+		case 'speed':
 			return {
 				defaultXDomain: defaultPaceCurveXDomain,
 				xAxisLabel: 'distance',
@@ -153,16 +154,16 @@ function bestSplitChartProps(o: BestSplitOptions) {
 	}
 }
 
-function useBestSplitChartData(o: BestSplitOptions) {
+function useBestSplitChartData(o: BestSplitOption) {
 	const selectedActivity = useActivitySelector(s => getSelectedActivity(s));
 	return useMemo(() => {
 		const selectedActivities = selectedActivity ? [selectedActivity] : [];
 		switch (o) {
-			case 'HR':
+			case 'heartrate':
 				return selectedActivities.map(buildHRCurve);
 			case 'power':
 				return selectedActivities.map(buildPowerCurve);
-			case 'pace':
+			case 'speed':
 				return selectedActivities.map(buildPaceCurve);
 			default:
 				return [];
@@ -171,7 +172,7 @@ function useBestSplitChartData(o: BestSplitOptions) {
 }
 
 export default function BestSplitPlotComponent() {
-	const [bestSplitOption, setBestSplitOption] = useState<BestSplitOptions>('power');
+	const [bestSplitOption, setBestSplitOption] = useState<BestSplitOption>('power');
 
 	const data = useBestSplitChartData(bestSplitOption);
 

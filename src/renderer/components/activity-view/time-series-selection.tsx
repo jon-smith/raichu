@@ -8,11 +8,11 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 import { useFormStyles } from 'renderer/styles/form-styles';
 
-import { BestSplitOption } from 'shared/activity-data/activity-calculator';
+import { Variable } from 'shared/activity-data/activity-calculator';
 
 type Props = {
-	option: BestSplitOption;
-	onChange: (o: BestSplitOption) => void;
+	option: Variable;
+	onChange: (o: Variable) => void;
 };
 
 export default function BestSplitCurveSelectionForm(props: Props) {
@@ -20,13 +20,13 @@ export default function BestSplitCurveSelectionForm(props: Props) {
 
 	const { option, onChange } = props;
 
-	const makeOnChange = (o: BestSplitOption) => (e: unknown, c: boolean) => {
+	const makeOnChange = (o: Variable) => (e: unknown, c: boolean) => {
 		if (c) onChange(o);
 	};
 
 	return (
 		<FormControl className={styles.formControl} component="fieldset">
-			<FormLabel component="legend">Best Splits</FormLabel>
+			<FormLabel component="legend">Data View</FormLabel>
 			<RadioGroup row aria-label="position" name="position" defaultValue="HR">
 				<FormControlLabel
 					value="HR"
@@ -45,12 +45,12 @@ export default function BestSplitCurveSelectionForm(props: Props) {
 					onChange={makeOnChange('power')}
 				/>
 				<FormControlLabel
-					value="pace"
+					value="cadence"
 					control={<Radio color="primary" />}
-					label="Pace"
+					label="Cadence"
 					labelPlacement="start"
-					checked={option === 'speed'}
-					onChange={makeOnChange('speed')}
+					checked={option === 'cadence'}
+					onChange={makeOnChange('cadence')}
 				/>
 			</RadioGroup>
 		</FormControl>

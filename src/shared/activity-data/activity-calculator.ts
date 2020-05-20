@@ -11,20 +11,24 @@ const maxAveragesForDistances = useNative
 	? jolteon.best_averages_for_distances
 	: jsMaxAveragesForDistances;
 
+export type Variable = 'heartrate' | 'power' | 'cadence' | 'elevation' | 'time';
+
 const getVar = (p: ExtendedPoint, v: Variable) => {
 	switch (v) {
 		case 'heartrate':
 			return p.heartRate ?? null;
 		case 'power':
 			return p.power ?? null;
+		case 'cadence':
+			return p.cadence ?? null;
+		case 'elevation':
+			return p.elevation ?? null;
 		case 'time':
 			return p.secondsSinceStart;
 		default:
 			return null;
 	}
 };
-
-export type Variable = 'heartrate' | 'power' | 'time';
 
 export function getAsTimeSeries(data: ActivityContainer, y: Variable, filledPoints = false) {
 	if (filledPoints) {
@@ -85,7 +89,7 @@ export function getProcessedTimeSeries(
 	return result;
 }
 
-export type BestSplitOption = 'heartrate' | 'power' | 'time' | 'speed';
+export type BestSplitOption = 'heartrate' | 'power' | 'cadence' | 'time' | 'speed';
 
 function asRawVariable(o: BestSplitOption): Variable | null {
 	switch (o) {
@@ -93,6 +97,8 @@ function asRawVariable(o: BestSplitOption): Variable | null {
 			return 'heartrate';
 		case 'power':
 			return 'power';
+		case 'cadence':
+			return 'cadence';
 		case 'time':
 			return 'time';
 		default:
