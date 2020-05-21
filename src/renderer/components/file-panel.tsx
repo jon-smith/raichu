@@ -1,23 +1,12 @@
 import * as React from 'react';
-import { useMemo, useCallback } from 'react';
-import { useDispatchCallback } from 'state/dispatch-hooks';
-import { addActivities } from 'state/activity-data/slice';
+import { useMemo } from 'react';
 import { useActivitySelector } from 'state/reducers';
-import ActivityFileDrop, { FileAndData, extractActivityData } from 'ui/file/activity-file-drop';
 import { getAttributes } from 'shared/activity-data/activity-container';
+import ConnectedActivityFileDrop from './activity-view/connected-activity-file-drop';
 import ActivitySummaryTable from './activity-summary-table';
 
 const FilePanel = () => {
 	const activities = useActivitySelector(s => s.activities);
-
-	const addActivitesCallback = useDispatchCallback(addActivities);
-	const addFiles = useCallback(
-		(files: FileAndData[]) =>
-			addActivitesCallback(
-				files.flatMap(f => extractActivityData(f.data).map(a => ({ filename: f.file.name, ...a })))
-			),
-		[addActivitesCallback]
-	);
 
 	const tableRows = useMemo(
 		() =>
@@ -31,7 +20,7 @@ const FilePanel = () => {
 
 	return (
 		<div className="file-panel">
-			<ActivityFileDrop onAddFiles={addFiles} />
+			<ConnectedActivityFileDrop />
 			<ActivitySummaryTable rows={tableRows} />
 		</div>
 	);

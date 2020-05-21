@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from 'react';
+
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Box from '@material-ui/core/Box';
 import Checkbox from '@material-ui/core/Checkbox';
 
 import { useFormStyles } from 'renderer/styles/form-styles';
@@ -14,6 +13,8 @@ import { useActivitySelector } from 'state/reducers';
 import { getActivityAttributes } from 'state/activity-data/selectors';
 import { setSelectedIndex } from 'state/activity-data/slice';
 import { useDispatchCallback } from 'state/dispatch-hooks';
+
+import ConnectedActivityFileDrop from './connected-activity-file-drop';
 
 export default function SimpleSelect() {
 	const classes = useFormStyles({ formControl: { width: 300 } });
@@ -38,7 +39,7 @@ export default function SimpleSelect() {
 	);
 
 	return (
-		<div>
+		<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 			<FormControl className={classes.formControl}>
 				<InputLabel id="activity-select-label">Activity</InputLabel>
 				<Select
@@ -68,6 +69,9 @@ export default function SimpleSelect() {
 					label="Show Filenames"
 				/>
 			</FormControl>
+			<div>
+				<ConnectedActivityFileDrop text="Drop more GPX/TCX files here, or click to use the file browser" />
+			</div>
 		</div>
 	);
 }

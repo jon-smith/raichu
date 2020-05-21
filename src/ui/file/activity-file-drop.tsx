@@ -47,10 +47,11 @@ export function extractActivityData(data: DataContainer) {
 type ActivityFileDropProps = {
 	allowMultiple?: boolean;
 	onAddFiles(file: FileAndData[]): void;
+	text?: string;
 };
 
 const ActivityFileDrop = (props: ActivityFileDropProps) => {
-	const { onAddFiles, allowMultiple = true } = props;
+	const { onAddFiles, allowMultiple = true, text } = props;
 
 	const addFiles = useCallback(
 		(files: FileAndData[]) => {
@@ -84,15 +85,17 @@ const ActivityFileDrop = (props: ActivityFileDropProps) => {
 		multiple: allowMultiple
 	});
 
-	const text = `Drop ${
-		allowMultiple ? 'GPX/TCX files' : 'a GPX/TCX file'
-	} here, or click to use the file browser`;
+	const textToUse =
+		text ??
+		`Drop ${
+			allowMultiple ? 'GPX/TCX files' : 'a GPX/TCX file'
+		} here, or click to use the file browser`;
 
 	return (
 		<section className="file-uploader">
 			<div {...getRootProps({ className: 'dropzone' })}>
 				<input {...getInputProps()} />
-				<p>{text}</p>
+				<p>{textToUse}</p>
 			</div>
 		</section>
 	);
