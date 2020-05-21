@@ -8,5 +8,5 @@ export function getSelectedActivity(state: ActivityState) {
 
 export const getActivityAttributes = createSelector(
 	(state: ActivityState) => state.activities,
-	activities => activities.map(a => getAttributes(a))
+	activities => activities.map(a => ({ filename: a.filename, ...getAttributes(a) }))
 );

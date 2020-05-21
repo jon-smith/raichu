@@ -1,9 +1,12 @@
-import React, { useMemo } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React, { useMemo, useState } from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Box from '@material-ui/core/Box';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { useFormStyles } from 'renderer/styles/form-styles';
 
@@ -13,7 +16,7 @@ import { setSelectedIndex } from 'state/activity-data/slice';
 import { useDispatchCallback } from 'state/dispatch-hooks';
 
 export default function SimpleSelect() {
-	const classes = useFormStyles();
+	const classes = useFormStyles({ formControl: { width: 300 } });
 
 	const { activities, selectedIndex } = useActivitySelector(s => ({
 		activities: getActivityAttributes(s),
@@ -22,14 +25,16 @@ export default function SimpleSelect() {
 
 	const setSelectedActivityIndex = useDispatchCallback(setSelectedIndex);
 
+	const [showFilename, setShowFilename] = useState(false);
+
 	const menuItems = useMemo(
 		() =>
 			activities.map((a, i) => (
 				<MenuItem key={i} value={i}>
-					{a.name}
+					{showFilename ? a.filename : a.name}
 				</MenuItem>
 			)),
-		[activities]
+		[activities, showFilename]
 	);
 
 	return (
@@ -49,6 +54,19 @@ export default function SimpleSelect() {
 				>
 					{menuItems}
 				</Select>
+			</FormControl>
+			<FormControl className={classes.formControl}>
+				<FormControlLabel
+					control={
+						<Checkbox
+							checked={showFilename}
+							onChange={e => setShowFilename(e.target.checked)}
+							name="showFilenames"
+							color="primary"
+						/>
+					}
+					label="Show Filenames"
+				/>
 			</FormControl>
 		</div>
 	);
