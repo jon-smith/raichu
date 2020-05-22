@@ -44,11 +44,11 @@ body {
 	z-index: 0;
 	overflow-x: hidden;
 	overflow-y: auto;
-	min-width: 700px;
 }
 
 .activity-data-viewer {
 	flex: 1 1 auto;
+	min-width: 700px;
 }
 
 .activity-data-welcome {
@@ -57,6 +57,10 @@ body {
 
 .test-data-chart {
 	min-height: 300px;
+}
+
+.workout-creator-panel {
+	min-width: 600px;
 }
 
 .workout-creator-activity-data-chart {
