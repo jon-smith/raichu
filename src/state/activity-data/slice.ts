@@ -18,6 +18,10 @@ const slice = createSlice({
 	reducers: {
 		addActivities(state, action: PayloadAction<ExtendedActivityContainer[]>) {
 			state.activities = [...state.activities, ...action.payload];
+			// If we have any activities, but don't have a selection, select the first
+			if (state.activities.length > 0 && state.selectedIndex === undefined) {
+				state.selectedIndex = 0;
+			}
 		},
 		clearActivityData(state) {
 			state.activities = [];
