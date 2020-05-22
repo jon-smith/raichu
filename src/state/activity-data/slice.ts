@@ -3,19 +3,26 @@ import { ActivityContainer } from 'shared/activity-data/activity-container';
 
 type ExtendedActivityContainer = ActivityContainer & { filename: string };
 
+export type View = 'data' | 'interval-detector';
+
 export type ActivityState = Readonly<{
 	activities: ExtendedActivityContainer[];
 	selectedIndex?: number;
+	view: View;
 }>;
 
 const defaultState: ActivityState = {
-	activities: []
+	activities: [],
+	view: 'data'
 };
 
 const slice = createSlice({
 	name: 'activityData',
 	initialState: defaultState,
 	reducers: {
+		setView(state, action: PayloadAction<View>) {
+			state.view = action.payload;
+		},
 		addActivities(state, action: PayloadAction<ExtendedActivityContainer[]>) {
 			state.activities = [...state.activities, ...action.payload];
 			// If we have any activities, but don't have a selection, select the first
@@ -34,4 +41,4 @@ const slice = createSlice({
 
 export const { reducer, actions } = slice;
 
-export const { addActivities, clearActivityData, setSelectedIndex } = actions;
+export const { setView, addActivities, clearActivityData, setSelectedIndex } = actions;

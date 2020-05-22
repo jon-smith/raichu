@@ -1,14 +1,35 @@
 import React from 'react';
 
 import { useActivitySelector } from 'state/reducers';
+import { View } from 'state/activity-data/slice';
 
 import BestSplitPlotViewer from './best-split-plot';
 import ActivitySelectionForm from './activity-selection-form';
 import TimeSeriesDataViewer from './time-series-data-viewer';
 import ConnectedActivityFileDrop from './connected-activity-file-drop';
+import ActivityViewSelection from './activity-view-selection';
+
+function componentFromView(view: View) {
+	switch (view) {
+		case 'data':
+			return (
+				<>
+					<TimeSeriesDataViewer />
+					<BestSplitPlotViewer />
+				</>
+			);
+		case 'interval-detector':
+			return <div />;
+		default:
+			return <div />;
+	}
+}
 
 const ActivityDataViewer = () => {
-	const activitiesLoaded = useActivitySelector(s => s.activities.length > 0);
+	const { activitiesLoaded, view } = useActivitySelector(s => ({
+		activitiesLoaded: s.activities.length > 0,
+		view: s.view
+	}));
 
 	if (!activitiesLoaded) {
 		return (
@@ -23,8 +44,8 @@ const ActivityDataViewer = () => {
 	return (
 		<div className="activity-data-viewer">
 			<ActivitySelectionForm />
-			<TimeSeriesDataViewer />
-			<BestSplitPlotViewer />
+			<ActivityViewSelection />
+			{componentFromView(view)}
 		</div>
 	);
 };
