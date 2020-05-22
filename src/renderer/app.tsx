@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
 import configureStore from 'state/configure-store';
-import Application from './components/application';
+import AppImpl from './components/app-impl';
 
 import 'rc-time-picker/assets/index.css';
 
@@ -26,4 +26,4 @@ const render = (Component: () => JSX.Element) => {
 	);
 };
 
-render(Application);
+render(AppImpl);

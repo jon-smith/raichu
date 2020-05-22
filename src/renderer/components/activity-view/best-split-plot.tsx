@@ -3,11 +3,11 @@ import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
 import * as activityCalculator from 'shared/activity-data/activity-calculator';
 import { BestSplitOption } from 'shared/activity-data/activity-calculator';
 import { ActivityContainer } from 'shared/activity-data/activity-container';
-import { useActivitySelector } from 'state/reducers';
 import { formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
+import { useActivitySelector } from 'state/reducers';
 import { getSelectedActivity } from 'state/activity-data/selectors';
+import { primaryColourForBestSplitOption } from 'renderer/helpers/activity-data-component-helpers';
 import BestSplitCurveSelection from './best-split-curve-selection';
-import { primaryColourForBestSplitOption } from '../activity-data-component-helpers';
 
 function frontBack<T>(a: T[]) {
 	return [a[0], a[a.length - 1]] as const;

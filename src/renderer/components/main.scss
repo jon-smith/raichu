@@ -38,23 +38,6 @@ body {
 	z-index: 0;
 }
 
-.left-panel {
-	flex: 0 0 330px;
-	display: block;
-	z-index: 1;
-}
-
-.left-panel-inner {
-	position: fixed;
-	box-sizing: border-box;
-	width: 330px;
-	padding: 10px;
-	background-color: white;
-	height: 100%;
-	border-right-style: solid;
-	border-color: lightgray;
-}
-
 .main-panel {
 	display: block;
 	flex: 1;
@@ -64,8 +47,12 @@ body {
 	min-width: 700px;
 }
 
-.test-data-viewer {
+.activity-data-viewer {
 	flex: 1 1 auto;
+}
+
+.activity-data-welcome {
+	text-align: center;
 }
 
 .test-data-chart {

@@ -8,9 +8,12 @@ import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
 import { useActivitySelector } from 'state/reducers';
 import { getSelectedActivity } from 'state/activity-data/selectors';
+import {
+	primaryColourForVariable,
+	axisLabelForVariable
+} from 'renderer/helpers/activity-data-component-helpers';
 
 import TimeSeriesSelection from './time-series-selection';
-import { primaryColourForVariable, axisLabelForVariable } from '../activity-data-component-helpers';
 
 function buildTimeSeries(d: ActivityContainer | undefined, v: Variable, name: string): DataSeriesT {
 	return {
