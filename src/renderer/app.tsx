@@ -1,10 +1,11 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
 import configureStore from 'state/configure-store';
-import AppImpl from './components/app-impl';
+import HotReloadApp from './hot-reload-app';
 
 import 'rc-time-picker/assets/index.css';
 
@@ -26,4 +27,4 @@ const render = (Component: () => JSX.Element) => {
 	);
 };
 
-render(AppImpl);
+render(HotReloadApp);
