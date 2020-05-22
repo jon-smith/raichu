@@ -5,6 +5,8 @@ import { Page } from 'state/view/slice';
 import NavigationTabs from './navigation-tabs';
 import ActivityDataViewer from './activity-view/activity-data-viewer';
 import WorkoutCreatorPanel from './workout-creator/workout-creator-panel';
+
+import 'rc-time-picker/assets/index.css';
 import './main.scss';
 
 const getPage = (page: Page) => {
