@@ -32,7 +32,7 @@ const getPage = (page: Page) => {
 			break;
 	}
 
-	return () => <div className="tab-panel" />;
+	return () => <div />;
 };
 
 export default function AppImpl() {
