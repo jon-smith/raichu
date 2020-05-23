@@ -22,20 +22,20 @@ const useStyles = makeStyles((theme: Theme) =>
 			display: 'flex'
 		},
 		drawer: {
-			[theme.breakpoints.up('sm')]: {
+			[theme.breakpoints.up('lg')]: {
 				width: drawerWidth,
 				flexShrink: 0
 			}
 		},
 		appBar: {
-			[theme.breakpoints.up('sm')]: {
+			[theme.breakpoints.up('lg')]: {
 				width: `calc(100% - ${drawerWidth}px)`,
 				marginLeft: drawerWidth
 			}
 		},
 		menuButton: {
 			marginRight: theme.spacing(2),
-			[theme.breakpoints.up('sm')]: {
+			[theme.breakpoints.up('lg')]: {
 				display: 'none'
 			}
 		},
@@ -102,7 +102,7 @@ export default function ResponsiveDrawerNav<T>(props: React.PropsWithChildren<Pr
 				</Toolbar>
 			</AppBar>
 			<nav className={classes.drawer} aria-label="menu">
-				<Hidden smUp implementation="css">
+				<Hidden lgUp implementation="css">
 					<Drawer
 						variant="temporary"
 						anchor={theme.direction === 'rtl' ? 'right' : 'left'}
@@ -118,7 +118,7 @@ export default function ResponsiveDrawerNav<T>(props: React.PropsWithChildren<Pr
 						{drawer}
 					</Drawer>
 				</Hidden>
-				<Hidden xsDown implementation="css">
+				<Hidden mdDown implementation="css">
 					<Drawer
 						classes={{
 							paper: classes.drawerPaper
