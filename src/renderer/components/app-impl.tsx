@@ -1,13 +1,26 @@
-import * as React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+
 import { useViewSelector } from 'state/reducers';
-import { Page } from 'state/view/slice';
-import NavigationTabs from './navigation-tabs';
+import { Page, setCurrentPage } from 'state/view/slice';
+import { useDispatchCallback } from 'state/dispatch-hooks';
+
 import ActivityDataViewer from './activity-view/activity-data-viewer';
 import WorkoutCreatorPanel from './workout-creator/workout-creator-panel';
+import ResponsiveDrawerNav from './responsive-drawer-nav';
 
 import 'rc-time-picker/assets/index.css';
 import './main.scss';
+
+const palette = {
+	primary: { main: '#D1C4E9' },
+	secondary: { main: '#FFECB3' }
+};
+
+const theme = createMuiTheme({
+	palette
+});
 
 const getPage = (page: Page) => {
 	switch (page) {
@@ -22,22 +35,22 @@ const getPage = (page: Page) => {
 	return () => <div className="tab-panel" />;
 };
 
-const AppImpl = () => {
+export default function AppImpl() {
 	const currentPage = useViewSelector(s => s.currentPage);
 	const PageElement = useMemo(() => getPage(currentPage), [currentPage]);
 
-	return (
-		<div className="app">
-			<div className="nav-tabs">
-				<NavigationTabs />
-			</div>
-			<div className="tab-panel">
-				<div className="main-panel">
-					<PageElement />
-				</div>
-			</div>
-		</div>
-	);
-};
+	const setCurrentPageCallback = useDispatchCallback(setCurrentPage);
 
-export default AppImpl;
+	const menuItems = [
+		{ name: 'Data', value: 'data' as const },
+		{ name: 'Workout Creator', value: 'workout-creator' as const }
+	];
+
+	return (
+		<ThemeProvider theme={theme}>
+			<ResponsiveDrawerNav menuItems={menuItems} onMenuSelect={setCurrentPageCallback}>
+				<PageElement />
+			</ResponsiveDrawerNav>
+		</ThemeProvider>
+	);
+}
