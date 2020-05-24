@@ -1,7 +1,7 @@
 # raichu
 
 A simple web-app for viewing and analysing GPX/TCX data. Written using [Typescript](https://www.typescriptlang.org/), [React](https://reactjs.org/)
-[(Create React App)](https://github.com/facebook/create-react-app) and [Redux](https://redux.js.org/).
+([Create React App](https://github.com/facebook/create-react-app)) and [Redux](https://redux.js.org/).
 
 ## Available Scripts
 
