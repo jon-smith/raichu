@@ -2,6 +2,18 @@
 	"name": "raichu",
 	"version": "0.1.0",
 	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jon-smith/raichu"
+	},
+	"author": {
+		"name": "jon-smith"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/jon-smith/raichu/issues"
+	},
+	"homepage": "https://github.com/jon-smith/raichu#readme",
 	"dependencies": {
 		"@reduxjs/toolkit": "^1.3.6",
 		"@testing-library/jest-dom": "^4.2.4",
