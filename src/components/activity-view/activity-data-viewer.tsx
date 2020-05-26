@@ -10,6 +10,9 @@ import ConnectedActivityFileDrop from './connected-activity-file-drop';
 import ActivityViewSelection from './activity-view-selection';
 import IntervalDetectionView from './interval-detection-view';
 
+import { loadExampleData } from 'store/activity-data/slice';
+import { useDispatchCallback } from 'store/dispatch-hooks';
+
 function componentFromView(view: View) {
 	switch (view) {
 		case 'data':
@@ -32,12 +35,15 @@ const ActivityDataViewer = () => {
 		view: s.view,
 	}));
 
+	const loadExampleDataCallback = useDispatchCallback(loadExampleData);
+
 	if (!activitiesLoaded) {
 		return (
 			<div className="activity-data-welcome">
 				<h4>Welcome to raichu</h4>
 				<p>頂きます</p>
 				<ConnectedActivityFileDrop text="To get started, drop GPX/TCX files here, or click to use the file browser" />
+				<div onClick={loadExampleDataCallback}>Alternatively, click here to load example data</div>
 			</div>
 		);
 	}

@@ -17,13 +17,24 @@ type TcxContainer = {
 	data: TcxActivity;
 };
 
+type JsonActivity = {
+	name: string;
+	date?: Date;
+	points: ExtendedPoint[];
+};
+
+type JsonContainer = {
+	type: 'json';
+	data: JsonActivity;
+};
+
 export type ExtendedPoint = ActivityPoint & {
 	secondsSinceStart: number;
 	cumulativeDistance?: number; // Metres
 };
 
 export type ActivityContainer = {
-	source: GpxContainer | TcxContainer;
+	source: GpxContainer | TcxContainer | JsonContainer;
 	flatPoints: ExtendedPoint[];
 	filledPoints: { index: number; data?: ExtendedPoint }[];
 };
@@ -44,6 +55,11 @@ export function getAttributes(activityContainer: ActivityContainer): ActivityAtt
 			return {
 				name: activityContainer.source.data.id,
 				date: activityContainer.source.data.laps[0]?.tracks[0]?.points[0]?.time,
+			};
+		case 'json':
+			return {
+				name: activityContainer.source.data.name,
+				date: activityContainer.source.data.date,
 			};
 		default:
 			return { name: '' };
@@ -108,10 +124,22 @@ export function fromTCXData(data: TcxData): ActivityContainer[] {
 		const filledPoints = fillMissingIndices(
 			flatPoints.map((d) => ({ ...d, index: d.secondsSinceStart }))
 		);
+
 		return {
 			source: { type: 'tcx', data: activity },
 			flatPoints,
 			filledPoints,
 		};
 	});
+}
+
+export function fromJSONData(data: JsonActivity): ActivityContainer {
+	const filledPoints = fillMissingIndices(
+		data.points.map((d) => ({ ...d, index: d.secondsSinceStart }))
+	);
+	return {
+		source: { type: 'json', data },
+		flatPoints: data.points,
+		filledPoints,
+	};
 }
