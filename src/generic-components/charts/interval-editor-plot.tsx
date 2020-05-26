@@ -36,7 +36,7 @@ const buildChart = (
 	height: number,
 	initialData: readonly IntervalWithColor[],
 	selectedIndex: number | null,
-	onChange: (it: IntervalWithColor[], i: number | null) => void
+	onChange?: (it: IntervalWithColor[], i: number | null) => void
 ) => {
 	const svg = d3.select(nodeRef).html('');
 
@@ -54,7 +54,7 @@ const buildChart = (
 
 	const data = calculateStartTimes(initialData);
 
-	svg.on('click', () => onChange(data, null));
+	svg.on('click', () => onChange?.(data, null));
 
 	let localSelectedIndex = selectedIndex;
 
@@ -75,74 +75,76 @@ const buildChart = (
 
 	let dragMouseOffsetX: number;
 
-	const drag = d3
-		.drag<SVGRectElement, IntervalChartItem>()
-		.on('start', (d, i, j) => {
-			const dataIndex = data.indexOf(d);
-			setLocalSelectedIndex(dataIndex);
+	const drag = onChange
+		? d3
+				.drag<SVGRectElement, IntervalChartItem>()
+				.on('start', (d, i, j) => {
+					const dataIndex = data.indexOf(d);
+					setLocalSelectedIndex(dataIndex);
 
-			const bar = d3.select(j[i]);
-			const mouseX = d3.mouse(j[i])[0];
-			const barX = parseFloat(bar.attr('x'));
+					const bar = d3.select(j[i]);
+					const mouseX = d3.mouse(j[i])[0];
+					const barX = parseFloat(bar.attr('x'));
 
-			// Store the original offset
-			dragMouseOffsetX = mouseX - barX;
+					// Store the original offset
+					dragMouseOffsetX = mouseX - barX;
 
-			// Bring the bar to the front
-			bar.raise();
-		})
-		.on('drag', (d, i, j) => {
-			const draggingBar = d3.select(j[i]);
-			// We rearrange the data as we drag, so the original i value isn't the index in the data array
-			const dragDataCurrentIndex = data.indexOf(d);
+					// Bring the bar to the front
+					bar.raise();
+				})
+				.on('drag', (d, i, j) => {
+					const draggingBar = d3.select(j[i]);
+					// We rearrange the data as we drag, so the original i value isn't the index in the data array
+					const dragDataCurrentIndex = data.indexOf(d);
 
-			const mouseX = d3.mouse(j[i])[0];
+					const mouseX = d3.mouse(j[i])[0];
 
-			const newX = mouseX - dragMouseOffsetX;
+					const newX = mouseX - dragMouseOffsetX;
 
-			const draggingBarWidth = xScaleTimeSpan(d.durationSeconds);
-			const backlash = draggingBarWidth / 2;
+					const draggingBarWidth = xScaleTimeSpan(d.durationSeconds);
+					const backlash = draggingBarWidth / 2;
 
-			// Don't let the bar go to far outside the axis range
-			if (newX < xScale.range()[0] - backlash || xScale.range()[1] - backlash < newX) return;
+					// Don't let the bar go to far outside the axis range
+					if (newX < xScale.range()[0] - backlash || xScale.range()[1] - backlash < newX) return;
 
-			draggingBar.attr('x', newX);
+					draggingBar.attr('x', newX);
 
-			// Find the index that we want to move the bar to
-			const newIndex = data.findIndex((d2) => xScale(d2.startTime) >= newX);
-			const newIndexToUse = newIndex === -1 ? data.length - 1 : newIndex;
+					// Find the index that we want to move the bar to
+					const newIndex = data.findIndex((d2) => xScale(d2.startTime) >= newX);
+					const newIndexToUse = newIndex === -1 ? data.length - 1 : newIndex;
 
-			if (dragDataCurrentIndex === newIndexToUse) return;
+					if (dragDataCurrentIndex === newIndexToUse) return;
 
-			const newDataOrder = moveItemInArray(data, dragDataCurrentIndex, newIndexToUse);
+					const newDataOrder = moveItemInArray(data, dragDataCurrentIndex, newIndexToUse);
 
-			for (let k = 0; k < data.length; ++k) {
-				data[k] = newDataOrder[k];
-				data[k].startTime = k === 0 ? 0 : data[k - 1].startTime + data[k - 1].durationSeconds;
-			}
+					for (let k = 0; k < data.length; ++k) {
+						data[k] = newDataOrder[k];
+						data[k].startTime = k === 0 ? 0 : data[k - 1].startTime + data[k - 1].durationSeconds;
+					}
 
-			d3.selectAll<SVGRectElement, IntervalChartItem>('.bar')
-				.filter((d2) => d2 !== d)
-				.transition()
-				.duration(100)
-				.attr('x', (d2) => xScale(d2.startTime) ?? 0);
-		})
-		.on('end', (d, i, j) => {
-			const bar = d3.select(j[i]);
-			const currentX = parseFloat(bar.attr('x'));
-			const newX = xScale(d.startTime) ?? 0;
+					d3.selectAll<SVGRectElement, IntervalChartItem>('.bar')
+						.filter((d2) => d2 !== d)
+						.transition()
+						.duration(100)
+						.attr('x', (d2) => xScale(d2.startTime) ?? 0);
+				})
+				.on('end', (d, i, j) => {
+					const bar = d3.select(j[i]);
+					const currentX = parseFloat(bar.attr('x'));
+					const newX = xScale(d.startTime) ?? 0;
 
-			const doUpdate = () => {
-				const newSelectedIndex = data.indexOf(d);
-				onChange(data, newSelectedIndex);
-			};
+					const doUpdate = () => {
+						const newSelectedIndex = data.indexOf(d);
+						onChange(data, newSelectedIndex);
+					};
 
-			if (currentX !== newX) {
-				bar.transition().duration(300).attr('x', newX).on('end', doUpdate);
-			} else {
-				doUpdate();
-			}
-		});
+					if (currentX !== newX) {
+						bar.transition().duration(300).attr('x', newX).on('end', doUpdate);
+					} else {
+						doUpdate();
+					}
+				})
+		: null;
 
 	const endTimeSeconds = d3.max(data, (d) => d.startTime + d.durationSeconds) ?? 0;
 
@@ -171,7 +173,7 @@ const buildChart = (
 		.attr('y', (d) => yScale(d.intensityPercent))
 		.attr('fill', (d) => d.color)
 		.attr('class', 'bar')
-		.call(drag);
+		.call(drag ?? (() => {}));
 
 	updateSelectedOutline();
 
@@ -190,8 +192,8 @@ const buildChart = (
 
 interface Props {
 	intervals: readonly IntervalWithColor[];
-	selectedIndex: number | null;
-	onChange(it: Interval[], i: number | null): void;
+	selectedIndex?: number | null;
+	onChange?: (it: Interval[], i: number | null) => void;
 	width: number;
 	height: number;
 }
@@ -203,7 +205,7 @@ const IntervalEditorPlot = (props: Props) => {
 
 	useEffect(() => {
 		if (svgRef.current) {
-			buildChart(svgRef.current, width, height, intervals, selectedIndex, onChange);
+			buildChart(svgRef.current, width, height, intervals, selectedIndex ?? null, onChange);
 		}
 	}, [intervals, selectedIndex, onChange, width, height]);
 

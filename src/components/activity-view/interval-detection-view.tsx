@@ -217,11 +217,7 @@ const IntervalDetectionView = () => {
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 			<Box height="50vh">
-				<IntervalEditorPlot
-					intervals={intervalsWithColor}
-					selectedIndex={null}
-					onChange={(i) => {}}
-				/>
+				<IntervalEditorPlot intervals={intervalsWithColor} />
 			</Box>
 		</>
 	);
