@@ -12,21 +12,6 @@ export const getDetectedIntervals = createSelector(
 	performIntervalDetection
 );
 
-const getColor = (i: Interval) => {
-	const { intensityPercent: intensity } = i;
-	if (intensity < 0.6) return '#a6a6a6';
-	if (intensity < 0.75) return '#9acfe3';
-	if (intensity < 0.9) return '#77dd77';
-	if (intensity < 1.05) return '#fdfd96';
-	if (intensity < 1.18) return '#ffb347';
-	return '#ff6961';
-};
-
-export const intervalsWithColor = createSelector(
-	(state: WorkoutCreatorState) => state.currentIntervals,
-	(intervals) => intervals.map((i) => ({ ...i, color: getColor(i) }))
-);
-
 export const canUndo = (state: WorkoutCreatorState) => state.currentHistoryPosition > 0;
 
 export const canRedo = (state: WorkoutCreatorState) =>

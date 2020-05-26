@@ -14,12 +14,7 @@ import TimePicker from 'rc-time-picker';
 import { useWorkoutCreatorSelector } from 'store/reducers';
 import { useDispatchCallback } from 'store/dispatch-hooks';
 import { actions as WorkoutCreatorActions } from 'store/workout-creator/slice';
-import {
-	canUndo,
-	canRedo,
-	selectedOrNewInterval,
-	intervalsWithColor,
-} from 'store/workout-creator/selectors';
+import { canUndo, canRedo, selectedOrNewInterval } from 'store/workout-creator/selectors';
 import { Interval } from 'library/activity-data/interval';
 import { buildMRCFileString } from 'library/activity-data/export-mrc';
 
@@ -78,7 +73,7 @@ const IntervalAdjustmentFormGroup = () => {
 		redoEnabled,
 		newInterval,
 	} = useWorkoutCreatorSelector((w) => ({
-		intervals: intervalsWithColor(w),
+		intervals: w.currentIntervals,
 		selectedIndex: w.selectedIndex,
 		undoEnabled: canUndo(w),
 		redoEnabled: canRedo(w),

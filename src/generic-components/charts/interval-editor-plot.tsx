@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import * as d3 from 'd3';
-import * as lodash from 'lodash';
+import lodash from 'lodash';
 import { withResizeDetector } from 'react-resize-detector';
 import { findNiceTimeTickInterval } from 'library/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
@@ -191,23 +191,44 @@ const buildChart = (
 };
 
 interface Props {
-	intervals: readonly IntervalWithColor[];
+	intervals: readonly Interval[];
 	selectedIndex?: number | null;
 	onChange?: (it: Interval[], i: number | null) => void;
 	width: number;
 	height: number;
 }
 
+const getColor = (i: Interval) => {
+	const { intensityPercent: intensity } = i;
+	if (intensity < 0.6) return '#a6a6a6';
+	if (intensity < 0.75) return '#9acfe3';
+	if (intensity < 0.9) return '#77dd77';
+	if (intensity < 1.05) return '#fdfd96';
+	if (intensity < 1.18) return '#ffb347';
+	return '#ff6961';
+};
+
 const IntervalEditorPlot = (props: Props) => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
 	const { intervals, selectedIndex, onChange, width, height } = props;
 
+	const intervalsWithColor = useMemo(() => intervals.map((i) => ({ ...i, color: getColor(i) })), [
+		intervals,
+	]);
+
 	useEffect(() => {
 		if (svgRef.current) {
-			buildChart(svgRef.current, width, height, intervals, selectedIndex ?? null, onChange);
+			buildChart(
+				svgRef.current,
+				width,
+				height,
+				intervalsWithColor,
+				selectedIndex ?? null,
+				onChange
+			);
 		}
-	}, [intervals, selectedIndex, onChange, width, height]);
+	}, [intervalsWithColor, selectedIndex, onChange, width, height]);
 
 	return <svg ref={svgRef} width={width} height={height} />;
 };

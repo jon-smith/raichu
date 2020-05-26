@@ -8,7 +8,7 @@ import Box from '@material-ui/core/Box';
 import { useWorkoutCreatorSelector } from 'store/reducers';
 import { useDispatchCallback } from 'store/dispatch-hooks';
 import { actions as WorkoutCreatorActions } from 'store/workout-creator/slice';
-import { selectedOrNewInterval, intervalsWithColor } from 'store/workout-creator/selectors';
+import { selectedOrNewInterval } from 'store/workout-creator/selectors';
 import { Interval } from 'library/activity-data/interval';
 
 import IntervalEditorPlot from 'generic-components/charts/interval-editor-plot';
@@ -44,7 +44,7 @@ const useActions = () => {
 
 const WorkoutCreatorPage = () => {
 	const { intervals, selectedIndex, currentSelectedInterval } = useWorkoutCreatorSelector((w) => ({
-		intervals: intervalsWithColor(w),
+		intervals: w.currentIntervals,
 		selectedIndex: w.selectedIndex,
 		currentSelectedInterval: selectedOrNewInterval(w),
 	}));
