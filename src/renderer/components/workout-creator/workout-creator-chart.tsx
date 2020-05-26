@@ -3,9 +3,9 @@ import { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import * as lodash from 'lodash';
 import { withResizeDetector } from 'react-resize-detector';
-import { findNiceTimeTickInterval } from 'shared/utils/chart-utils';
-import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
-import { Interval, IntervalWithColor } from 'state/workout-creator/types';
+import { findNiceTimeTickInterval } from 'library/utils/chart-utils';
+import { formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
+import { Interval, IntervalWithColor } from 'store/workout-creator/types';
 
 type IntervalChartItem = IntervalWithColor & { startTime: number };
 

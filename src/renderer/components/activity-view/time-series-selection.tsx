@@ -8,7 +8,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 import { useFormStyles } from 'renderer/styles/form-styles';
 
-import { Variable } from 'shared/activity-data/activity-calculator';
+import { Variable } from 'library/activity-data/activity-calculator';
 
 type Props = {
 	option: Variable;

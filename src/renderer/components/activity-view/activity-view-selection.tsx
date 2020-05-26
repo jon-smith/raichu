@@ -2,9 +2,9 @@ import React, { useCallback } from 'react';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { useActivitySelector } from 'state/reducers';
-import { View, setView } from 'state/activity-data/slice';
-import { useDispatchCallback } from 'state/dispatch-hooks';
+import { useActivitySelector } from 'store/reducers';
+import { View, setView } from 'store/activity-data/slice';
+import { useDispatchCallback } from 'store/dispatch-hooks';
 
 const StyledTabs = withStyles((theme) => ({
 	root: {

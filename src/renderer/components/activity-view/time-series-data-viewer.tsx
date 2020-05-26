@@ -2,12 +2,12 @@ import React, { useMemo, useState } from 'react';
 import lodash from 'lodash';
 
 import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
-import { getAsTimeSeries, Variable } from 'shared/activity-data/activity-calculator';
-import { ActivityContainer } from 'shared/activity-data/activity-container';
-import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
-import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
-import { useActivitySelector } from 'state/reducers';
-import { getSelectedActivity } from 'state/activity-data/selectors';
+import { getAsTimeSeries, Variable } from 'library/activity-data/activity-calculator';
+import { ActivityContainer } from 'library/activity-data/activity-container';
+import { buildNiceTimeTicksToDisplay } from 'library/utils/chart-utils';
+import { formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
+import { useActivitySelector } from 'store/reducers';
+import { getSelectedActivity } from 'store/activity-data/selectors';
 import {
 	primaryColourForVariable,
 	axisLabelForVariable,

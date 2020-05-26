@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ActivityContainer } from 'shared/activity-data/activity-container';
+import { ActivityContainer } from 'library/activity-data/activity-container';
 
 type ExtendedActivityContainer = ActivityContainer & { filename: string };
 

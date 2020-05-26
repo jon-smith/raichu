@@ -5,11 +5,11 @@ import { batchActions } from 'redux-batched-actions';
 
 import Box from '@material-ui/core/Box';
 
-import { useWorkoutCreatorSelector } from 'state/reducers';
-import { useDispatchCallback } from 'state/dispatch-hooks';
-import { Interval } from 'state/workout-creator/types';
-import { actions as WorkoutCreatorActions } from 'state/workout-creator/slice';
-import { selectedOrNewInterval, intervalsWithColor } from 'state/workout-creator/selectors';
+import { useWorkoutCreatorSelector } from 'store/reducers';
+import { useDispatchCallback } from 'store/dispatch-hooks';
+import { Interval } from 'store/workout-creator/types';
+import { actions as WorkoutCreatorActions } from 'store/workout-creator/slice';
+import { selectedOrNewInterval, intervalsWithColor } from 'store/workout-creator/selectors';
 
 import WorkoutCreatorChart from './workout-creator-chart';
 import ActivityLoader from './activity-loader';

@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { getAttributes } from 'shared/activity-data/activity-container';
+import { getAttributes } from 'library/activity-data/activity-container';
 import { ActivityState } from './slice';
 
 export function getSelectedActivity(state: ActivityState) {

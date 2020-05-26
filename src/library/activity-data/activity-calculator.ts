@@ -2,7 +2,7 @@ import {
 	calculateMaxAveragesForDistances as maxAveragesForDistances,
 	calculateMinTimesForDistances,
 	interpolateNullValues,
-} from 'shared/activity-data/best-split-calculator';
+} from 'library/activity-data/best-split-calculator';
 import { ActivityContainer, ExtendedPoint } from './activity-container';
 
 export type Variable = 'heartrate' | 'power' | 'cadence' | 'elevation' | 'time';

@@ -1,4 +1,4 @@
-import * as ArrayUtils from 'shared/utils/array-utils';
+import * as ArrayUtils from 'library/utils/array-utils';
 
 import { ActivityPoint } from './shared-structures';
 import * as Helper from './xml-helpers';

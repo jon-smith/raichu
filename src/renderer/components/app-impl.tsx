@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
-import { useViewSelector } from 'state/reducers';
-import { Page, setCurrentPage } from 'state/view/slice';
-import { useDispatchCallback } from 'state/dispatch-hooks';
+import { useViewSelector } from 'store/reducers';
+import { Page, setCurrentPage } from 'store/view/slice';
+import { useDispatchCallback } from 'store/dispatch-hooks';
 
 import ActivityDataViewer from './activity-view/activity-data-viewer';
 import WorkoutCreatorPanel from './workout-creator/workout-creator-panel';

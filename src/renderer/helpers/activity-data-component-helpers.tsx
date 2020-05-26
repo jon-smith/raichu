@@ -1,4 +1,8 @@
-import { Variable, asRawVariable, BestSplitOption } from 'shared/activity-data/activity-calculator';
+import {
+	Variable,
+	asRawVariable,
+	BestSplitOption,
+} from 'library/activity-data/activity-calculator';
 
 export function primaryColourForVariable(o: Variable) {
 	switch (o) {

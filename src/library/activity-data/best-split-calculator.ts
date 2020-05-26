@@ -1,4 +1,4 @@
-import { sortNumeric } from 'shared/utils/array-utils';
+import { sortNumeric } from 'library/utils/array-utils';
 
 export type BestAverage = {
 	startIndex: number;

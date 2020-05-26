@@ -16,14 +16,14 @@ import Switch from '@material-ui/core/Switch';
 import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
 import ActivityFileDrop, { FileAndData, extractActivityData } from 'ui/file/activity-file-drop';
 
-import { formatSecondsAsHHMMSS } from 'shared/utils/time-format-utils';
-import { buildNiceTimeTicksToDisplay } from 'shared/utils/chart-utils';
-import { getAttributes } from 'shared/activity-data/activity-container';
+import { formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
+import { buildNiceTimeTicksToDisplay } from 'library/utils/chart-utils';
+import { getAttributes } from 'library/activity-data/activity-container';
 
-import { useDispatchCallback } from 'state/dispatch-hooks';
-import { setActivity, clearActivity } from 'state/workout-creator/slice';
-import { getDetectedIntervals } from 'state/workout-creator/selectors';
-import { useWorkoutCreatorSelector } from 'state/reducers';
+import { useDispatchCallback } from 'store/dispatch-hooks';
+import { setActivity, clearActivity } from 'store/workout-creator/slice';
+import { getDetectedIntervals } from 'store/workout-creator/selectors';
+import { useWorkoutCreatorSelector } from 'store/reducers';
 
 import SettingsFormGroup from './settings-form-group';
 

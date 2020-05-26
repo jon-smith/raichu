@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { useActivitySelector } from 'state/reducers';
-import { View } from 'state/activity-data/slice';
+import { useActivitySelector } from 'store/reducers';
+import { View } from 'store/activity-data/slice';
 
 import BestSplitPlotViewer from './best-split-plot';
 import ActivitySelectionForm from './activity-selection-form';

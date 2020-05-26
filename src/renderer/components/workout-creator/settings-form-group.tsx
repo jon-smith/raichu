@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
-import { useWorkoutCreatorSelector } from 'state/reducers';
+import { useWorkoutCreatorSelector } from 'store/reducers';
 import {
 	setFTP,
 	setStepThreshold,
@@ -14,8 +14,8 @@ import {
 	setInputSmoothing,
 	setDiscrepencySmoothing,
 	generateIntervals,
-} from 'state/workout-creator/slice';
-import { useAppDispatch, useDispatchCallback } from 'state/dispatch-hooks';
+} from 'store/workout-creator/slice';
+import { useAppDispatch, useDispatchCallback } from 'store/dispatch-hooks';
 
 const useStyles = makeStyles((theme) =>
 	createStyles({

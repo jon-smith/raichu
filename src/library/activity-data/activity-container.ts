@@ -1,11 +1,11 @@
 import * as d3 from 'd3';
 import { getDistance } from 'geolib';
 
-import { GpxData } from 'shared/activity-parsers/gpx-parser';
-import { TcxData, TcxActivity } from 'shared/activity-parsers/tcx-parser';
-import { ActivityPoint } from 'shared/activity-parsers/shared-structures';
-import { fillMissingIndices } from 'shared/activity-data/best-split-calculator';
-import { cumulative } from 'shared/utils/array-utils';
+import { GpxData } from 'library/activity-parsers/gpx-parser';
+import { TcxData, TcxActivity } from 'library/activity-parsers/tcx-parser';
+import { ActivityPoint } from 'library/activity-parsers/shared-structures';
+import { fillMissingIndices } from 'library/activity-data/best-split-calculator';
+import { cumulative } from 'library/utils/array-utils';
 
 type GpxContainer = {
 	type: 'gpx';

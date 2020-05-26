@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
-import * as activityCalculator from 'shared/activity-data/activity-calculator';
-import { BestSplitOption } from 'shared/activity-data/activity-calculator';
-import { ActivityContainer } from 'shared/activity-data/activity-container';
-import { formatSecondsAsTimeWords } from 'shared/utils/time-format-utils';
-import { useActivitySelector } from 'state/reducers';
-import { getSelectedActivity } from 'state/activity-data/selectors';
+import * as activityCalculator from 'library/activity-data/activity-calculator';
+import { BestSplitOption } from 'library/activity-data/activity-calculator';
+import { ActivityContainer } from 'library/activity-data/activity-container';
+import { formatSecondsAsTimeWords } from 'library/utils/time-format-utils';
+import { useActivitySelector } from 'store/reducers';
+import { getSelectedActivity } from 'store/activity-data/selectors';
 import { primaryColourForBestSplitOption } from 'renderer/helpers/activity-data-component-helpers';
 import BestSplitCurveSelection from './best-split-curve-selection';
 

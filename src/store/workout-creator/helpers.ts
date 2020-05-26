@@ -2,9 +2,9 @@ import * as d3 from 'd3';
 import {
 	getProcessedTimeSeries,
 	TimeSeriesProcessingOptions,
-} from 'shared/activity-data/activity-calculator';
-import * as ArrayUtils from 'shared/utils/array-utils';
-import { ActivityContainer } from 'shared/activity-data/activity-container';
+} from 'library/activity-data/activity-calculator';
+import * as ArrayUtils from 'library/utils/array-utils';
+import { ActivityContainer } from 'library/activity-data/activity-container';
 import { DiscrepencyCurvePoint, ActivityToIntervalParameters, Interval } from './types';
 
 export function calculateActivityPowerPerSecond(activity?: ActivityContainer) {

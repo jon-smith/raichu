@@ -11,17 +11,17 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 import * as moment from 'moment';
 import TimePicker from 'rc-time-picker';
 
-import { useWorkoutCreatorSelector } from 'state/reducers';
-import { useDispatchCallback } from 'state/dispatch-hooks';
-import { Interval } from 'state/workout-creator/types';
-import { actions as WorkoutCreatorActions } from 'state/workout-creator/slice';
+import { useWorkoutCreatorSelector } from 'store/reducers';
+import { useDispatchCallback } from 'store/dispatch-hooks';
+import { Interval } from 'store/workout-creator/types';
+import { actions as WorkoutCreatorActions } from 'store/workout-creator/slice';
 import {
 	canUndo,
 	canRedo,
 	selectedOrNewInterval,
 	intervalsWithColor,
-} from 'state/workout-creator/selectors';
-import { buildMRCFileString } from 'shared/activity-data/export-mrc';
+} from 'store/workout-creator/selectors';
+import { buildMRCFileString } from 'library/activity-data/export-mrc';
 
 const useStyles = makeStyles((theme) =>
 	createStyles({

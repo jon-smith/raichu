@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { readFileAsText } from 'shared/utils/file-utils';
-import { GpxData, parseGPXFile } from 'shared/activity-parsers/gpx-parser';
-import { TcxData, parseTCXFile } from 'shared/activity-parsers/tcx-parser';
-import { fromGPXData, fromTCXData } from 'shared/activity-data/activity-container';
+import { readFileAsText } from 'library/utils/file-utils';
+import { GpxData, parseGPXFile } from 'library/activity-parsers/gpx-parser';
+import { TcxData, parseTCXFile } from 'library/activity-parsers/tcx-parser';
+import { fromGPXData, fromTCXData } from 'library/activity-data/activity-container';
 
 type GpxDataContainer = {
 	type: 'gpx';

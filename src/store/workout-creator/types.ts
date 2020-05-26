@@ -1,4 +1,4 @@
-import { ActivityContainer } from 'shared/activity-data/activity-container';
+import { ActivityContainer } from 'library/activity-data/activity-container';
 
 export type Interval = {
 	intensity: number;

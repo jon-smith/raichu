@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import * as ArrayUtils from 'shared/utils/array-utils';
-import { Mutable } from 'shared/utils/type-utils';
-import { ActivityContainer } from 'shared/activity-data/activity-container';
+import * as ArrayUtils from 'library/utils/array-utils';
+import { Mutable } from 'library/utils/type-utils';
+import { ActivityContainer } from 'library/activity-data/activity-container';
 import { Interval, WorkoutCreatorState } from './types';
 import { getDetectedIntervals } from './selectors';
 

@@ -9,10 +9,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import { useFormStyles } from 'renderer/styles/form-styles';
 
-import { useActivitySelector } from 'state/reducers';
-import { getActivityAttributes } from 'state/activity-data/selectors';
-import { setSelectedIndex } from 'state/activity-data/slice';
-import { useDispatchCallback } from 'state/dispatch-hooks';
+import { useActivitySelector } from 'store/reducers';
+import { getActivityAttributes } from 'store/activity-data/selectors';
+import { setSelectedIndex } from 'store/activity-data/slice';
+import { useDispatchCallback } from 'store/dispatch-hooks';
 
 import ConnectedActivityFileDrop from './connected-activity-file-drop';
 

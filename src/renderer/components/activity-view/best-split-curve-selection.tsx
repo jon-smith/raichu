@@ -8,7 +8,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 import { useFormStyles } from 'renderer/styles/form-styles';
 
-import { BestSplitOption } from 'shared/activity-data/activity-calculator';
+import { BestSplitOption } from 'library/activity-data/activity-calculator';
 
 type Props = {
 	option: BestSplitOption;
