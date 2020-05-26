@@ -13,8 +13,11 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
-import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
-import ActivityFileDrop, { FileAndData, extractActivityData } from 'ui/file/activity-file-drop';
+import XYPlot, { DataSeriesT } from 'generic-components/charts/xy-plot';
+import ActivityFileDrop, {
+	FileAndData,
+	extractActivityData,
+} from 'generic-components/file/activity-file-drop';
 
 import { formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
 import { buildNiceTimeTicksToDisplay } from 'library/utils/chart-utils';

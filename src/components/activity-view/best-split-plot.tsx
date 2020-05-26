@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
+import XYPlot, { DataSeriesT } from 'generic-components/charts/xy-plot';
 import * as activityCalculator from 'library/activity-data/activity-calculator';
 import { BestSplitOption } from 'library/activity-data/activity-calculator';
 import { ActivityContainer } from 'library/activity-data/activity-container';

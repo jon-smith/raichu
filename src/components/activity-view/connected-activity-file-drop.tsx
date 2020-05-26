@@ -1,7 +1,10 @@
 import React, { useCallback } from 'react';
 import { useDispatchCallback } from 'store/dispatch-hooks';
 import { addActivities } from 'store/activity-data/slice';
-import ActivityFileDrop, { FileAndData, extractActivityData } from 'ui/file/activity-file-drop';
+import ActivityFileDrop, {
+	FileAndData,
+	extractActivityData,
+} from 'generic-components/file/activity-file-drop';
 
 const ConnectedActivityFileDrop = (props: { text?: string }) => {
 	const addActivitesCallback = useDispatchCallback(addActivities);

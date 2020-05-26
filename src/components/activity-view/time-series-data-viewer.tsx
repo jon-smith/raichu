@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import lodash from 'lodash';
 
-import XYPlot, { DataSeriesT } from 'ui/charts/xy-plot';
+import XYPlot, { DataSeriesT } from 'generic-components/charts/xy-plot';
 import { getAsTimeSeries, Variable } from 'library/activity-data/activity-calculator';
 import { ActivityContainer } from 'library/activity-data/activity-container';
 import { buildNiceTimeTicksToDisplay } from 'library/utils/chart-utils';
