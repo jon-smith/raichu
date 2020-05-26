@@ -14,15 +14,22 @@ import {
 } from 'store/interval-detection/slice';
 import { useDispatchCallback } from 'store/dispatch-hooks';
 
-const useStyles = makeStyles((theme) =>
+const useFormControlStyles = makeStyles((theme) =>
 	createStyles({
 		root: {
 			margin: 0,
 			padding: theme.spacing(0, 2),
-			width: 160,
 		},
 		label: {
 			padding: theme.spacing(1),
+		},
+	})
+);
+
+const useTextFieldStyles = makeStyles((theme) =>
+	createStyles({
+		root: {
+			width: 100,
 		},
 	})
 );
@@ -33,13 +40,16 @@ const NumericFormControlLabel = (props: {
 	onChange: (v: number) => void;
 }) => {
 	const { label, value, onChange } = props;
-	const formControlClasses = useStyles();
+
+	const formControlClasses = useFormControlStyles();
+	const textFieldClasses = useTextFieldStyles();
 
 	return (
 		<FormControlLabel
 			classes={formControlClasses}
 			control={
 				<TextField
+					classes={textFieldClasses}
 					type="number"
 					variant="outlined"
 					size="small"
