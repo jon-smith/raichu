@@ -11,7 +11,7 @@ import { getSelectedActivity } from 'store/activity-data/selectors';
 import {
 	primaryColourForVariable,
 	axisLabelForVariable,
-} from 'renderer/helpers/activity-data-component-helpers';
+} from 'components/helpers/activity-data-component-helpers';
 
 import TimeSeriesSelection from './time-series-selection';
 

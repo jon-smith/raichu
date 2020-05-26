@@ -6,7 +6,7 @@ import { ActivityContainer } from 'library/activity-data/activity-container';
 import { formatSecondsAsTimeWords } from 'library/utils/time-format-utils';
 import { useActivitySelector } from 'store/reducers';
 import { getSelectedActivity } from 'store/activity-data/selectors';
-import { primaryColourForBestSplitOption } from 'renderer/helpers/activity-data-component-helpers';
+import { primaryColourForBestSplitOption } from 'components/helpers/activity-data-component-helpers';
 import BestSplitCurveSelection from './best-split-curve-selection';
 
 function frontBack<T>(a: T[]) {

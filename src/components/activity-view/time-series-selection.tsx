@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
-import { useFormStyles } from 'renderer/styles/form-styles';
+import { useFormStyles } from 'components/styles/form-styles';
 
 import { Variable } from 'library/activity-data/activity-calculator';
 

@@ -7,7 +7,7 @@ import Select from '@material-ui/core/Select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import { useFormStyles } from 'renderer/styles/form-styles';
+import { useFormStyles } from 'components/styles/form-styles';
 
 import { useActivitySelector } from 'store/reducers';
 import { getActivityAttributes } from 'store/activity-data/selectors';
