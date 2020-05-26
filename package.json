@@ -13,6 +13,7 @@
 	"bugs": {
 		"url": "https://github.com/jon-smith/raichu/issues"
 	},
+	"homepage": "http://jon-smith.github.io/raichu",
 	"dependencies": {
 		"@material-ui/core": "^4.9.7",
 		"@material-ui/icons": "^4.9.1",
@@ -44,11 +45,12 @@
 		"@types/react-redux": "^7.1.9",
 		"@types/react-resize-detector": "^4.2.0",
 		"@types/webpack-env": "^1.15.2",
-		"typescript": "^3.8.3",
-		"prettier": "^2.0.5",
+		"gh-pages": "^2.2.0",
 		"husky": "^4.2.5",
 		"lint-staged": "^10.2.6",
-		"react-scripts": "3.4.1"
+		"prettier": "^2.0.5",
+		"react-scripts": "3.4.1",
+		"typescript": "^3.8.3"
 	},
 	"lint-staged": {
 		"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
@@ -59,7 +61,9 @@
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
-		"eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d build"
 	},
 	"eslintConfig": {
 		"extends": "react-app",
