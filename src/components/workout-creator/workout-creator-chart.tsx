@@ -5,7 +5,9 @@ import * as lodash from 'lodash';
 import { withResizeDetector } from 'react-resize-detector';
 import { findNiceTimeTickInterval } from 'library/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
-import { Interval, IntervalWithColor } from 'library/activity-data/interval';
+import { Interval } from 'library/activity-data/interval';
+
+type IntervalWithColor = Interval & { color: string };
 
 type IntervalChartItem = IntervalWithColor & { startTime: number };
 
