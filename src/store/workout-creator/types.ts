@@ -2,7 +2,7 @@ import { ActivityContainer } from 'library/activity-data/activity-container';
 
 export type Interval = {
 	intensity: number;
-	length: number;
+	durationSeconds: number;
 };
 
 export type IntervalWithColor = Interval & { color: string };

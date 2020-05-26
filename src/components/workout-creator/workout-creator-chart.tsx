@@ -12,7 +12,7 @@ type IntervalChartItem = IntervalWithColor & { startTime: number };
 const calculateStartTimes = (intervals: readonly IntervalWithColor[]): IntervalChartItem[] => {
 	const copy = intervals.map((i) => ({ ...i, startTime: 0 }));
 	for (let i = 0; i < intervals.length; ++i) {
-		copy[i].startTime = i === 0 ? 0 : copy[i - 1].startTime + copy[i - 1].length;
+		copy[i].startTime = i === 0 ? 0 : copy[i - 1].startTime + copy[i - 1].durationSeconds;
 	}
 	return copy;
 };
@@ -98,7 +98,7 @@ const buildChart = (
 
 			const newX = mouseX - dragMouseOffsetX;
 
-			const draggingBarWidth = xScaleTimeSpan(d.length);
+			const draggingBarWidth = xScaleTimeSpan(d.durationSeconds);
 			const backlash = draggingBarWidth / 2;
 
 			// Don't let the bar go to far outside the axis range
@@ -116,7 +116,7 @@ const buildChart = (
 
 			for (let k = 0; k < data.length; ++k) {
 				data[k] = newDataOrder[k];
-				data[k].startTime = k === 0 ? 0 : data[k - 1].startTime + data[k - 1].length;
+				data[k].startTime = k === 0 ? 0 : data[k - 1].startTime + data[k - 1].durationSeconds;
 			}
 
 			d3.selectAll<SVGRectElement, IntervalChartItem>('.bar')
@@ -142,7 +142,7 @@ const buildChart = (
 			}
 		});
 
-	const endTimeSeconds = d3.max(data, (d) => d.startTime + d.length) ?? 0;
+	const endTimeSeconds = d3.max(data, (d) => d.startTime + d.durationSeconds) ?? 0;
 
 	const xAxis = d3
 		.axisBottom(xScale)
@@ -163,7 +163,7 @@ const buildChart = (
 		.data(data)
 		.enter()
 		.append('rect')
-		.attr('width', (d) => xScaleTimeSpan(d.length))
+		.attr('width', (d) => xScaleTimeSpan(d.durationSeconds))
 		.attr('height', (d) => height - padding.bottom - yScale(d.intensity))
 		.attr('x', (d) => xScale(d.startTime))
 		.attr('y', (d) => yScale(d.intensity))

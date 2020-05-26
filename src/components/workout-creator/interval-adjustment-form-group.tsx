@@ -55,7 +55,10 @@ const downloadMRCFile = (intervals: readonly Interval[]) => {
 	const mrcString = buildMRCFileString(
 		'Workout',
 		'',
-		intervals.map((i) => ({ durationSeconds: i.length, intensityPercent: i.intensity * 100 }))
+		intervals.map((i) => ({
+			durationSeconds: i.durationSeconds,
+			intensityPercent: i.intensity * 100,
+		}))
 	);
 
 	const element = document.createElement('a');
@@ -96,7 +99,7 @@ const IntervalAdjustmentFormGroup = () => {
 	);
 
 	const addInterval = useCallback(() => {
-		if (newInterval.length > 0) {
+		if (newInterval.durationSeconds > 0) {
 			setIntervals([...intervals, newInterval]);
 		}
 	}, [newInterval, setIntervals, intervals]);
@@ -126,7 +129,7 @@ const IntervalAdjustmentFormGroup = () => {
 				classes={formControlClasses}
 				control={
 					<TimePicker
-						value={moment.utc(currentSelectedInterval.length * 1000)}
+						value={moment.utc(currentSelectedInterval.durationSeconds * 1000)}
 						onChange={(d) => setIntervalDuration(d)}
 						showHour={false}
 						showMinute={true}
@@ -154,7 +157,7 @@ const IntervalAdjustmentFormGroup = () => {
 			<IconButton
 				aria-label="add"
 				onClick={addInterval}
-				disabled={newInterval.length === 0 || selectedIndex !== null}
+				disabled={newInterval.durationSeconds === 0 || selectedIndex !== null}
 			>
 				<Add />
 			</IconButton>

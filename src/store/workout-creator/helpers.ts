@@ -98,7 +98,7 @@ export function performIntervalDetection(
 		const endTime = detectedStepTimePoints[i];
 		const duration = endTime - startTime;
 		const thisIntervalData = intensityPerSecond.slice(startTime, endTime);
-		result.push({ length: duration, intensity: d3.mean(thisIntervalData) ?? 0 });
+		result.push({ durationSeconds: duration, intensity: d3.mean(thisIntervalData) ?? 0 });
 	}
 
 	return {

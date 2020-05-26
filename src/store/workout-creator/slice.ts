@@ -6,17 +6,17 @@ import { Interval, WorkoutCreatorState } from './types';
 import { getDetectedIntervals } from './selectors';
 
 const defaultIntervals: Interval[] = [
-	{ intensity: 0.3, length: 60 },
-	{ intensity: 0.4, length: 60 },
-	{ intensity: 0.5, length: 60 },
-	{ intensity: 0.6, length: 60 * 5 },
+	{ intensity: 0.3, durationSeconds: 60 },
+	{ intensity: 0.4, durationSeconds: 60 },
+	{ intensity: 0.5, durationSeconds: 60 },
+	{ intensity: 0.6, durationSeconds: 60 * 5 },
 	...Array(13)
 		.fill([
-			{ intensity: 1.3, length: 30 },
-			{ intensity: 0.6, length: 15 },
+			{ intensity: 1.3, durationSeconds: 30 },
+			{ intensity: 0.6, durationSeconds: 15 },
 		])
 		.flat(),
-	{ intensity: 0.6, length: 60 * 5 },
+	{ intensity: 0.6, durationSeconds: 60 * 5 },
 ];
 
 const defaultState: WorkoutCreatorState = {
@@ -29,7 +29,7 @@ const defaultState: WorkoutCreatorState = {
 		inputSmoothingRadius: 1,
 	},
 	generatingFromActivity: false,
-	newInterval: { intensity: 1.0, length: 0 },
+	newInterval: { intensity: 1.0, durationSeconds: 0 },
 	currentIntervals: defaultIntervals,
 	history: [defaultIntervals],
 	currentHistoryPosition: 0,
@@ -48,7 +48,7 @@ export const generateIntervals = createAsyncThunk(
 
 function setIntervalsImpl(state: Mutable<WorkoutCreatorState>, intervals: Interval[]) {
 	const areEqual = (a: Interval, b: Interval) =>
-		a.intensity === b.intensity && a.length === b.length;
+		a.intensity === b.intensity && a.durationSeconds === b.durationSeconds;
 	if (!ArrayUtils.areEqual(intervals, state.currentIntervals, areEqual)) {
 		const newHistory = [...state.history.slice(0, state.currentHistoryPosition + 1), intervals];
 
@@ -94,12 +94,12 @@ const workoutCreatorSlice = createSlice({
 		},
 		setSelectedLength(state, action: PayloadAction<number>) {
 			if (state.selectedIndex === null) {
-				state.newInterval.length = action.payload;
+				state.newInterval.durationSeconds = action.payload;
 			} else {
 				const updatedIntervals = state.currentIntervals.slice();
 				updatedIntervals[state.selectedIndex] = {
 					...updatedIntervals[state.selectedIndex],
-					length: action.payload,
+					durationSeconds: action.payload,
 				};
 				setIntervalsImpl(state, updatedIntervals);
 			}
