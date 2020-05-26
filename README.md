@@ -1,91 +1,45 @@
 # raichu
 
-React/Typescript/Electron/Rust based training data analysis software
+A simple web-app for viewing and analysing GPX/TCX data. Written using [Typescript](https://www.typescriptlang.org/), [React](https://reactjs.org/)
+([Create React App](https://github.com/facebook/create-react-app)) and [Redux](https://redux.js.org/).
 
-## Folder structure
+## Available Scripts
 
-Typescript code is located in the src folder split into the following sub-directories:
+In the project directory, you can run:
 
-- **main** Back-end code
-- **renderer** Front-end code
-- **ui** Generic front-end components
-- **shared** Code shared between front and back end
-- **state** Code for the redux store
+### `npm start`
 
-Native (Rust) code is located in the native folder.
+Runs the app in the development mode.<br />
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-## Install
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
 
-The rust back-end uses Neon bindings. See [https://neon-bindings.com/docs/getting-started/](https://neon-bindings.com/docs/getting-started/) for instructions to install pre-requisites.
+### `npm test`
 
-To install the local dependencies:
+Launches the test runner in the interactive watch mode.<br />
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-```bash
-npm install
-```
+### `npm run build`
 
-## Usage
+Builds the app for production to the `build` folder.<br />
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-To build the native code:
+The build is minified and the filenames include the hashes.<br />
+Your app is ready to be deployed!
 
-```bash
-npm run build-native
-```
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-To build and run the electron app in dev mode, with hot-reload (excluding native code):
+### `npm run eject`
 
-```bash
-npm run start-dev
-```
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-Alternatively, you can run each process individually by running the following **simultaneously** in different console tabs:
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-```bash
-npm run start-renderer-dev
-npm run start-main-dev
-```
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-```bash
-npm run start-dev
-```
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Packaging
+## About
 
-We use [Electron builder](https://www.electron.build/) to build and package the application. By default you can run the following to package for your current platform:
-
-```bash
-npm run dist
-```
-
-This will create a installer for your platform in the `releases` folder.
-
-You can make builds for specific platforms (or multiple platforms) by using the options found [here](https://www.electron.build/cli). E.g. building for all platforms (Windows, Mac, Linux):
-
-```bash
-npm run dist -- -mwl
-```
-
-## Dev environment
-
-The following VS code extensions are recommended:
-
-- ESLint `dbaeumer.vscode-eslint`
-- Prettier - Code formatter `esbenp.prettier-vscode`
-
-## Husky and Prettier
-
-This project comes with both Husky and Prettier setup to ensure a consistent code style.
-
-To change the code style, you can change the configuration in `.prettierrc`.
-
-In case you want to get rid of this, you can removing the following from `package.json`:
-
-1. Remove `precommit` from the `scripts` section
-1. Remove the `lint-staged` section
-1. Remove `lint-staged`, `prettier`, `eslint-config-prettier`, and `husky` from the `devDependencies`
-
-Also remove all mentions of Prettier from the `extends` section in `.eslintrc.json`.
-
-## About this project
-
-Set up using [electron-react-typescript](https://github.com/Robinfr/electron-react-typescript).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
