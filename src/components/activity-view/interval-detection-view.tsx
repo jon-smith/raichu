@@ -11,6 +11,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
 import XYPlot, { DataSeriesT } from 'generic-components/charts/xy-plot';
+import IntervalEditorPlot from 'generic-components/charts/interval-editor-plot';
 
 import { formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
 import { buildNiceTimeTicksToDisplay } from 'library/utils/chart-utils';
@@ -20,6 +21,7 @@ import { useIntervalDetectionSelector, useActivitySelector } from 'store/reducer
 import ParamsForm from './interval-detection-params-form-group';
 import { getSelectedActivity } from 'store/activity-data/selectors';
 import { performIntervalDetection } from 'library/activity-data/interval-detection';
+import { Interval } from 'library/activity-data/interval';
 
 const stopClickFocusPropagation: Partial<BoxProps> = {
 	onClick: (event) => event.stopPropagation(),
@@ -76,22 +78,19 @@ const FormSwitch = (params: {
 	);
 };
 
-const ActivityChart = () => {
+type IntervalDetectionResultT = ReturnType<typeof performIntervalDetection>;
+
+const ActivityChart = (props: IntervalDetectionResultT) => {
 	const [showDiscrepencyCurve, setShowDiscrepencyCurve] = useState(false);
 	const [showDetectedSteps, setShowDetectedSteps] = useState(false);
 	const [showSmoothedInput, setShowSmoothedInput] = useState(false);
 
-	const selectedActivity = useActivitySelector((s) => getSelectedActivity(s));
-
-	const { params, ftp } = useIntervalDetectionSelector((s) => ({
+	const { params } = useIntervalDetectionSelector((s) => ({
 		params: s.generationParams,
 		ftp: s.ftp,
 	}));
 
-	const { rawInput, smoothedInput, discrepencyCurve, detectedStepTimePoints } = useMemo(
-		() => performIntervalDetection(selectedActivity, ftp, params),
-		[ftp, params, selectedActivity]
-	);
+	const { rawInput, smoothedInput, discrepencyCurve, detectedStepTimePoints } = props;
 
 	const powerData = showSmoothedInput ? smoothedInput : rawInput;
 
@@ -174,21 +173,58 @@ const ActivityChart = () => {
 	);
 };
 
-const ActivityLoader = () => (
-	<>
-		<ExpansionPanel>
-			<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-				<Box display="flex" flexDirection="column" {...stopClickFocusPropagation}>
-					<Box width="100%" {...stopClickFocusPropagation}>
-						<ParamsForm />
-					</Box>
-				</Box>
-			</ExpansionPanelSummary>
-			<ExpansionPanelDetails>
-				<ActivityChart />
-			</ExpansionPanelDetails>
-		</ExpansionPanel>
-	</>
-);
+const getColor = (i: Interval) => {
+	const { intensityPercent: intensity } = i;
+	if (intensity < 0.6) return '#a6a6a6';
+	if (intensity < 0.75) return '#9acfe3';
+	if (intensity < 0.9) return '#77dd77';
+	if (intensity < 1.05) return '#fdfd96';
+	if (intensity < 1.18) return '#ffb347';
+	return '#ff6961';
+};
 
-export default ActivityLoader;
+const IntervalDetectionView = () => {
+	const selectedActivity = useActivitySelector((s) => getSelectedActivity(s));
+
+	const { params, ftp } = useIntervalDetectionSelector((s) => ({
+		params: s.generationParams,
+		ftp: s.ftp,
+	}));
+
+	const intervalDetectionResults = useMemo(
+		() => performIntervalDetection(selectedActivity, ftp, params),
+		[ftp, params, selectedActivity]
+	);
+
+	const { intervals } = intervalDetectionResults;
+
+	const intervalsWithColor = useMemo(() => intervals.map((i) => ({ ...i, color: getColor(i) })), [
+		intervals,
+	]);
+
+	return (
+		<>
+			<ExpansionPanel>
+				<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+					<Box display="flex" flexDirection="column" {...stopClickFocusPropagation}>
+						<Box width="100%" {...stopClickFocusPropagation}>
+							<ParamsForm />
+						</Box>
+					</Box>
+				</ExpansionPanelSummary>
+				<ExpansionPanelDetails>
+					<ActivityChart {...intervalDetectionResults} />
+				</ExpansionPanelDetails>
+			</ExpansionPanel>
+			<Box height="50vh">
+				<IntervalEditorPlot
+					intervals={intervalsWithColor}
+					selectedIndex={null}
+					onChange={(i) => {}}
+				/>
+			</Box>
+		</>
+	);
+};
+
+export default IntervalDetectionView;
