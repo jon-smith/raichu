@@ -1,11 +1,5 @@
 import { ActivityContainer } from 'library/activity-data/activity-container';
-
-export type Interval = {
-	intensity: number;
-	durationSeconds: number;
-};
-
-export type IntervalWithColor = Interval & { color: string };
+import { Interval } from 'library/activity-data/interval';
 
 export type DiscrepencyCurvePoint = { t: number; delta: number };
 

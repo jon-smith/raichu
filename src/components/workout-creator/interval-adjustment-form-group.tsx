@@ -13,7 +13,6 @@ import TimePicker from 'rc-time-picker';
 
 import { useWorkoutCreatorSelector } from 'store/reducers';
 import { useDispatchCallback } from 'store/dispatch-hooks';
-import { Interval } from 'store/workout-creator/types';
 import { actions as WorkoutCreatorActions } from 'store/workout-creator/slice';
 import {
 	canUndo,
@@ -21,6 +20,7 @@ import {
 	selectedOrNewInterval,
 	intervalsWithColor,
 } from 'store/workout-creator/selectors';
+import { Interval } from 'library/activity-data/interval';
 import { buildMRCFileString } from 'library/activity-data/export-mrc';
 
 const useStyles = makeStyles((theme) =>
@@ -57,7 +57,7 @@ const downloadMRCFile = (intervals: readonly Interval[]) => {
 		'',
 		intervals.map((i) => ({
 			durationSeconds: i.durationSeconds,
-			intensityPercent: i.intensity * 100,
+			intensityPercent: i.intensityPercent * 100,
 		}))
 	);
 
@@ -147,7 +147,7 @@ const IntervalAdjustmentFormGroup = () => {
 						variant="outlined"
 						size="small"
 						margin="none"
-						value={currentSelectedInterval.intensity * 100}
+						value={currentSelectedInterval.intensityPercent * 100}
 						onChange={(e) => setSelectedIntensity(parseFloat(e.target.value) * 0.01)}
 					/>
 				}

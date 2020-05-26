@@ -7,9 +7,9 @@ import Box from '@material-ui/core/Box';
 
 import { useWorkoutCreatorSelector } from 'store/reducers';
 import { useDispatchCallback } from 'store/dispatch-hooks';
-import { Interval } from 'store/workout-creator/types';
 import { actions as WorkoutCreatorActions } from 'store/workout-creator/slice';
 import { selectedOrNewInterval, intervalsWithColor } from 'store/workout-creator/selectors';
+import { Interval } from 'library/activity-data/interval';
 
 import WorkoutCreatorChart from './workout-creator-chart';
 import ActivityLoader from './activity-loader';
@@ -57,7 +57,7 @@ const WorkoutCreatorPage = () => {
 			const intensityChange = e.deltaY < 0 ? 0.01 : -0.01;
 			const newIntensity = Math.max(
 				0.01,
-				currentSelectedInterval.intensity + intensityChange
+				currentSelectedInterval.intensityPercent + intensityChange
 			).toFixed(2);
 			setSelectedIntensity(parseFloat(newIntensity));
 		},

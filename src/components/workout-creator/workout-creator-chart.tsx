@@ -5,7 +5,7 @@ import * as lodash from 'lodash';
 import { withResizeDetector } from 'react-resize-detector';
 import { findNiceTimeTickInterval } from 'library/utils/chart-utils';
 import { formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
-import { Interval, IntervalWithColor } from 'store/workout-creator/types';
+import { Interval, IntervalWithColor } from 'library/activity-data/interval';
 
 type IntervalChartItem = IntervalWithColor & { startTime: number };
 
@@ -155,7 +155,7 @@ const buildChart = (
 	xScale.domain([0, endTimeSeconds]).range([padding.left, width - padding.right]);
 
 	yScale
-		.domain([0, d3.max(data, (d) => d.intensity) ?? 0])
+		.domain([0, d3.max(data, (d) => d.intensityPercent) ?? 0])
 		.range([height - padding.bottom, padding.top]);
 
 	svg
@@ -164,9 +164,9 @@ const buildChart = (
 		.enter()
 		.append('rect')
 		.attr('width', (d) => xScaleTimeSpan(d.durationSeconds))
-		.attr('height', (d) => height - padding.bottom - yScale(d.intensity))
+		.attr('height', (d) => height - padding.bottom - yScale(d.intensityPercent))
 		.attr('x', (d) => xScale(d.startTime))
-		.attr('y', (d) => yScale(d.intensity))
+		.attr('y', (d) => yScale(d.intensityPercent))
 		.attr('fill', (d) => d.color)
 		.attr('class', 'bar')
 		.call(drag);

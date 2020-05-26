@@ -1,7 +1,4 @@
-export type Interval = {
-	durationSeconds: number;
-	intensityPercent: number;
-};
+import { Interval } from './interval';
 
 type CourseData = {
 	timeMinutes: number;

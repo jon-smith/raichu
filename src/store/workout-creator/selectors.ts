@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
+import { Interval } from 'library/activity-data/interval';
 import { performIntervalDetection } from './helpers';
-import { Interval, WorkoutCreatorState } from './types';
+import { WorkoutCreatorState } from './types';
 
 const activitySelector = (state: WorkoutCreatorState) => state.activity;
 
@@ -12,7 +13,7 @@ export const getDetectedIntervals = createSelector(
 );
 
 const getColor = (i: Interval) => {
-	const { intensity } = i;
+	const { intensityPercent: intensity } = i;
 	if (intensity < 0.6) return '#a6a6a6';
 	if (intensity < 0.75) return '#9acfe3';
 	if (intensity < 0.9) return '#77dd77';

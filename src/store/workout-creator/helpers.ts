@@ -5,7 +5,8 @@ import {
 } from 'library/activity-data/activity-calculator';
 import * as ArrayUtils from 'library/utils/array-utils';
 import { ActivityContainer } from 'library/activity-data/activity-container';
-import { DiscrepencyCurvePoint, ActivityToIntervalParameters, Interval } from './types';
+import { Interval } from 'library/activity-data/interval';
+import { DiscrepencyCurvePoint, ActivityToIntervalParameters } from './types';
 
 export function calculateActivityPowerPerSecond(activity?: ActivityContainer) {
 	if (!activity) return [];
@@ -98,7 +99,7 @@ export function performIntervalDetection(
 		const endTime = detectedStepTimePoints[i];
 		const duration = endTime - startTime;
 		const thisIntervalData = intensityPerSecond.slice(startTime, endTime);
-		result.push({ durationSeconds: duration, intensity: d3.mean(thisIntervalData) ?? 0 });
+		result.push({ durationSeconds: duration, intensityPercent: d3.mean(thisIntervalData) ?? 0 });
 	}
 
 	return {

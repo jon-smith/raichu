@@ -2,21 +2,22 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'library/utils/array-utils';
 import { Mutable } from 'library/utils/type-utils';
 import { ActivityContainer } from 'library/activity-data/activity-container';
-import { Interval, WorkoutCreatorState } from './types';
+import { Interval } from 'library/activity-data/interval';
+import { WorkoutCreatorState } from './types';
 import { getDetectedIntervals } from './selectors';
 
 const defaultIntervals: Interval[] = [
-	{ intensity: 0.3, durationSeconds: 60 },
-	{ intensity: 0.4, durationSeconds: 60 },
-	{ intensity: 0.5, durationSeconds: 60 },
-	{ intensity: 0.6, durationSeconds: 60 * 5 },
+	{ intensityPercent: 0.3, durationSeconds: 60 },
+	{ intensityPercent: 0.4, durationSeconds: 60 },
+	{ intensityPercent: 0.5, durationSeconds: 60 },
+	{ intensityPercent: 0.6, durationSeconds: 60 * 5 },
 	...Array(13)
 		.fill([
-			{ intensity: 1.3, durationSeconds: 30 },
-			{ intensity: 0.6, durationSeconds: 15 },
+			{ intensityPercent: 1.3, durationSeconds: 30 },
+			{ intensityPercent: 0.6, durationSeconds: 15 },
 		])
 		.flat(),
-	{ intensity: 0.6, durationSeconds: 60 * 5 },
+	{ intensityPercent: 0.6, durationSeconds: 60 * 5 },
 ];
 
 const defaultState: WorkoutCreatorState = {
@@ -29,7 +30,7 @@ const defaultState: WorkoutCreatorState = {
 		inputSmoothingRadius: 1,
 	},
 	generatingFromActivity: false,
-	newInterval: { intensity: 1.0, durationSeconds: 0 },
+	newInterval: { intensityPercent: 1.0, durationSeconds: 0 },
 	currentIntervals: defaultIntervals,
 	history: [defaultIntervals],
 	currentHistoryPosition: 0,
@@ -48,7 +49,7 @@ export const generateIntervals = createAsyncThunk(
 
 function setIntervalsImpl(state: Mutable<WorkoutCreatorState>, intervals: Interval[]) {
 	const areEqual = (a: Interval, b: Interval) =>
-		a.intensity === b.intensity && a.durationSeconds === b.durationSeconds;
+		a.intensityPercent === b.intensityPercent && a.durationSeconds === b.durationSeconds;
 	if (!ArrayUtils.areEqual(intervals, state.currentIntervals, areEqual)) {
 		const newHistory = [...state.history.slice(0, state.currentHistoryPosition + 1), intervals];
 
@@ -82,12 +83,12 @@ const workoutCreatorSlice = createSlice({
 		},
 		setSelectedIntensity(state, action: PayloadAction<number>) {
 			if (state.selectedIndex === null) {
-				state.newInterval.intensity = action.payload;
+				state.newInterval.intensityPercent = action.payload;
 			} else {
 				const updatedIntervals = state.currentIntervals.slice();
 				updatedIntervals[state.selectedIndex] = {
 					...updatedIntervals[state.selectedIndex],
-					intensity: action.payload,
+					intensityPercent: action.payload,
 				};
 				setIntervalsImpl(state, updatedIntervals);
 			}
