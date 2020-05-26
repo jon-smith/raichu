@@ -94,8 +94,8 @@ export function performIntervalDetection(
 
 	const result: Interval[] = [];
 
-	for (let i = 1; i < detectedStepTimePoints.length; ++i) {
-		const startTime = detectedStepTimePoints[i - 1];
+	for (let i = 0; i < detectedStepTimePoints.length; ++i) {
+		const startTime = i === 0 ? 0 : detectedStepTimePoints[i - 1];
 		const endTime = detectedStepTimePoints[i];
 		const duration = endTime - startTime;
 		const thisIntervalData = intensityPerSecond.slice(startTime, endTime);
