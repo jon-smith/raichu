@@ -11,7 +11,7 @@ import { actions as WorkoutCreatorActions } from 'store/workout-creator/slice';
 import { selectedOrNewInterval, intervalsWithColor } from 'store/workout-creator/selectors';
 import { Interval } from 'library/activity-data/interval';
 
-import WorkoutCreatorChart from './workout-creator-chart';
+import IntervalEditorPlot from 'generic-components/charts/interval-editor-plot';
 import ActivityLoader from './activity-loader';
 import IntervalAdjustmentFormGroup from './interval-adjustment-form-group';
 
@@ -71,7 +71,7 @@ const WorkoutCreatorPage = () => {
 				<IntervalAdjustmentFormGroup />
 				<Box>
 					<div className="workout-creator-chart" onWheel={onMouseWheel}>
-						<WorkoutCreatorChart
+						<IntervalEditorPlot
 							intervals={intervals}
 							selectedIndex={selectedIndex}
 							onChange={onChange}

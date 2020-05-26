@@ -196,7 +196,7 @@ interface Props {
 	height: number;
 }
 
-const WorkoutCreatorChart = (props: Props) => {
+const IntervalEditorPlot = (props: Props) => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
 	const { intervals, selectedIndex, onChange, width, height } = props;
@@ -210,4 +210,4 @@ const WorkoutCreatorChart = (props: Props) => {
 	return <svg ref={svgRef} width={width} height={height} />;
 };
 
-export default withResizeDetector(WorkoutCreatorChart);
+export default withResizeDetector(IntervalEditorPlot);
