@@ -1,19 +1,10 @@
 import { ActivityContainer } from 'library/activity-data/activity-container';
 import { Interval } from 'library/activity-data/interval';
-
-export type DiscrepencyCurvePoint = { t: number; delta: number };
-
-export type ActivityToIntervalParameters = {
-	minIntervalDuration: number;
-	inputSmoothingRadius: number;
-	discrepencySmoothingRadius: number;
-	windowRadius: number;
-	stepThreshold: number;
-};
+import { IntervalDetectionParameters } from 'library/activity-data/interval-detection';
 
 export type WorkoutCreatorState = Readonly<{
 	activity?: ActivityContainer;
-	generationParams: ActivityToIntervalParameters;
+	generationParams: IntervalDetectionParameters;
 	generatingFromActivity: boolean;
 	ftp: number;
 	newInterval: Interval;

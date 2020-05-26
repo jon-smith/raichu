@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { Interval } from 'library/activity-data/interval';
-import { performIntervalDetection } from './helpers';
+import { performIntervalDetection } from 'library/activity-data/interval-detection';
 import { WorkoutCreatorState } from './types';
 
 const activitySelector = (state: WorkoutCreatorState) => state.activity;

@@ -1,20 +1,20 @@
 import * as d3 from 'd3';
-import {
-	getProcessedTimeSeries,
-	TimeSeriesProcessingOptions,
-} from 'library/activity-data/activity-calculator';
 import * as ArrayUtils from 'library/utils/array-utils';
-import { ActivityContainer } from 'library/activity-data/activity-container';
-import { Interval } from 'library/activity-data/interval';
-import { DiscrepencyCurvePoint, ActivityToIntervalParameters } from './types';
+import { ActivityContainer } from './activity-container';
+import { Interval } from './interval';
+import { TimeSeriesProcessingOptions, getProcessedTimeSeries } from './activity-calculator';
 
-export function calculateActivityPowerPerSecond(activity?: ActivityContainer) {
-	if (!activity) return [];
+export type DiscrepencyCurvePoint = { t: number; delta: number };
 
-	return activity.filledPoints.map((p) => p.data?.power ?? null);
-}
+export type IntervalDetectionParameters = {
+	minIntervalDuration: number;
+	inputSmoothingRadius: number;
+	discrepencySmoothingRadius: number;
+	windowRadius: number;
+	stepThreshold: number;
+};
 
-export function calculateActivityProcessedPowerTimeSeries(
+function calculateActivityProcessedPowerTimeSeries(
 	activity?: ActivityContainer,
 	options?: TimeSeriesProcessingOptions
 ) {
@@ -31,7 +31,7 @@ export function calculateActivityProcessedPowerTimeSeries(
 	);
 }
 
-export function calculateActivitySmoothedPowerTimeSeries(
+function calculateActivitySmoothedPowerTimeSeries(
 	processedPowerTimeSeries: { x: number; y: number | null }[],
 	movingAverageRadius?: number
 ) {
@@ -42,7 +42,7 @@ export function calculateActivitySmoothedPowerTimeSeries(
 	);
 }
 
-export function calculateMovingWindowDiscrepencyCurve(
+function calculateMovingWindowDiscrepencyCurve(
 	intensityPerSecond: number[],
 	windowRadius: number,
 	smoothingRadius: number
@@ -60,7 +60,7 @@ export function calculateMovingWindowDiscrepencyCurve(
 	return ArrayUtils.movingAverageObj(discrepencyCurve, 'delta', smoothingRadius);
 }
 
-export function calculateDetectedSteps(
+function calculateDetectedSteps(
 	discrepencyCurve: ReturnType<typeof calculateMovingWindowDiscrepencyCurve>,
 	stepThreshold: number
 ) {
@@ -77,7 +77,7 @@ export function calculateDetectedSteps(
 export function performIntervalDetection(
 	activity: ActivityContainer | undefined,
 	ftp: number,
-	params: ActivityToIntervalParameters
+	params: IntervalDetectionParameters
 ) {
 	const timeSeries = calculateActivityProcessedPowerTimeSeries(activity);
 	const smoothedTimeSeries = calculateActivitySmoothedPowerTimeSeries(
