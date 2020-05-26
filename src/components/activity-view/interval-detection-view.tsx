@@ -21,7 +21,6 @@ import { useIntervalDetectionSelector, useActivitySelector } from 'store/reducer
 import ParamsForm from './interval-detection-params-form-group';
 import { getSelectedActivity } from 'store/activity-data/selectors';
 import { performIntervalDetection } from 'library/activity-data/interval-detection';
-import { Interval } from 'library/activity-data/interval';
 
 const stopClickFocusPropagation: Partial<BoxProps> = {
 	onClick: (event) => event.stopPropagation(),
