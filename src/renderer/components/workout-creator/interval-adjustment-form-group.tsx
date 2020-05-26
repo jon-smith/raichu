@@ -51,22 +51,19 @@ const useActions = () => {
 	};
 };
 
-const loadFileDialog = (intervals: readonly Interval[]) => {
-	/*const savePath = remote.dialog.showSaveDialogSync({
-		title: 'Save workout as MRC',
-		filters: [{ name: 'MRC', extensions: ['mrc'] }],
-	});
+const downloadMRCFile = (intervals: readonly Interval[]) => {
+	const mrcString = buildMRCFileString(
+		'Workout',
+		'',
+		intervals.map((i) => ({ durationSeconds: i.length, intensityPercent: i.intensity * 100 }))
+	);
 
-	if (savePath) {
-		fs.writeFileSync(
-			savePath,
-			buildMRCFileString(
-				'Workout',
-				'',
-				intervals.map((i) => ({ durationSeconds: i.length, intensityPercent: i.intensity * 100 }))
-			)
-		);
-	}*/
+	const element = document.createElement('a');
+	const file = new Blob([mrcString], { type: 'text/plain' });
+	element.href = URL.createObjectURL(file);
+	element.download = 'intervals.mrc';
+	document.body.appendChild(element);
+	element.click();
 };
 
 const IntervalAdjustmentFormGroup = () => {
@@ -88,7 +85,7 @@ const IntervalAdjustmentFormGroup = () => {
 
 	const { setIntervals, undo, redo, setSelectedIntensity, setSelectedLength } = useActions();
 
-	const saveToMRC = useCallback(() => loadFileDialog(intervals), [intervals]);
+	const saveToMRC = useCallback(() => downloadMRCFile(intervals), [intervals]);
 
 	const setIntervalDuration = useCallback(
 		(m: moment.Moment | null) => {
