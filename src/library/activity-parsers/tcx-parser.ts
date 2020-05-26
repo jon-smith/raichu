@@ -20,7 +20,7 @@ export interface TcxData {
 	activities: TcxActivity[];
 }
 
-function parseTrackPoint(pointElement: Element): ActivityPoint {
+function parseTrackPoint(pointElement: Element, powerTagName?: string): ActivityPoint {
 	const time = Helper.getElementValue(pointElement, 'Time') || '';
 	const lat = Helper.getNumericChildElementValue(pointElement, 'LatitudeDegrees');
 	const lon = Helper.getNumericChildElementValue(pointElement, 'LongitudeDegrees');
@@ -28,7 +28,9 @@ function parseTrackPoint(pointElement: Element): ActivityPoint {
 	const distance = Helper.getNumericChildElementValue(pointElement, 'DistanceMeters');
 	const elevation = Helper.getNumericChildElementValue(pointElement, 'AltitudeMeters');
 
-	const power = Helper.getNumericChildElementValue(pointElement, 'ns3:Watts');
+	const power = powerTagName
+		? Helper.getNumericChildElementValue(pointElement, powerTagName)
+		: undefined;
 	const cadence = Helper.getNumericChildElementValue(pointElement, 'Cadence');
 	const hrElement = pointElement.querySelector('HeartRateBpm');
 	const heartRate = hrElement ? Helper.getNumericChildElementValue(hrElement, 'Value') : undefined;
@@ -46,8 +48,29 @@ function parseTrackPoint(pointElement: Element): ActivityPoint {
 	};
 }
 
+function getPowerTagName(trackElement: Element) {
+	const firstTrackPoint = trackElement.querySelector('Trackpoint');
+	if (firstTrackPoint) {
+		const extensionsNode = Helper.firstChildNodeWithNameContaining(firstTrackPoint, 'EXTENSIONS');
+		if (extensionsNode) {
+			const tpxNode = Helper.firstChildNodeWithNameContaining(extensionsNode, 'TPX');
+			if (tpxNode) {
+				const powerNode = Helper.firstChildNodeWithNameContaining(tpxNode, 'WATT');
+				return powerNode?.nodeName;
+			}
+		}
+	}
+
+	return undefined;
+}
+
 function parseTrack(trackElement: Element) {
-	return { points: Array.from(trackElement.querySelectorAll('Trackpoint')).map(parseTrackPoint) };
+	const powerTagName = getPowerTagName(trackElement);
+	return {
+		points: Array.from(trackElement.querySelectorAll('Trackpoint')).map((t) =>
+			parseTrackPoint(t, powerTagName)
+		),
+	};
 }
 
 function parseLap(lapElement: Element) {
