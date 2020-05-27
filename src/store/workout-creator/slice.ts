@@ -1,10 +1,8 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as ArrayUtils from 'library/utils/array-utils';
 import { Mutable } from 'library/utils/type-utils';
-import { ActivityContainer } from 'library/activity-data/activity-container';
 import { Interval } from 'library/activity-data/interval';
 import { WorkoutCreatorState } from './types';
-import { getDetectedIntervals } from './selectors';
 
 const defaultIntervals: Interval[] = [
 	{ intensityPercent: 0.3, durationSeconds: 60 },
@@ -22,30 +20,12 @@ const defaultIntervals: Interval[] = [
 
 const defaultState: WorkoutCreatorState = {
 	ftp: 200,
-	generationParams: {
-		minIntervalDuration: 10,
-		stepThreshold: 0.1,
-		windowRadius: 10,
-		discrepencySmoothingRadius: 1,
-		inputSmoothingRadius: 1,
-	},
-	generatingFromActivity: false,
 	newInterval: { intensityPercent: 1.0, durationSeconds: 0 },
 	currentIntervals: defaultIntervals,
 	history: [defaultIntervals],
 	currentHistoryPosition: 0,
 	selectedIndex: null,
 };
-
-export const generateIntervals = createAsyncThunk(
-	'workoutCreator/generateIntervals',
-	// Note this function doesn't actually run asynchronously at the moment
-	// but I intend to use a worker thread in the future
-	// For now I just wanted to try out the usage of createAsyncThunk
-	async (state: WorkoutCreatorState) => {
-		return getDetectedIntervals(state).intervals;
-	}
-);
 
 function setIntervalsImpl(state: Mutable<WorkoutCreatorState>, intervals: Interval[]) {
 	const areEqual = (a: Interval, b: Interval) =>
@@ -108,36 +88,6 @@ const workoutCreatorSlice = createSlice({
 		setFTP(state, action: PayloadAction<number>) {
 			state.ftp = action.payload;
 		},
-		setWindowRadius(state, action: PayloadAction<number>) {
-			state.generationParams.windowRadius = action.payload;
-		},
-		setStepThreshold(state, action: PayloadAction<number>) {
-			state.generationParams.stepThreshold = action.payload;
-		},
-		setInputSmoothing(state, action: PayloadAction<number>) {
-			state.generationParams.inputSmoothingRadius = action.payload;
-		},
-		setDiscrepencySmoothing(state, action: PayloadAction<number>) {
-			state.generationParams.discrepencySmoothingRadius = action.payload;
-		},
-		setActivity(state, action: PayloadAction<ActivityContainer>) {
-			state.activity = action.payload;
-		},
-		clearActivity(state) {
-			state.activity = undefined;
-		},
-	},
-	extraReducers: (builder) => {
-		builder.addCase(generateIntervals.pending, (state) => {
-			state.generatingFromActivity = true;
-		});
-		builder.addCase(generateIntervals.rejected, (state) => {
-			state.generatingFromActivity = false;
-		});
-		builder.addCase(generateIntervals.fulfilled, (state, { payload }) => {
-			setIntervalsImpl(state, payload);
-			state.generatingFromActivity = false;
-		});
 	},
 });
 
@@ -151,10 +101,4 @@ export const {
 	setSelectedIntensity,
 	setSelectedLength,
 	setFTP,
-	setWindowRadius,
-	setStepThreshold,
-	setInputSmoothing,
-	setDiscrepencySmoothing,
-	setActivity,
-	clearActivity,
 } = actions;
