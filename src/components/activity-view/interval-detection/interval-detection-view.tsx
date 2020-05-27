@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import * as d3 from 'd3';
 
 import Box, { BoxProps } from '@material-ui/core/Box';
@@ -24,7 +24,8 @@ import { setIntervals } from 'store/workout-creator/slice';
 import ParamsForm from './interval-detection-params-form-group';
 import { getSelectedActivity } from 'store/activity-data/selectors';
 import { performIntervalDetection } from 'library/activity-data/interval-detection';
-import { useDispatchCallback } from 'store/dispatch-hooks';
+import { useDispatchCallback, useAppDispatch } from 'store/dispatch-hooks';
+import { generateIntervals } from 'store/interval-detection/slice';
 
 const stopClickFocusPropagation: Partial<BoxProps> = {
 	onClick: (event) => event.stopPropagation(),
@@ -177,19 +178,21 @@ const ActivityChart = (props: IntervalDetectionResultT) => {
 };
 
 const IntervalDetectionView = () => {
-	const selectedActivity = useActivitySelector((s) => getSelectedActivity(s));
+	const activity = useActivitySelector((s) => getSelectedActivity(s));
 
-	const { params, ftp } = useIntervalDetectionSelector((s) => ({
+	const { params, ftp, results } = useIntervalDetectionSelector((s) => ({
 		params: s.generationParams,
 		ftp: s.ftp,
+		results: s.detectionResults,
 	}));
 
-	const intervalDetectionResults = useMemo(
-		() => performIntervalDetection(selectedActivity, ftp, params),
-		[ftp, params, selectedActivity]
-	);
+	const dispatch = useAppDispatch();
 
-	const { intervals } = intervalDetectionResults;
+	useEffect(() => {
+		dispatch(generateIntervals({ activity, ftp, params }));
+	}, [activity, ftp, params, dispatch]);
+
+	const { intervals } = results;
 
 	const setIntervalsDispatcher = useDispatchCallback(setIntervals);
 	const setCurrentPageDispatcher = useDispatchCallback(setCurrentPage);
@@ -209,12 +212,12 @@ const IntervalDetectionView = () => {
 					</Box>
 				</ExpansionPanelSummary>
 				<ExpansionPanelDetails>
-					<ActivityChart {...intervalDetectionResults} />
+					<ActivityChart {...results} />
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 			<Box height="50vh">
-				<IntervalEditorPlot intervals={intervalDetectionResults.intervals} />
-				<Button variant="contained" onClick={openInEditor} disabled={!selectedActivity}>
+				<IntervalEditorPlot intervals={intervals} />
+				<Button variant="contained" onClick={openInEditor} disabled={!activity}>
 					Open in editor
 				</Button>
 			</Box>

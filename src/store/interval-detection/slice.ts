@@ -1,9 +1,17 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IntervalDetectionParameters } from 'library/activity-data/interval-detection';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+	IntervalDetectionParameters,
+	performIntervalDetection,
+} from 'library/activity-data/interval-detection';
+import { ActivityContainer } from 'library/activity-data/activity-container';
+
+type IntervalDetectionResults = ReturnType<typeof performIntervalDetection>;
 
 export type IntervalDetectionState = Readonly<{
 	generationParams: IntervalDetectionParameters;
 	ftp: number;
+	isGenerating: boolean;
+	detectionResults: IntervalDetectionResults;
 }>;
 
 const defaultState: IntervalDetectionState = {
@@ -15,7 +23,31 @@ const defaultState: IntervalDetectionState = {
 		discrepencySmoothingRadius: 1,
 		inputSmoothingRadius: 1,
 	},
+	isGenerating: false,
+	detectionResults: {
+		intervals: [],
+		rawInput: [],
+		smoothedInput: [],
+		discrepencyCurve: [],
+		detectedStepTimePoints: [],
+	},
 };
+
+export const generateIntervals = createAsyncThunk(
+	'intervalDetection/generateIntervals',
+	// Note this function doesn't actually run asynchronously at the moment
+	// but I intend to use a worker thread in the future
+	// For now I just wanted to try out the usage of createAsyncThunk
+	async ({
+		activity,
+		ftp,
+		params,
+	}: {
+		activity: ActivityContainer | undefined;
+		ftp: number;
+		params: IntervalDetectionParameters;
+	}) => performIntervalDetection(activity, ftp, params)
+);
 
 const intervalDetectionSlice = createSlice({
 	name: 'intervalDetection',
@@ -36,6 +68,18 @@ const intervalDetectionSlice = createSlice({
 		setDiscrepencySmoothing(state, action: PayloadAction<number>) {
 			state.generationParams.discrepencySmoothingRadius = action.payload;
 		},
+	},
+	extraReducers: (builder) => {
+		builder.addCase(generateIntervals.pending, (state) => {
+			state.isGenerating = true;
+		});
+		builder.addCase(generateIntervals.rejected, (state) => {
+			state.isGenerating = false;
+		});
+		builder.addCase(generateIntervals.fulfilled, (state, { payload }) => {
+			state.detectionResults = payload;
+			state.isGenerating = false;
+		});
 	},
 });
 
