@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { batchActions } from 'redux-batched-actions';
 
 import Box from '@material-ui/core/Box';
 
 import { useWorkoutCreatorSelector } from 'store/reducers';
-import { useDispatchCallback } from 'store/dispatch-hooks';
+import { useDispatchCallback, useAppDispatch } from 'store/dispatch-hooks';
 import { actions as WorkoutCreatorActions } from 'store/workout-creator/slice';
 import { selectedOrNewInterval } from 'store/workout-creator/selectors';
 import { Interval } from 'library/activity-data/interval';
@@ -20,7 +19,7 @@ const useActions = () => {
 	const setSelectedIntensity = useDispatchCallback(WorkoutCreatorActions.setSelectedIntensity);
 	const setSelectedLength = useDispatchCallback(WorkoutCreatorActions.setSelectedLength);
 
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const onChange = useCallback(
 		(newIntervals: Interval[], newIndex: number | null) => {
 			// Batch the interval and index updates to prevent flicker on multiple rerender

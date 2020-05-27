@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import * as d3 from 'd3';
 
 import Box, { BoxProps } from '@material-ui/core/Box';
@@ -9,6 +9,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import Button from '@material-ui/core/Button';
 
 import XYPlot, { DataSeriesT } from 'generic-components/charts/xy-plot';
 import IntervalEditorPlot from 'generic-components/charts/interval-editor-plot';
@@ -17,10 +18,13 @@ import { formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
 import { buildNiceTimeTicksToDisplay } from 'library/utils/chart-utils';
 
 import { useIntervalDetectionSelector, useActivitySelector } from 'store/reducers';
+import { setCurrentPage } from 'store/view/slice';
+import { setIntervals } from 'store/workout-creator/slice';
 
 import ParamsForm from './interval-detection-params-form-group';
 import { getSelectedActivity } from 'store/activity-data/selectors';
 import { performIntervalDetection } from 'library/activity-data/interval-detection';
+import { useDispatchCallback } from 'store/dispatch-hooks';
 
 const stopClickFocusPropagation: Partial<BoxProps> = {
 	onClick: (event) => event.stopPropagation(),
@@ -185,6 +189,15 @@ const IntervalDetectionView = () => {
 		[ftp, params, selectedActivity]
 	);
 
+	const { intervals } = intervalDetectionResults;
+
+	const setIntervalsDispatcher = useDispatchCallback(setIntervals);
+	const setCurrentPageDispatcher = useDispatchCallback(setCurrentPage);
+	const openInEditor = useCallback(() => {
+		setIntervalsDispatcher(intervals);
+		setCurrentPageDispatcher('workout-creator');
+	}, [setIntervalsDispatcher, setCurrentPageDispatcher, intervals]);
+
 	return (
 		<>
 			<ExpansionPanel>
@@ -201,6 +214,9 @@ const IntervalDetectionView = () => {
 			</ExpansionPanel>
 			<Box height="50vh">
 				<IntervalEditorPlot intervals={intervalDetectionResults.intervals} />
+				<Button variant="contained" onClick={openInEditor} disabled={!selectedActivity}>
+					Open in editor
+				</Button>
 			</Box>
 		</>
 	);
