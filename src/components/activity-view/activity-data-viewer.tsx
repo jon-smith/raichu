@@ -8,7 +8,7 @@ import ActivitySelectionForm from './activity-selection-form';
 import TimeSeriesDataViewer from './time-series-data-viewer';
 import ConnectedActivityFileDrop from './connected-activity-file-drop';
 import ActivityViewSelection from './activity-view-selection';
-import IntervalDetectionView from './interval-detection-view';
+import IntervalDetectionView from './interval-detection/interval-detection-view';
 
 import { loadExampleData } from 'store/activity-data/slice';
 import { useDispatchCallback } from 'store/dispatch-hooks';
