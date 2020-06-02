@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
@@ -36,6 +36,19 @@ const getPage = (page: Page) => {
 };
 
 export default function AppImpl() {
+	useEffect(() => {
+		const loadWasm = async () => {
+			try {
+				const wasm = await import('raichu-wasm');
+				wasm.greet();
+			} catch (err) {
+				console.error(`Unexpected error in loadWasm. [Message: ${err.message}]`);
+			}
+		};
+
+		loadWasm();
+	}, []);
+
 	const currentPage = useViewSelector((s) => s.currentPage);
 	const PageElement = useMemo(() => getPage(currentPage), [currentPage]);
 
