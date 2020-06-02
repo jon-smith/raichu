@@ -18,7 +18,7 @@ const defaultState: IntervalDetectionState = {
 	ftp: 200,
 	generationParams: {
 		minIntervalDuration: 10,
-		stepThreshold: 0.1,
+		stepThreshold: 10,
 		windowRadius: 10,
 		discrepencySmoothingRadius: 1,
 		inputSmoothingRadius: 1,

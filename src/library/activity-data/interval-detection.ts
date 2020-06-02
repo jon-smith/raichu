@@ -84,9 +84,9 @@ export function performIntervalDetection(
 		timeSeries,
 		params.inputSmoothingRadius
 	);
-	const intensityPerSecond = smoothedTimeSeries.map((v) => v.y / ftp);
+	const powerPerSecond = smoothedTimeSeries.map((v) => v.y);
 	const discrepencyCurve = calculateMovingWindowDiscrepencyCurve(
-		intensityPerSecond,
+		powerPerSecond,
 		params.windowRadius,
 		params.discrepencySmoothingRadius
 	);
@@ -98,8 +98,11 @@ export function performIntervalDetection(
 		const startTime = i === 0 ? 0 : detectedStepTimePoints[i - 1];
 		const endTime = detectedStepTimePoints[i];
 		const duration = endTime - startTime;
-		const thisIntervalData = intensityPerSecond.slice(startTime, endTime);
-		result.push({ durationSeconds: duration, intensityPercent: d3.mean(thisIntervalData) ?? 0 });
+		const thisIntervalData = powerPerSecond.slice(startTime, endTime);
+		result.push({
+			durationSeconds: duration,
+			intensityPercent: (d3.mean(thisIntervalData) ?? 0) / ftp,
+		});
 	}
 
 	return {
