@@ -70,7 +70,7 @@ const ActivityIntervalAnalysisPlot = () => {
 
 	const { params, detectionResults } = useIntervalDetectionSelector((s) => ({
 		params: s.generationParams,
-		detectionResults: s.detectionResults,
+		detectionResults: s.detectionResults.results,
 	}));
 
 	const { rawInput, smoothedInput, discrepencyCurve, detectedStepTimePoints } = detectionResults;

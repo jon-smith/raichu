@@ -7,11 +7,16 @@ import { ActivityContainer } from 'library/activity-data/activity-container';
 
 type IntervalDetectionResults = ReturnType<typeof performIntervalDetection>;
 
+type IntervalGenerationInput = {
+	activity: ActivityContainer | undefined;
+	params: IntervalDetectionParameters;
+};
+
 export type IntervalDetectionState = Readonly<{
 	generationParams: IntervalDetectionParameters;
 	ftp: number;
 	isGenerating: boolean;
-	detectionResults: IntervalDetectionResults;
+	detectionResults: { results: IntervalDetectionResults; input?: IntervalGenerationInput };
 }>;
 
 const defaultState: IntervalDetectionState = {
@@ -25,26 +30,37 @@ const defaultState: IntervalDetectionState = {
 	},
 	isGenerating: false,
 	detectionResults: {
-		intervals: [],
-		rawInput: [],
-		smoothedInput: [],
-		discrepencyCurve: [],
-		detectedStepTimePoints: [],
+		results: {
+			intervals: [],
+			rawInput: [],
+			smoothedInput: [],
+			discrepencyCurve: [],
+			detectedStepTimePoints: [],
+		},
 	},
 };
+
+export function generateIntervalsRequired(
+	state: IntervalDetectionState,
+	activity: ActivityContainer | undefined
+) {
+	if (state.detectionResults.input === undefined) return true;
+
+	return (
+		state.detectionResults.input.activity !== activity ||
+		state.detectionResults.input.params !== state.generationParams
+	);
+}
 
 export const generateIntervals = createAsyncThunk(
 	'intervalDetection/generateIntervals',
 	// Note this function doesn't actually run asynchronously at the moment
 	// but I intend to use a worker thread in the future
 	// For now I just wanted to try out the usage of createAsyncThunk
-	async ({
-		activity,
-		params,
-	}: {
-		activity: ActivityContainer | undefined;
-		params: IntervalDetectionParameters;
-	}) => performIntervalDetection(activity, params)
+	async (input: IntervalGenerationInput) => ({
+		results: performIntervalDetection(input.activity, input.params),
+		input,
+	})
 );
 
 const intervalDetectionSlice = createSlice({
