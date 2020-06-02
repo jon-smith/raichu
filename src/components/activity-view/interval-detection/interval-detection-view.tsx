@@ -15,6 +15,7 @@ import { setIntervals } from 'store/workout-creator/slice';
 import { getSelectedActivity } from 'store/activity-data/selectors';
 import { useDispatchCallback, useAppDispatch } from 'store/dispatch-hooks';
 import { generateIntervals } from 'store/interval-detection/slice';
+import { intervalsWithIntensity } from 'store/interval-detection/selectors';
 
 import ActivityIntervalAnalysisPlot from './activity-interval-analysis-plot';
 import ParamsForm from './interval-detection-params-form-group';
@@ -27,19 +28,16 @@ const stopClickFocusPropagation: Partial<BoxProps> = {
 const IntervalDetectionView = () => {
 	const activity = useActivitySelector((s) => getSelectedActivity(s));
 
-	const { params, ftp, results } = useIntervalDetectionSelector((s) => ({
+	const { params, intervals } = useIntervalDetectionSelector((s) => ({
 		params: s.generationParams,
-		ftp: s.ftp,
-		results: s.detectionResults,
+		intervals: intervalsWithIntensity(s),
 	}));
 
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		dispatch(generateIntervals({ activity, ftp, params }));
-	}, [activity, ftp, params, dispatch]);
-
-	const { intervals } = results;
+		dispatch(generateIntervals({ activity, params }));
+	}, [activity, params, dispatch]);
 
 	const setIntervalsDispatcher = useDispatchCallback(setIntervals);
 	const setCurrentPageDispatcher = useDispatchCallback(setCurrentPage);

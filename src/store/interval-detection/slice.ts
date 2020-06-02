@@ -40,13 +40,11 @@ export const generateIntervals = createAsyncThunk(
 	// For now I just wanted to try out the usage of createAsyncThunk
 	async ({
 		activity,
-		ftp,
 		params,
 	}: {
 		activity: ActivityContainer | undefined;
-		ftp: number;
 		params: IntervalDetectionParameters;
-	}) => performIntervalDetection(activity, ftp, params)
+	}) => performIntervalDetection(activity, params)
 );
 
 const intervalDetectionSlice = createSlice({

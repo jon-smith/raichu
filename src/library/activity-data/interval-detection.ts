@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import * as ArrayUtils from 'library/utils/array-utils';
 import { ActivityContainer } from './activity-container';
-import { Interval } from './interval';
+import { IntervalWithPower } from './interval';
 import { TimeSeriesProcessingOptions, getProcessedTimeSeries } from './activity-calculator';
 
 export type DiscrepencyCurvePoint = { t: number; delta: number };
@@ -76,7 +76,6 @@ function calculateDetectedSteps(
 
 export function performIntervalDetection(
 	activity: ActivityContainer | undefined,
-	ftp: number,
 	params: IntervalDetectionParameters
 ) {
 	const timeSeries = calculateActivityProcessedPowerTimeSeries(activity);
@@ -92,7 +91,7 @@ export function performIntervalDetection(
 	);
 	const detectedStepTimePoints = calculateDetectedSteps(discrepencyCurve, params.stepThreshold);
 
-	const result: Interval[] = [];
+	const result: IntervalWithPower[] = [];
 
 	for (let i = 0; i < detectedStepTimePoints.length; ++i) {
 		const startTime = i === 0 ? 0 : detectedStepTimePoints[i - 1];
@@ -101,7 +100,7 @@ export function performIntervalDetection(
 		const thisIntervalData = powerPerSecond.slice(startTime, endTime);
 		result.push({
 			durationSeconds: duration,
-			intensityPercent: (d3.mean(thisIntervalData) ?? 0) / ftp,
+			power: d3.mean(thisIntervalData) ?? 0,
 		});
 	}
 
