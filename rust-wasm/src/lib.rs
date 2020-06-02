@@ -15,5 +15,6 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn greet() {
-    alert("hello 👋 browser, 💙 frm rust-wasm 🍄");
+    use web_sys::console;
+    console::log_1(&"hello 👋 browser, 💙 frm rust-wasm 🍄".into());
 }
