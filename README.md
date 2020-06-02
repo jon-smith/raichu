@@ -1,11 +1,23 @@
 # raichu
 
 A simple web-app for viewing and analysing GPX/TCX data. Written using [Typescript](https://www.typescriptlang.org/), [React](https://reactjs.org/)
-([Create React App](https://github.com/facebook/create-react-app)) and [Redux](https://redux.js.org/).
+([Create React App](https://github.com/facebook/create-react-app)), [Redux](https://redux.js.org/), [Rust and WebAssembly](https://rustwasm.github.io/);
 
-## Available Scripts
+## Prerequisites
+
+The Rust toolchain and `wasm-pack` is required to build the Rust/Webassembly code located in the rust-wasm directory. See the (`wasm-pack` documentation)[https://rustwasm.github.io/wasm-pack/book/quickstart.html] for more information.
+
+## Usage
 
 In the project directory, you can run:
+
+### `npm run build-wasm`
+
+Build the rust/wasm code.
+
+### `npm run test-wasm`
+
+Test the rust/wasm code in headless chrome.
 
 ### `npm start`
 
