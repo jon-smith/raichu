@@ -1,10 +1,10 @@
-import path from 'path';
+import { JolteanLibT, importJolteon } from './helper';
 
 describe('wasm smoke test', () => {
-	let wasm: typeof import('jolteon-wasm');
+	let wasm: JolteanLibT;
 
 	beforeAll(async () => {
-		wasm = await import(path.resolve(__dirname, '../../rust-wasm/pkg', 'jolteon.js'));
+		wasm = await importJolteon();
 	});
 
 	test('functions exist', () => {

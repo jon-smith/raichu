@@ -68,8 +68,8 @@
 		"eject": "react-scripts eject",
 		"predeploy": "npm run build",
 		"deploy": "gh-pages -d build",
-		"build-wasm": "wasm-pack build rust-wasm",
-		"test-wasm": "cargo test --manifest-path rust-wasm/Cargo.toml"
+		"build-wasm": "wasm-pack build rust-wasm && wasm-pack build rust-wasm --target nodejs --out-dir pkg-node",
+		"test-native": "cargo test --manifest-path rust-wasm/Cargo.toml"
 	},
 	"eslintConfig": {
 		"extends": "react-app",

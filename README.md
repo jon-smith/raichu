@@ -13,11 +13,11 @@ In the project directory, you can run:
 
 ### `npm run build-wasm`
 
-Build the rust/wasm code.
+Compiles the Rust code and builds WebAssembly modules for both the web-app (found in `rust-wasm/pkg`) and testin (found in `rust-wasm/pkg-node`). The latter is necessary because Jest runs in node.
 
-### `npm run test-wasm`
+### `npm run test-native`
 
-Test the rust/wasm code in headless chrome.
+Runs the native unit tests in the Rust code using `cargo test`.
 
 ### `npm start`
 
@@ -55,3 +55,5 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 ## About
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+
+WebAssembly modules created with (Rust)[https://www.rust-lang.org/] and [wasm-pack](https://rustwasm.github.io/wasm-pack/) using the [wasm-pack-template](https://github.com/rustwasm/wasm-pack).
