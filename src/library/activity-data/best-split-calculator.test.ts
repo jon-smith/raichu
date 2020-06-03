@@ -106,17 +106,6 @@ describe('maxAveragesForDistances', () => {
 		expect(result[5].best?.average).toEqual(22 / 6);
 		expect(result[5].best?.startIndex).toEqual(2);
 	});
-
-	// To be reimplemented when we run the rust library in wasm
-	/*test('vs native', () => {
-		const input = [1, 1, 5, 5, 1, 1, 5, 5];
-		const distances = [1, 2, 3, 4, 5, 6];
-
-		const result = calculateMaxAveragesForDistances(input, distances);
-		const nativeResult = jolteon.best_averages_for_distances(input, distances);
-
-		expect(result).toEqual(nativeResult);
-	});*/
 });
 
 describe('minTimesForDistances', () => {
