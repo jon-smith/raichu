@@ -69,7 +69,7 @@
 		"predeploy": "npm run build",
 		"deploy": "gh-pages -d build",
 		"build-wasm": "wasm-pack build rust-wasm",
-		"test-wasm": "wasm-pack test rust-wasm --chrome"
+		"test-wasm": "cargo test --manifest-path rust-wasm/Cargo.toml"
 	},
 	"eslintConfig": {
 		"extends": "react-app",

@@ -10,10 +10,10 @@ Created using [wasm-pack-template](https://github.com/rustwasm/wasm-pack).
 wasm-pack build
 ```
 
-### 🔬 Test in Headless Browsers with `wasm-pack test`
+### 🔬 Test with `cargo test`
 
 ```
-wasm-pack test --headless --firefox
+cargo test
 ```
 
 ## 🔋 Batteries Included
