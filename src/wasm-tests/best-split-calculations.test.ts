@@ -1,4 +1,4 @@
-import { JolteanLibT, importJolteon } from './helper';
+import { JolteanLibT, loadJolteon } from 'wasm/jolteon-loader';
 
 import { calculateMaxAveragesForDistances } from 'library/activity-data/best-split-calculator';
 
@@ -6,7 +6,8 @@ describe('best-split-tests', () => {
 	let wasm: JolteanLibT;
 
 	beforeAll(async () => {
-		wasm = await importJolteon();
+		wasm = (await loadJolteon())!;
+		if (!wasm) fail();
 	});
 
 	test('vs native simple', () => {

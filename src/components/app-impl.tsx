@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
@@ -36,25 +36,6 @@ const getPage = (page: Page) => {
 };
 
 export default function AppImpl() {
-	useEffect(() => {
-		const loadWasm = async () => {
-			try {
-				const wasm = await import('jolteon-wasm');
-				wasm.init();
-				wasm.greet();
-				const result = wasm.best_averages_for_distances(
-					new Float64Array([1, 2, 3]),
-					new Uint32Array([1])
-				);
-				console.log(result);
-			} catch (err) {
-				console.error(`Unexpected error in loadWasm. [Message: ${err.message}]`);
-			}
-		};
-
-		loadWasm();
-	}, []);
-
 	const currentPage = useViewSelector((s) => s.currentPage);
 	const PageElement = useMemo(() => getPage(currentPage), [currentPage]);
 
