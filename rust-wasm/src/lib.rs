@@ -29,10 +29,10 @@ pub fn greet() {
 const BEST_AVERAGE_RESULT_T: &'static str = r#"
 type BestAverageResult = {
     distance: number;
-    best?: {
+    best: {
     startIndex: number;
     average: number;
-    };
+    } | null;
 }
 "#;
 
