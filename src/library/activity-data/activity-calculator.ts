@@ -2,8 +2,27 @@ import {
 	calculateMaxAveragesForDistances as maxAveragesForDistances,
 	calculateMinTimesForDistances,
 	interpolateNullValues,
+	Result,
 } from 'library/activity-data/best-split-calculator';
 import { ActivityContainer, ExtendedPoint } from './activity-container';
+
+function loadWasmAsync() {
+	let wasm: typeof import('jolteon-wasm') | undefined;
+
+	async function loadWasm() {
+		try {
+			wasm = await import('jolteon-wasm');
+		} catch {
+			console.log('failed to load wasm');
+		}
+	}
+
+	loadWasm();
+
+	return () => wasm;
+}
+
+const getWasm = loadWasmAsync();
 
 export type Variable = 'heartrate' | 'power' | 'cadence' | 'elevation' | 'time';
 
@@ -146,12 +165,20 @@ export const getBestSplitsVsTime = (
 	option: BestSplitOption,
 	timeRanges: number[],
 	maxGapForInterpolation: number
-) => {
+): Result[] => {
 	const interpolatedData = getInterpolatedDataPointsForBestSplits(
 		data,
 		option,
 		maxGapForInterpolation
 	);
+
+	const w = getWasm();
+	if (w) {
+		return w.best_averages_for_distances(
+			(interpolatedData as unknown) as Float64Array,
+			(timeRanges as unknown) as Uint32Array
+		);
+	}
 
 	return maxAveragesForDistances(interpolatedData, timeRanges);
 };
