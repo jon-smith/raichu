@@ -1,25 +1,28 @@
 {
   "files": {
     "main.css": "/raichu/static/css/main.6966074c.chunk.css",
-    "main.js": "/raichu/static/js/main.8397c20c.chunk.js",
-    "main.js.map": "/raichu/static/js/main.8397c20c.chunk.js.map",
-    "runtime-main.js": "/raichu/static/js/runtime-main.c2ee86f9.js",
-    "runtime-main.js.map": "/raichu/static/js/runtime-main.c2ee86f9.js.map",
+    "main.js": "/raichu/static/js/main.4539d5de.chunk.js",
+    "main.js.map": "/raichu/static/js/main.4539d5de.chunk.js.map",
+    "runtime-main.js": "/raichu/static/js/runtime-main.461edbd6.js",
+    "runtime-main.js.map": "/raichu/static/js/runtime-main.461edbd6.js.map",
     "static/css/2.6780e105.chunk.css": "/raichu/static/css/2.6780e105.chunk.css",
-    "static/js/2.7b71dae0.chunk.js": "/raichu/static/js/2.7b71dae0.chunk.js",
-    "static/js/2.7b71dae0.chunk.js.map": "/raichu/static/js/2.7b71dae0.chunk.js.map",
+    "static/js/2.2b011c14.chunk.js": "/raichu/static/js/2.2b011c14.chunk.js",
+    "static/js/2.2b011c14.chunk.js.map": "/raichu/static/js/2.2b011c14.chunk.js.map",
+    "static/js/3.393aa47d.chunk.js": "/raichu/static/js/3.393aa47d.chunk.js",
+    "06a374124548895ad6a7.module.wasm": "/raichu/06a374124548895ad6a7.module.wasm",
+    "static/js/3.393aa47d.chunk.js.map": "/raichu/static/js/3.393aa47d.chunk.js.map",
     "index.html": "/raichu/index.html",
-    "precache-manifest.fc412af923645858c2619e5159901ea6.js": "/raichu/precache-manifest.fc412af923645858c2619e5159901ea6.js",
+    "precache-manifest.42d569bcb1506aaf2d06ad2e5daf36d5.js": "/raichu/precache-manifest.42d569bcb1506aaf2d06ad2e5daf36d5.js",
     "service-worker.js": "/raichu/service-worker.js",
     "static/css/2.6780e105.chunk.css.map": "/raichu/static/css/2.6780e105.chunk.css.map",
     "static/css/main.6966074c.chunk.css.map": "/raichu/static/css/main.6966074c.chunk.css.map",
-    "static/js/2.7b71dae0.chunk.js.LICENSE.txt": "/raichu/static/js/2.7b71dae0.chunk.js.LICENSE.txt"
+    "static/js/2.2b011c14.chunk.js.LICENSE.txt": "/raichu/static/js/2.2b011c14.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.c2ee86f9.js",
+    "static/js/runtime-main.461edbd6.js",
     "static/css/2.6780e105.chunk.css",
-    "static/js/2.7b71dae0.chunk.js",
+    "static/js/2.2b011c14.chunk.js",
     "static/css/main.6966074c.chunk.css",
-    "static/js/main.8397c20c.chunk.js"
+    "static/js/main.4539d5de.chunk.js"
   ]
 }
