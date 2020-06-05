@@ -55,7 +55,7 @@ function loadAsyncHelper() {
 
 		globalDeferredLoad.resolve();
 
-		globalState.failedToLoad = wasm !== undefined;
+		globalState.failedToLoad = wasm === undefined;
 		globalState.isLoading = false;
 	}
 
