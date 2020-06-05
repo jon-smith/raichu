@@ -12,6 +12,12 @@ pub struct BestAverageResult {
     pub best: Option<BestAverage>,
 }
 
+fn sort_vec_unstable(input: &Vec<u64>) -> Vec<u64> {
+    let mut to_sort = input.clone();
+    to_sort.sort_unstable();
+    to_sort
+}
+
 // Calculate the best average of the data points when the distance between indices is equal to the supplied distance
 // Return results will be ordered by distance
 pub fn best_averages_for_distances(
@@ -24,18 +30,15 @@ pub fn best_averages_for_distances(
         pub start_index: Option<u64>,
     }
 
-    let mut current_max_sums = distances
+    let mut current_max_sums = sort_vec_unstable(distances)
         .into_iter()
         .filter(|d| d > &&0)
         .map(|d| IntermediateResult {
-            distance: *d,
+            distance: d,
             max_sum: 0.0,
             start_index: None,
         })
         .collect::<Vec<_>>();
-
-    // Sort on distance
-    current_max_sums.sort_by(|a, b| a.distance.cmp(&b.distance));
 
     for i in 0..data_points.len() {
         for current_max in &mut current_max_sums {
