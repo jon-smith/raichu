@@ -14,6 +14,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
 
+import SettingsButtonMenu from './settings-button-menu';
+
 const drawerWidth = 230;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,6 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
 				width: `calc(100% - ${drawerWidth}px)`,
 				marginLeft: drawerWidth,
 			},
+		},
+		title: {
+			flexGrow: 1,
 		},
 		menuButton: {
 			marginRight: theme.spacing(2),
@@ -97,9 +102,10 @@ export default function ResponsiveDrawerNav<T>(props: React.PropsWithChildren<Pr
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography variant="h6" noWrap>
+					<Typography variant="h6" className={classes.title} noWrap>
 						raichu
 					</Typography>
+					<SettingsButtonMenu />
 				</Toolbar>
 			</AppBar>
 			<nav className={classes.drawer} aria-label="menu">
