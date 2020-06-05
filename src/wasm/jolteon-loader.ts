@@ -1,8 +1,8 @@
 import path from 'path';
 
-export type JolteanLibT = typeof import('jolteon-wasm');
+export type JolteonLibT = typeof import('jolteon-wasm');
 
-async function loadJolteonUnsafe(): Promise<JolteanLibT> {
+async function loadJolteonUnsafe(): Promise<JolteonLibT> {
 	const isTest = process.env.JEST_WORKER_ID !== undefined || typeof jest !== 'undefined';
 
 	// If running test in jest we have to load the node version of the package
@@ -12,7 +12,7 @@ async function loadJolteonUnsafe(): Promise<JolteanLibT> {
 
 // Allows the jolteon library to be loaded and awaited
 export async function loadJolteon() {
-	let wasm: JolteanLibT | undefined;
+	let wasm: JolteonLibT | undefined;
 
 	try {
 		wasm = await loadJolteonUnsafe();
@@ -21,14 +21,14 @@ export async function loadJolteon() {
 
 		wasm?.init();
 	} catch {
-		console.log('failed to load wasm');
+		console.log('failed to load jolteon/wasm');
 	}
 
 	return wasm;
 }
 
 function loadAsyncHelper() {
-	let wasm: JolteanLibT | undefined;
+	let wasm: JolteonLibT | undefined;
 
 	async function loadWasm() {
 		wasm = await loadJolteon();

@@ -1,9 +1,9 @@
-import { JolteanLibT, loadJolteon } from 'wasm/jolteon-loader';
+import { JolteonLibT, loadJolteon } from 'wasm/jolteon-loader';
 
 import { calculateMaxAveragesForDistances } from 'library/activity-data/best-split-calculator';
 
 describe('best-split-tests', () => {
-	let wasm: JolteanLibT;
+	let wasm: JolteonLibT;
 
 	beforeAll(async () => {
 		wasm = (await loadJolteon())!;
