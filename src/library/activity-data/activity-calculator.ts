@@ -4,7 +4,7 @@ import {
 	interpolateNullValues,
 	Result,
 } from 'library/activity-data/best-split-calculator';
-import { getJolteonIfLoaded } from 'wasm/jolteon-loader';
+import { getWasmLibIfLoaded } from 'wasm/jolteon-loader';
 import { ActivityContainer, ExtendedPoint } from './activity-container';
 
 export type Variable = 'heartrate' | 'power' | 'cadence' | 'elevation' | 'time';
@@ -155,9 +155,9 @@ export const getBestSplitsVsTime = (
 		maxGapForInterpolation
 	);
 
-	const jolteon = getJolteonIfLoaded();
-	if (jolteon) {
-		return jolteon.best_averages_for_distances(
+	const wasmLib = getWasmLibIfLoaded();
+	if (wasmLib) {
+		return wasmLib.best_averages_for_distances(
 			(interpolatedData as unknown) as Float64Array,
 			(timeRanges as unknown) as Uint32Array
 		);

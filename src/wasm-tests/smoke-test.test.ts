@@ -1,10 +1,10 @@
-import { JolteonLibT, loadJolteon } from 'wasm/jolteon-loader';
+import { JolteonLibT, loadWasmLib } from 'wasm/jolteon-loader';
 
 describe('wasm smoke test', () => {
 	let wasm: JolteonLibT;
 
 	beforeAll(async () => {
-		wasm = (await loadJolteon())!;
+		wasm = (await loadWasmLib())!;
 		if (!wasm) fail();
 	});
 
