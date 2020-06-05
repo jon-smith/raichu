@@ -1,7 +1,7 @@
 # raichu
 
 A simple web-app for viewing and analysing GPX/TCX data. Written using [Typescript](https://www.typescriptlang.org/), [React](https://reactjs.org/)
-([Create React App](https://github.com/facebook/create-react-app)), [Redux](https://redux.js.org/), [Rust and WebAssembly](https://rustwasm.github.io/);
+([Create React App](https://github.com/facebook/create-react-app)), [Redux](https://redux.js.org/), [Rust and WebAssembly](https://rustwasm.github.io/).
 
 ## Prerequisites
 
@@ -56,4 +56,4 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
-WebAssembly modules created with (Rust)[https://www.rust-lang.org/] and [wasm-pack](https://rustwasm.github.io/wasm-pack/) using the [wasm-pack-template](https://github.com/rustwasm/wasm-pack).
+WebAssembly modules created with [Rust](https://www.rust-lang.org/) and [wasm-pack](https://rustwasm.github.io/wasm-pack/) using the [wasm-pack-template](https://github.com/rustwasm/wasm-pack).
