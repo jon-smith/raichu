@@ -160,4 +160,4 @@ XYPlot.defaultProps = {
 	yAxisLabel: '',
 };
 
-export default XYPlot;
+export default React.memo(XYPlot);
