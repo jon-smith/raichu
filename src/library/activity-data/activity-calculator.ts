@@ -4,6 +4,7 @@ import {
 	interpolateNullValues,
 	Result,
 } from 'library/activity-data/best-split-calculator';
+import { movingAverageObj } from 'library/utils/array-utils';
 import { getWasmLibIfLoaded } from 'wasm/jolteon-loader';
 import { ActivityContainer, ExtendedPoint } from './activity-container';
 
@@ -83,6 +84,30 @@ export function getProcessedTimeSeries(
 	}
 
 	return result;
+}
+
+function calculateSmoothedTimeSeries(
+	timeSeries: { x: number; y: number | null }[],
+	movingAverageRadius?: number
+) {
+	return movingAverageObj(
+		timeSeries.map((t) => ({ x: t.x, y: t.y ?? 0 })),
+		'y',
+		movingAverageRadius
+	);
+}
+
+export function getProcessedAndSmoothedTimeSeries(
+	data: ActivityContainer,
+	variable: Variable,
+	processingOptions: TimeSeriesProcessingOptions,
+	smoothingOptions: { movingAverageRadius?: number }
+) {
+	const processed = getProcessedTimeSeries(data, variable, processingOptions);
+
+	const smoothed = calculateSmoothedTimeSeries(processed, smoothingOptions.movingAverageRadius);
+
+	return { processed, smoothed };
 }
 
 export type BestSplitOption = 'heartrate' | 'power' | 'cadence' | 'time' | 'speed';

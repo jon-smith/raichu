@@ -2,7 +2,10 @@ import * as d3 from 'd3';
 import * as ArrayUtils from 'library/utils/array-utils';
 import { ActivityContainer } from './activity-container';
 import { IntervalWithPower } from './interval';
-import { TimeSeriesProcessingOptions, getProcessedTimeSeries } from './activity-calculator';
+import {
+	TimeSeriesProcessingOptions,
+	getProcessedAndSmoothedTimeSeries,
+} from './activity-calculator';
 
 export type DiscrepencyCurvePoint = { t: number; delta: number };
 
@@ -14,32 +17,27 @@ export type IntervalDetectionParameters = {
 	stepThreshold: number;
 };
 
-function calculateActivityProcessedPowerTimeSeries(
+function calculateActivityProcessedAndSmoothedPowerTimeSeries(
 	activity?: ActivityContainer,
-	options?: TimeSeriesProcessingOptions
-) {
-	if (!activity) return [];
-
-	return getProcessedTimeSeries(
-		activity,
-		'power',
-		options ?? {
-			maxGapForInterpolation: 3,
-			interpolateNull: true,
-			resolution: 1,
-		}
-	);
-}
-
-function calculateActivitySmoothedPowerTimeSeries(
-	processedPowerTimeSeries: { x: number; y: number | null }[],
+	options?: TimeSeriesProcessingOptions,
 	movingAverageRadius?: number
 ) {
-	return ArrayUtils.movingAverageObj(
-		processedPowerTimeSeries.map((t) => ({ x: t.x, y: t.y ?? 0 })),
-		'y',
-		movingAverageRadius
-	);
+	if (activity) {
+		const { processed, smoothed } = getProcessedAndSmoothedTimeSeries(
+			activity,
+			'power',
+			options ?? {
+				maxGapForInterpolation: 3,
+				interpolateNull: true,
+				resolution: 1,
+			},
+			{ movingAverageRadius }
+		);
+
+		return { timeSeries: processed, smoothedTimeSeries: smoothed };
+	}
+
+	return { timeSeries: [], smoothedTimeSeries: [] };
 }
 
 function calculateMovingWindowDiscrepencyCurve(
@@ -78,9 +76,9 @@ export function performIntervalDetection(
 	activity: ActivityContainer | undefined,
 	params: IntervalDetectionParameters
 ) {
-	const timeSeries = calculateActivityProcessedPowerTimeSeries(activity);
-	const smoothedTimeSeries = calculateActivitySmoothedPowerTimeSeries(
-		timeSeries,
+	const { timeSeries, smoothedTimeSeries } = calculateActivityProcessedAndSmoothedPowerTimeSeries(
+		activity,
+		undefined,
 		params.inputSmoothingRadius
 	);
 	const powerPerSecond = smoothedTimeSeries.map((v) => v.y);
