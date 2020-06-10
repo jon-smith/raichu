@@ -3,7 +3,7 @@ import React from 'react';
 import { useActivitySelector } from 'store/reducers';
 import { View } from 'store/activity-data/slice';
 
-import BestSplitPlotViewer from './best-split-plot';
+import BestSplitPlotViewer from './best-split/best-split-view';
 import ActivitySelectionForm from './activity-selection-form';
 import TimeSeriesDataViewer from './time-series-data-viewer';
 import ConnectedActivityFileDrop from './connected-activity-file-drop';
