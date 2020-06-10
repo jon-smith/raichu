@@ -51,7 +51,10 @@ const IntervalDetectionView = () => {
 
 	return (
 		<>
-			<ExpansionPanel>
+			<ExpansionPanel
+				// Do not render ActivityIntervalAnalysisPlot when the panel is collapsed
+				TransitionProps={{ unmountOnExit: true }}
+			>
 				<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
 					<Box display="flex" flexDirection="column" {...stopClickFocusPropagation}>
 						<Box width="100%" {...stopClickFocusPropagation}>
