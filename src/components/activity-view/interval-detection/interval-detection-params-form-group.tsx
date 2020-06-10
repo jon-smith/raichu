@@ -2,6 +2,9 @@ import React from 'react';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
+import Box from '@material-ui/core/Box';
+import Tooltip from '@material-ui/core/Tooltip';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 import { useIntervalDetectionSelector } from 'store/reducers';
@@ -64,6 +67,33 @@ const NumericFormControlLabel = (props: {
 	);
 };
 
+const InfoTooltip = () => (
+	<Tooltip
+		title={
+			<div>
+				<h2>Window Size</h2>
+				<p>
+					This is the radius in seconds of the moving window used to detect changes in power. It
+					compares the average power within the window before a time point to the average power
+					after the time point to create a 'discrepency curve' from which peaks are detected to
+					identify step changes in power.
+				</p>
+				<h2>Pre Smooth</h2>
+				<p>The radius of the moving average applied to the raw input data.</p>
+				<h2>Post Smooth</h2>
+				<p>The radius of the moving average applied to the discrepency curve</p>
+				<h2>Step Threshold</h2>
+				<p>
+					The threshold in watts for a peak in the discrepency curve to be considered a step change.
+				</p>
+			</div>
+		}
+		placement="left"
+	>
+		<InfoIcon />
+	</Tooltip>
+);
+
 const SettingsFormGroup = () => {
 	const { ftp, params } = useIntervalDetectionSelector((s) => ({
 		ftp: s.ftp,
@@ -77,29 +107,32 @@ const SettingsFormGroup = () => {
 	const setDiscrepencySmoothingCallback = useDispatchCallback(setDiscrepencySmoothing);
 
 	return (
-		<FormGroup row>
-			<NumericFormControlLabel label="FTP" value={ftp} onChange={setFTPCallback} />
-			<NumericFormControlLabel
-				label="Window Size"
-				value={params.windowRadius}
-				onChange={setWindowRadiusCallback}
-			/>
-			<NumericFormControlLabel
-				label="Pre Smooth"
-				value={params.inputSmoothingRadius}
-				onChange={setInputSmoothingCallback}
-			/>
-			<NumericFormControlLabel
-				label="Post Smooth"
-				value={params.discrepencySmoothingRadius}
-				onChange={setDiscrepencySmoothingCallback}
-			/>
-			<NumericFormControlLabel
-				label="Step Threshold"
-				value={params.stepThreshold}
-				onChange={setStepThresholdCallback}
-			/>
-		</FormGroup>
+		<Box display="flex" flexDirection="row">
+			<FormGroup row>
+				<NumericFormControlLabel label="FTP" value={ftp} onChange={setFTPCallback} />
+				<NumericFormControlLabel
+					label="Window Size"
+					value={params.windowRadius}
+					onChange={setWindowRadiusCallback}
+				/>
+				<NumericFormControlLabel
+					label="Pre Smooth"
+					value={params.inputSmoothingRadius}
+					onChange={setInputSmoothingCallback}
+				/>
+				<NumericFormControlLabel
+					label="Post Smooth"
+					value={params.discrepencySmoothingRadius}
+					onChange={setDiscrepencySmoothingCallback}
+				/>
+				<NumericFormControlLabel
+					label="Step Threshold"
+					value={params.stepThreshold}
+					onChange={setStepThresholdCallback}
+				/>
+			</FormGroup>
+			<InfoTooltip />
+		</Box>
 	);
 };
 
