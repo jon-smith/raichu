@@ -4,6 +4,7 @@ import {
 	IntervalDetectionResults,
 } from 'library/activity-data/interval-detection';
 import { ActivityContainer } from 'library/activity-data/activity-container';
+import { clamp } from 'library/utils/math-utils';
 import { performIntervalDetection } from './worker-caller';
 
 type IntervalGenerationInput = {
@@ -70,19 +71,19 @@ const intervalDetectionSlice = createSlice({
 	initialState: defaultState,
 	reducers: {
 		setFTP(state, action: PayloadAction<number>) {
-			state.ftp = action.payload;
+			state.ftp = clamp(action.payload, 1, 999);
 		},
 		setWindowRadius(state, action: PayloadAction<number>) {
-			state.generationParams.windowRadius = action.payload;
+			state.generationParams.windowRadius = clamp(action.payload, 1, 600);
 		},
 		setStepThreshold(state, action: PayloadAction<number>) {
-			state.generationParams.stepThreshold = action.payload;
+			state.generationParams.stepThreshold = clamp(action.payload, 0, 30);
 		},
 		setInputSmoothing(state, action: PayloadAction<number>) {
-			state.generationParams.inputSmoothingRadius = action.payload;
+			state.generationParams.inputSmoothingRadius = clamp(action.payload, 0, 60);
 		},
 		setDiscrepencySmoothing(state, action: PayloadAction<number>) {
-			state.generationParams.discrepencySmoothingRadius = action.payload;
+			state.generationParams.discrepencySmoothingRadius = clamp(action.payload, 0, 60);
 		},
 	},
 	extraReducers: (builder) => {
