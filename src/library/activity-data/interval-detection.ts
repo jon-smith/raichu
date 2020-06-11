@@ -110,3 +110,5 @@ export function performIntervalDetection(
 		detectedStepTimePoints,
 	};
 }
+
+export type IntervalDetectionResults = ReturnType<typeof performIntervalDetection>;

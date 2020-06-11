@@ -1,7 +1,9 @@
 import { Action } from 'redux';
 import { rootReducer } from '.././reducers';
 import { actions } from './slice';
-import { Interval } from './types';
+
+// Use the worker-caller mock which doesn't use web-workers
+jest.mock('.././interval-detection/worker-caller');
 
 const getInitialState = () => rootReducer(undefined, {} as Action);
 
@@ -14,7 +16,7 @@ describe('Workout Creator Store', () => {
 	it('updates intervals', () => {
 		const store = getInitialState();
 
-		const intervalsToSet = [{ color: '', length: 60, intensity: 1.2 }];
+		const intervalsToSet = [{ color: '', durationSeconds: 60, intensityPercent: 1.2 }];
 		const updatedStore = rootReducer(store, actions.setIntervals(intervalsToSet));
 
 		expect(updatedStore.workoutCreator.currentIntervals).toEqual(intervalsToSet);
@@ -38,9 +40,10 @@ describe('Workout Creator Store', () => {
 
 	it('doesnt change intervals if set to same with extra properties', () => {
 		const store = getInitialState();
-		const intervalsWithExtra = store.workoutCreator.currentIntervals.map(
-			(i) => ({ ...i, extra: 100 } as Interval)
-		);
+		const intervalsWithExtra = store.workoutCreator.currentIntervals.map((i) => ({
+			...i,
+			extra: 100,
+		}));
 
 		const updatedStore = rootReducer(store, actions.setIntervals(intervalsWithExtra));
 

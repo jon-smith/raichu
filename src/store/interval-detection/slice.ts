@@ -1,11 +1,10 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import {
 	IntervalDetectionParameters,
-	performIntervalDetection,
+	IntervalDetectionResults,
 } from 'library/activity-data/interval-detection';
 import { ActivityContainer } from 'library/activity-data/activity-container';
-
-type IntervalDetectionResults = ReturnType<typeof performIntervalDetection>;
+import { performIntervalDetection } from './worker-caller';
 
 type IntervalGenerationInput = {
 	activity: ActivityContainer | undefined;
@@ -57,10 +56,13 @@ export const generateIntervals = createAsyncThunk(
 	// Note this function doesn't actually run asynchronously at the moment
 	// but I intend to use a worker thread in the future
 	// For now I just wanted to try out the usage of createAsyncThunk
-	async (input: IntervalGenerationInput) => ({
-		results: performIntervalDetection(input.activity, input.params),
-		input,
-	})
+	async (input: IntervalGenerationInput) => {
+		const results = await performIntervalDetection(input.activity, input.params);
+		return {
+			results,
+			input,
+		};
+	}
 );
 
 const intervalDetectionSlice = createSlice({
