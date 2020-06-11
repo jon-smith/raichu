@@ -28,19 +28,24 @@ const stopClickFocusPropagation: Partial<BoxProps> = {
 const IntervalDetectionView = () => {
 	const activity = useActivitySelector((s) => getSelectedActivity(s));
 
-	const { params, intervals, generateRequired } = useIntervalDetectionSelector((s) => ({
-		params: s.generationParams,
-		intervals: intervalsWithIntensity(s),
-		generateRequired: generateIntervalsRequired(s, activity),
-	}));
+	const { params, intervals, generateRequired, isGenerating } = useIntervalDetectionSelector(
+		(s) => ({
+			params: s.generationParams,
+			intervals: intervalsWithIntensity(s),
+			generateRequired: generateIntervalsRequired(s, activity),
+			isGenerating: s.isGenerating,
+		})
+	);
 
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		if (generateRequired) {
+		// Only start generating new intervals when the previous interval generation has completed
+		// This ensures only 1 worker is running at once
+		if (generateRequired && !isGenerating) {
 			dispatch(generateIntervals({ activity, params }));
 		}
-	}, [activity, params, generateRequired, dispatch]);
+	}, [activity, params, generateRequired, isGenerating, dispatch]);
 
 	const setIntervalsDispatcher = useDispatchCallback(setIntervals);
 	const setCurrentPageDispatcher = useDispatchCallback(setCurrentPage);
