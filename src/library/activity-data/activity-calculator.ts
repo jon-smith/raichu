@@ -180,15 +180,19 @@ export const getBestSplitsVsTime = (
 		maxGapForInterpolation
 	);
 
+	const maxTime = interpolatedData.length;
+	const timeRangesToUse = timeRanges.filter((t) => t <= maxTime);
+	if (timeRangesToUse.length === 0) return [];
+
 	const wasmLib = getWasmLibIfLoaded();
 	if (wasmLib) {
 		return wasmLib.best_averages_for_distances(
 			(interpolatedData as unknown) as Float64Array,
-			(timeRanges as unknown) as Uint32Array
+			(timeRangesToUse as unknown) as Uint32Array
 		);
 	}
 
-	return maxAveragesForDistances(interpolatedData, timeRanges);
+	return maxAveragesForDistances(interpolatedData, timeRangesToUse);
 };
 
 export function getMinTimesPerDistance(data: ActivityContainer, distances: number[]) {
