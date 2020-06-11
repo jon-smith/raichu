@@ -3,17 +3,17 @@ import React, { useMemo, useState } from 'react';
 import Box from '@material-ui/core/Box';
 
 import * as activityCalculator from 'library/activity-data/activity-calculator';
-import { BestSplitOption } from 'library/activity-data/activity-calculator';
 import { ActivityContainer } from 'library/activity-data/activity-container';
 import { useActivitySelector } from 'store/reducers';
 import { getSelectedActivity } from 'store/activity-data/selectors';
 import { primaryColourForBestSplitOption } from 'components/helpers/activity-data-component-helpers';
+import { BestSplitDisplayOption } from './best-split-display-option';
 import BestSplitCurveSelection from './best-split-curve-selection';
 import BestSplitPlot from './best-split-plot';
 import BestSplitTable from './best-split-table';
 import { distancesForBestSplits, timeIntervalsForBestSplits } from './best-split-x-values';
 
-function buildPaceCurve(d: ActivityContainer) {
+function buildPaceOrSpeedCurve(d: ActivityContainer, type: 'pace' | 'speed') {
 	const bestSplits = activityCalculator.getMinTimesPerDistance(d, distancesForBestSplits);
 
 	const bestSplitsDataPoints = bestSplits
@@ -21,7 +21,7 @@ function buildPaceCurve(d: ActivityContainer) {
 		.map((r) => ({
 			x: r.distance,
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			y: r.distance / r.best!.time,
+			y: type === 'pace' ? (r.best!.time / r.distance) * 1000 : r.distance / r.best!.time,
 		}));
 
 	return {
@@ -29,6 +29,9 @@ function buildPaceCurve(d: ActivityContainer) {
 		color: primaryColourForBestSplitOption('speed'),
 	};
 }
+
+const buildPaceCurveSecondsPerKm = (d: ActivityContainer) => buildPaceOrSpeedCurve(d, 'pace');
+const buildSpeedCurve = (d: ActivityContainer) => buildPaceOrSpeedCurve(d, 'speed');
 
 function buildPowerCurve(d: ActivityContainer) {
 	const bestSplits = activityCalculator.getBestSplitsVsTime(
@@ -68,20 +71,22 @@ function buildHRCurve(d: ActivityContainer) {
 	};
 }
 
-function getCurveBuilder(o: BestSplitOption) {
+function getCurveBuilder(o: BestSplitDisplayOption) {
 	switch (o) {
 		case 'heartrate':
 			return buildHRCurve;
 		case 'power':
 			return buildPowerCurve;
+		case 'pace':
+			return buildPaceCurveSecondsPerKm;
 		case 'speed':
-			return buildPaceCurve;
+			return buildSpeedCurve;
 		default:
 			return undefined;
 	}
 }
 
-function useBestSplitChartData(o: BestSplitOption) {
+function useBestSplitChartData(o: BestSplitDisplayOption) {
 	const selectedActivity = useActivitySelector((s) => getSelectedActivity(s));
 	return useMemo(() => {
 		const selectedActivities = selectedActivity ? [selectedActivity] : [];
@@ -94,7 +99,7 @@ function useBestSplitChartData(o: BestSplitOption) {
 }
 
 export default function BestSplitPlotComponent() {
-	const [bestSplitOption, setBestSplitOption] = useState<BestSplitOption>('power');
+	const [bestSplitOption, setBestSplitOption] = useState<BestSplitDisplayOption>('power');
 
 	const data = useBestSplitChartData(bestSplitOption);
 

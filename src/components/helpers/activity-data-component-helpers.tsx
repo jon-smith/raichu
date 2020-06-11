@@ -1,8 +1,5 @@
-import {
-	Variable,
-	asRawVariable,
-	BestSplitOption,
-} from 'library/activity-data/activity-calculator';
+import { Variable } from 'library/activity-data/activity-calculator';
+import { BestSplitDisplayOption } from '../activity-view/best-split/best-split-display-option';
 
 export function primaryColourForVariable(o: Variable) {
 	switch (o) {
@@ -17,12 +14,27 @@ export function primaryColourForVariable(o: Variable) {
 	}
 }
 
-export function primaryColourForBestSplitOption(o: BestSplitOption) {
+function asRawVariable(o: BestSplitDisplayOption): Variable | null {
+	switch (o) {
+		case 'heartrate':
+			return 'heartrate';
+		case 'power':
+			return 'power';
+		case 'cadence':
+			return 'cadence';
+		default:
+			return null;
+	}
+}
+
+export function primaryColourForBestSplitOption(o: BestSplitDisplayOption) {
 	const asVar = asRawVariable(o);
 	if (asVar) return primaryColourForVariable(asVar);
 
 	switch (o) {
 		case 'speed':
+			return '#779ecb';
+		case 'pace':
 			return '#779ecb';
 		default:
 			return undefined;

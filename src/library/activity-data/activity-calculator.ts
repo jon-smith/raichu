@@ -110,7 +110,7 @@ export function getProcessedAndSmoothedTimeSeries(
 	return { processed, smoothed };
 }
 
-export type BestSplitOption = 'heartrate' | 'power' | 'cadence' | 'time' | 'speed';
+type BestSplitOption = 'heartrate' | 'power' | 'cadence' | 'time' | 'speed';
 
 export function asRawVariable(o: BestSplitOption): Variable | null {
 	switch (o) {

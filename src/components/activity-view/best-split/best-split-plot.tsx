@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import XYPlot, { DataSeriesT } from 'generic-components/charts/xy-plot';
-import { BestSplitOption } from 'library/activity-data/activity-calculator';
 import { formatSecondsAsTimeWords } from 'library/utils/time-format-utils';
 import {
 	defaultTimeTicksForBestSplits,
 	defaultDistanceTicksForBestSplits,
 } from './best-split-x-values';
+import { BestSplitDisplayOption } from './best-split-display-option';
 
 function frontBack<T>(a: T[]) {
 	return [a[0], a[a.length - 1]] as const;
@@ -62,7 +62,7 @@ const BestSplitPlotImpl = (props: BestSplitPlotImplProps) => {
 	);
 };
 
-function bestSplitChartProps(o: BestSplitOption) {
+function bestSplitChartProps(o: BestSplitDisplayOption) {
 	switch (o) {
 		case 'heartrate':
 			return {
@@ -84,6 +84,14 @@ function bestSplitChartProps(o: BestSplitOption) {
 			return {
 				defaultXDomain: defaultPaceCurveXDomain,
 				xAxisLabel: 'distance',
+				yAxisLabel: 'speed',
+				xTickFormat: String,
+				xTickValues: defaultDistanceTicksForBestSplits,
+			};
+		case 'pace':
+			return {
+				defaultXDomain: defaultPaceCurveXDomain,
+				xAxisLabel: 'distance',
 				yAxisLabel: 'pace',
 				xTickFormat: String,
 				xTickValues: defaultDistanceTicksForBestSplits,
@@ -100,7 +108,7 @@ function bestSplitChartProps(o: BestSplitOption) {
 }
 
 export default function BestSplitPlot(
-	props: Pick<BestSplitPlotImplProps, 'series'> & { option: BestSplitOption }
+	props: Pick<BestSplitPlotImplProps, 'series'> & { option: BestSplitDisplayOption }
 ) {
 	return <BestSplitPlotImpl series={props.series} {...bestSplitChartProps(props.option)} />;
 }

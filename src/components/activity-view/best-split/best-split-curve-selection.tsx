@@ -8,11 +8,11 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 import { useFormStyles } from 'components/styles/form-styles';
 
-import { BestSplitOption } from 'library/activity-data/activity-calculator';
+import { BestSplitDisplayOption } from './best-split-display-option';
 
 type Props = {
-	option: BestSplitOption;
-	onChange: (o: BestSplitOption) => void;
+	option: BestSplitDisplayOption;
+	onChange: (o: BestSplitDisplayOption) => void;
 };
 
 export default function BestSplitCurveSelectionForm(props: Props) {
@@ -20,7 +20,7 @@ export default function BestSplitCurveSelectionForm(props: Props) {
 
 	const { option, onChange } = props;
 
-	const makeOnChange = (o: BestSplitOption) => (e: unknown, c: boolean) => {
+	const makeOnChange = (o: BestSplitDisplayOption) => (e: unknown, c: boolean) => {
 		if (c) onChange(o);
 	};
 
@@ -48,6 +48,14 @@ export default function BestSplitCurveSelectionForm(props: Props) {
 					value="pace"
 					control={<Radio color="primary" />}
 					label="Pace"
+					labelPlacement="start"
+					checked={option === 'pace'}
+					onChange={makeOnChange('pace')}
+				/>
+				<FormControlLabel
+					value="speed"
+					control={<Radio color="primary" />}
+					label="Speed"
 					labelPlacement="start"
 					checked={option === 'speed'}
 					onChange={makeOnChange('speed')}

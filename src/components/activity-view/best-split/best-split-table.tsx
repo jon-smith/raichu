@@ -8,11 +8,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import { BestSplitOption } from 'library/activity-data/activity-calculator';
 import { DataPoint } from 'generic-components/charts/xy-plot';
-import { formatSecondsAsTimeWords } from 'library/utils/time-format-utils';
+import { formatSecondsAsTimeWords, formatSecondsAsHHMMSS } from 'library/utils/time-format-utils';
+import { BestSplitDisplayOption } from './best-split-display-option';
 
-function columnNameForOption(o: BestSplitOption) {
+function columnNameForOption(o: BestSplitDisplayOption) {
 	switch (o) {
 		case 'heartrate':
 			return 'Time';
@@ -20,17 +20,19 @@ function columnNameForOption(o: BestSplitOption) {
 			return 'Time';
 		case 'speed':
 			return 'Distance';
+		case 'pace':
+			return 'Distance';
 		default:
 			return '';
 	}
 }
 
 type BestSplitTableProps = {
-	option: BestSplitOption;
+	option: BestSplitDisplayOption;
 	series: { name: string; data: DataPoint[] }[];
 };
 
-function formatCellXValue(value: number, option: BestSplitOption) {
+function formatCellXValue(value: number, option: BestSplitDisplayOption) {
 	switch (option) {
 		case 'heartrate':
 			return formatSecondsAsTimeWords(value);
@@ -38,12 +40,14 @@ function formatCellXValue(value: number, option: BestSplitOption) {
 			return formatSecondsAsTimeWords(value);
 		case 'speed':
 			return `${value} m`;
+		case 'pace':
+			return `${value} m`;
 		default:
 			return value;
 	}
 }
 
-function formatCellYValue(value: number | null, option: BestSplitOption) {
+function formatCellYValue(value: number | null, option: BestSplitDisplayOption) {
 	if (value === null) return '-';
 
 	switch (option) {
@@ -53,6 +57,8 @@ function formatCellYValue(value: number | null, option: BestSplitOption) {
 			return `${value.toFixed(0)} W`;
 		case 'speed':
 			return `${value.toFixed(2)} m/s`;
+		case 'pace':
+			return `${formatSecondsAsHHMMSS(Math.floor(value))}/km`;
 		default:
 			return value;
 	}
