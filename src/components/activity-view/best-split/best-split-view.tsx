@@ -1,4 +1,7 @@
 import React, { useMemo, useState } from 'react';
+
+import Box from '@material-ui/core/Box';
+
 import * as activityCalculator from 'library/activity-data/activity-calculator';
 import { BestSplitOption } from 'library/activity-data/activity-calculator';
 import { ActivityContainer } from 'library/activity-data/activity-container';
@@ -7,6 +10,7 @@ import { getSelectedActivity } from 'store/activity-data/selectors';
 import { primaryColourForBestSplitOption } from 'components/helpers/activity-data-component-helpers';
 import BestSplitCurveSelection from './best-split-curve-selection';
 import BestSplitPlot from './best-split-plot';
+import BestSplitTable from './best-split-table';
 import { distancesForBestSplits, timeIntervalsForBestSplits } from './best-split-x-values';
 
 function buildPaceCurve(d: ActivityContainer) {
@@ -21,7 +25,6 @@ function buildPaceCurve(d: ActivityContainer) {
 		}));
 
 	return {
-		name: 'pace-curve',
 		data: bestSplitsDataPoints,
 		color: primaryColourForBestSplitOption('speed'),
 	};
@@ -41,7 +44,6 @@ function buildPowerCurve(d: ActivityContainer) {
 	}));
 
 	return {
-		name: 'power-curve',
 		data: bestSplitsDataPoints,
 		color: primaryColourForBestSplitOption('power'),
 	};
@@ -61,26 +63,33 @@ function buildHRCurve(d: ActivityContainer) {
 	}));
 
 	return {
-		name: 'hr-best-splits',
 		data: bestSplitsDataPoints,
 		color: primaryColourForBestSplitOption('heartrate'),
 	};
+}
+
+function getCurveBuilder(o: BestSplitOption) {
+	switch (o) {
+		case 'heartrate':
+			return buildHRCurve;
+		case 'power':
+			return buildPowerCurve;
+		case 'speed':
+			return buildPaceCurve;
+		default:
+			return undefined;
+	}
 }
 
 function useBestSplitChartData(o: BestSplitOption) {
 	const selectedActivity = useActivitySelector((s) => getSelectedActivity(s));
 	return useMemo(() => {
 		const selectedActivities = selectedActivity ? [selectedActivity] : [];
-		switch (o) {
-			case 'heartrate':
-				return selectedActivities.map(buildHRCurve);
-			case 'power':
-				return selectedActivities.map(buildPowerCurve);
-			case 'speed':
-				return selectedActivities.map(buildPaceCurve);
-			default:
-				return [];
-		}
+		const curveBuilder = getCurveBuilder(o);
+		if (curveBuilder)
+			return selectedActivities.map((a) => ({ ...curveBuilder(a), name: a.filename }));
+
+		return [];
 	}, [selectedActivity, o]);
 }
 
@@ -92,7 +101,14 @@ export default function BestSplitPlotComponent() {
 	return (
 		<>
 			<BestSplitCurveSelection option={bestSplitOption} onChange={setBestSplitOption} />
-			<BestSplitPlot series={data} option={bestSplitOption} />
+			<Box display="flex" flexDirection="row" flexWrap="wrap" width="100%">
+				<Box flex="3 1 0" style={{ minWidth: 400 }}>
+					<BestSplitPlot series={data} option={bestSplitOption} />
+				</Box>
+				<Box flex="1 1 0" style={{ minWidth: 400 }}>
+					<BestSplitTable option={bestSplitOption} series={data} />
+				</Box>
+			</Box>
 		</>
 	);
 }
