@@ -21,6 +21,17 @@ import { getSelectedActivity } from 'store/activity-data/selectors';
 
 import TimeSeriesSelection from './time-series-selection';
 
+function getDefaultInterpolateMaxGap(v: Variable) {
+	switch (v) {
+		case 'cadence':
+			return 10;
+		case 'heartrate':
+			return 10;
+		default:
+			return 0;
+	}
+}
+
 function buildTimeSeries(
 	d: ActivityContainer | undefined,
 	v: Variable,
@@ -32,8 +43,8 @@ function buildTimeSeries(
 				d,
 				v,
 				{
-					interpolateNull: false,
-					maxGapForInterpolation: 0,
+					interpolateNull: true,
+					maxGapForInterpolation: getDefaultInterpolateMaxGap(v),
 					resolution: 1,
 				},
 				{ movingAverageRadius }
