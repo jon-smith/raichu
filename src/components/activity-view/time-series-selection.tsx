@@ -18,7 +18,7 @@ type Props = {
 	onChangeMovingAverage: (ma: number) => void;
 };
 
-export default function BestSplitCurveSelectionForm(props: Props) {
+export default function TimeSeriesSelectionForm(props: Props) {
 	const styles = useFormStyles();
 
 	const { option, onChangeOption, movingAverage, onChangeMovingAverage } = props;

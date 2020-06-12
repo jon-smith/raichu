@@ -41,9 +41,20 @@ export function extractData(data: ActivityContainer, v: Variable, filledPoints =
 	return data.flatPoints.map((p) => getVar(p, v));
 }
 
+function getDefaultInterpolateMaxGap(v: Variable) {
+	switch (v) {
+		case 'cadence':
+			return 10;
+		case 'heartrate':
+			return 10;
+		default:
+			return 0;
+	}
+}
+
 export type TimeSeriesProcessingOptions = {
 	interpolateNull: boolean;
-	maxGapForInterpolation: number;
+	maxGapForInterpolation?: number;
 	resolution: number;
 };
 
@@ -55,7 +66,10 @@ export function getProcessedTimeSeries(
 	const rawTimeSeries = getAsTimeSeries(data, variable, true);
 	const rawValues = rawTimeSeries.map((v) => v.y);
 	const interpolatedValues = options.interpolateNull
-		? interpolateNullValues(rawValues, options.maxGapForInterpolation)
+		? interpolateNullValues(
+				rawValues,
+				options.maxGapForInterpolation ?? getDefaultInterpolateMaxGap(variable)
+		  )
 		: rawValues;
 
 	const interpolatedTimeSeries = interpolatedValues.map((v, i) => ({

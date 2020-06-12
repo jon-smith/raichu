@@ -6,6 +6,7 @@ import { View } from 'store/activity-data/slice';
 import BestSplitPlotViewer from './best-split/best-split-view';
 import ActivitySelectionForm from './activity-selection-form';
 import TimeSeriesDataViewer from './time-series-data-viewer';
+import CustomScatterPlotView from './custom-scatter-plot/custom-scatter-plot-view';
 import ConnectedActivityFileDrop from './connected-activity-file-drop';
 import ActivityViewSelection from './activity-view-selection';
 import IntervalDetectionView from './interval-detection/interval-detection-view';
@@ -20,6 +21,7 @@ function componentFromView(view: View) {
 				<>
 					<TimeSeriesDataViewer />
 					<BestSplitPlotViewer />
+					<CustomScatterPlotView />
 				</>
 			);
 		case 'interval-detector':
