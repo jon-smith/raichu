@@ -7,7 +7,10 @@ import {
 	axisLabelForVariable,
 } from 'components/helpers/activity-data-component-helpers';
 
-import { getProcessedAndSmoothedTimeSeries } from 'library/activity-data/activity-calculator';
+import {
+	getProcessedAndSmoothedTimeSeries,
+	Variable,
+} from 'library/activity-data/activity-calculator';
 import { ActivityContainer } from 'library/activity-data/activity-container';
 
 import { useActivitySelector } from 'store/reducers';
@@ -22,43 +25,37 @@ function zipYs(x: DataPoint[], y: DataPoint[]) {
 		.map((xy) => ({ x: xy.x!, y: xy.y! }));
 }
 
+function getTimeSeriesData(d: ActivityContainer, v: Variable, movingAverageRadius: number) {
+	return getProcessedAndSmoothedTimeSeries(
+		d,
+		v,
+		{
+			interpolateNull: true,
+			maxGapForInterpolation: undefined,
+			resolution: 1,
+		},
+		{ movingAverageRadius }
+	).smoothed;
+}
+
+function getXYData(d: ActivityContainer, v: VarSelection, movingAverageRadius: number) {
+	const xSeries = getTimeSeriesData(d, v.x, movingAverageRadius);
+	const ySeries = getTimeSeriesData(d, v.y, movingAverageRadius);
+
+	return zipYs(xSeries, ySeries);
+}
+
 function buildSeries(
 	d: ActivityContainer | undefined,
 	v: VarSelection,
 	movingAverageRadius: number,
 	name: string
 ): DataSeriesT {
-	const xSeries = d
-		? getProcessedAndSmoothedTimeSeries(
-				d,
-				v.x,
-				{
-					interpolateNull: true,
-					maxGapForInterpolation: undefined,
-					resolution: 1,
-				},
-				{ movingAverageRadius }
-		  ).smoothed
-		: undefined;
-
-	const ySeries = d
-		? getProcessedAndSmoothedTimeSeries(
-				d,
-				v.y,
-				{
-					interpolateNull: true,
-					maxGapForInterpolation: undefined,
-					resolution: 1,
-				},
-				{ movingAverageRadius }
-		  ).smoothed
-		: undefined;
-
-	const zippedXY = xSeries && ySeries ? zipYs(xSeries, ySeries) : [];
+	const data = d ? getXYData(d, v, movingAverageRadius) : [];
 
 	return {
 		name,
-		data: zippedXY,
+		data: data,
 		seriesType: 'mark',
 		color: primaryColourForVariable(v.x),
 	};
