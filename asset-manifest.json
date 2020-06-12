@@ -1,33 +1,33 @@
 {
   "files": {
     "main.css": "/raichu/static/css/main.6966074c.chunk.css",
-    "main.js": "/raichu/static/js/main.d6669990.chunk.js",
-    "main.js.map": "/raichu/static/js/main.d6669990.chunk.js.map",
-    "runtime-main.js": "/raichu/static/js/runtime-main.1b588092.js",
-    "runtime-main.js.map": "/raichu/static/js/runtime-main.1b588092.js.map",
+    "main.js": "/raichu/static/js/main.caa1465a.chunk.js",
+    "main.js.map": "/raichu/static/js/main.caa1465a.chunk.js.map",
+    "runtime-main.js": "/raichu/static/js/runtime-main.ce25a167.js",
+    "runtime-main.js.map": "/raichu/static/js/runtime-main.ce25a167.js.map",
     "static/css/2.6780e105.chunk.css": "/raichu/static/css/2.6780e105.chunk.css",
-    "static/js/2.23177ea1.chunk.js": "/raichu/static/js/2.23177ea1.chunk.js",
-    "static/js/2.23177ea1.chunk.js.map": "/raichu/static/js/2.23177ea1.chunk.js.map",
-    "static/js/3.41a149d0.chunk.js": "/raichu/static/js/3.41a149d0.chunk.js",
+    "static/js/2.bcd1d027.chunk.js": "/raichu/static/js/2.bcd1d027.chunk.js",
+    "static/js/2.bcd1d027.chunk.js.map": "/raichu/static/js/2.bcd1d027.chunk.js.map",
+    "static/js/3.0b838f24.chunk.js": "/raichu/static/js/3.0b838f24.chunk.js",
     "108a5ad2dadb082a3d89.module.wasm": "/raichu/108a5ad2dadb082a3d89.module.wasm",
-    "static/js/3.41a149d0.chunk.js.map": "/raichu/static/js/3.41a149d0.chunk.js.map",
-    "1.942bb28d25e67c17dbb1.worker.js": "/raichu/1.942bb28d25e67c17dbb1.worker.js",
-    "1.942bb28d25e67c17dbb1.worker.js.map": "/raichu/1.942bb28d25e67c17dbb1.worker.js.map",
+    "static/js/3.0b838f24.chunk.js.map": "/raichu/static/js/3.0b838f24.chunk.js.map",
+    "1.cd24fa273a66bb1dd65c.worker.js": "/raichu/1.cd24fa273a66bb1dd65c.worker.js",
+    "1.cd24fa273a66bb1dd65c.worker.js.map": "/raichu/1.cd24fa273a66bb1dd65c.worker.js.map",
     "64f62471efea38b79093.module.wasm": "/raichu/64f62471efea38b79093.module.wasm",
-    "942bb28d25e67c17dbb1.worker.js": "/raichu/942bb28d25e67c17dbb1.worker.js",
-    "942bb28d25e67c17dbb1.worker.js.map": "/raichu/942bb28d25e67c17dbb1.worker.js.map",
+    "cd24fa273a66bb1dd65c.worker.js": "/raichu/cd24fa273a66bb1dd65c.worker.js",
+    "cd24fa273a66bb1dd65c.worker.js.map": "/raichu/cd24fa273a66bb1dd65c.worker.js.map",
     "index.html": "/raichu/index.html",
-    "precache-manifest.35a0c8105f29e5e05cab75794fb601cc.js": "/raichu/precache-manifest.35a0c8105f29e5e05cab75794fb601cc.js",
+    "precache-manifest.604d87fc64cc5ece6cb15db652d62746.js": "/raichu/precache-manifest.604d87fc64cc5ece6cb15db652d62746.js",
     "service-worker.js": "/raichu/service-worker.js",
     "static/css/2.6780e105.chunk.css.map": "/raichu/static/css/2.6780e105.chunk.css.map",
     "static/css/main.6966074c.chunk.css.map": "/raichu/static/css/main.6966074c.chunk.css.map",
-    "static/js/2.23177ea1.chunk.js.LICENSE.txt": "/raichu/static/js/2.23177ea1.chunk.js.LICENSE.txt"
+    "static/js/2.bcd1d027.chunk.js.LICENSE.txt": "/raichu/static/js/2.bcd1d027.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.1b588092.js",
+    "static/js/runtime-main.ce25a167.js",
     "static/css/2.6780e105.chunk.css",
-    "static/js/2.23177ea1.chunk.js",
+    "static/js/2.bcd1d027.chunk.js",
     "static/css/main.6966074c.chunk.css",
-    "static/js/main.d6669990.chunk.js"
+    "static/js/main.caa1465a.chunk.js"
   ]
 }
