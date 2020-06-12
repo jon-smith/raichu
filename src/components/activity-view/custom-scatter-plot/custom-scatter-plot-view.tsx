@@ -54,11 +54,11 @@ function buildSeries(
 		  ).smoothed
 		: undefined;
 
-	const zipped = xSeries && ySeries ? zipYs(xSeries, ySeries) : [];
+	const zippedXY = xSeries && ySeries ? zipYs(xSeries, ySeries) : [];
 
 	return {
 		name,
-		data: zipped,
+		data: zippedXY,
 		seriesType: 'mark',
 		color: primaryColourForVariable(v.x),
 	};

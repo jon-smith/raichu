@@ -32,15 +32,16 @@ function VarSelect(props: {
 	key: keyof VarSelection;
 	onChange: (o?: Variable) => void;
 	title: string;
+	hidden?: boolean;
 }) {
-	const { variable, key, onChange, title } = props;
+	const { variable, key, onChange, title, hidden = false } = props;
 
 	const varIndex = variableList.findIndex((v) => v === variable);
 
 	const id = key + '-select';
 	const labelId = id + '-label';
 
-	const styles = useFormStyles();
+	const styles = useFormStyles(hidden ? { formControl: { display: 'none' } } : undefined);
 	return (
 		<FormControl className={styles.formControl}>
 			<InputLabel id={labelId}>{title}</InputLabel>
@@ -92,6 +93,7 @@ export default function CustomScatterPlotSelectionForm(props: Props) {
 					onChange={onChangeColour}
 					key="colour"
 					title="Colour"
+					hidden={true}
 				/>
 				<SliderWithSpin
 					title={'Moving Average'}
