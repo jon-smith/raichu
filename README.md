@@ -5,7 +5,7 @@ A simple web-app for viewing and analysing GPX/TCX data. Written using [Typescri
 
 ## Prerequisites
 
-The Rust toolchain and `wasm-pack` is required to build the Rust/Webassembly code located in the rust-wasm directory. See the (`wasm-pack` documentation)[https://rustwasm.github.io/wasm-pack/book/quickstart.html] for more information.
+The Rust toolchain and `wasm-pack` is required to build the Rust/Webassembly code located in the rust-wasm directory. See the [`wasm-pack` documentation](https://rustwasm.github.io/wasm-pack/book/quickstart.html) for more information.
 
 ## Usage
 
