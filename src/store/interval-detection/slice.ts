@@ -54,9 +54,6 @@ export function generateIntervalsRequired(
 
 export const generateIntervals = createAsyncThunk(
 	'intervalDetection/generateIntervals',
-	// Note this function doesn't actually run asynchronously at the moment
-	// but I intend to use a worker thread in the future
-	// For now I just wanted to try out the usage of createAsyncThunk
 	async (input: IntervalGenerationInput) => {
 		const results = await performIntervalDetection(input.activity, input.params);
 		return {
