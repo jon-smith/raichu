@@ -45,7 +45,9 @@ const ActivityDataViewer = () => {
 				<h4>Welcome to raichu</h4>
 				<p>頂きます</p>
 				<ConnectedActivityFileDrop text="To get started, drop GPX/TCX files here, or click to use the file browser" />
-				<div onClick={loadExampleDataCallback}>Alternatively, click here to load example data</div>
+				<div onClick={() => loadExampleDataCallback()}>
+					Alternatively, click here to load example data
+				</div>
 			</div>
 		);
 	}

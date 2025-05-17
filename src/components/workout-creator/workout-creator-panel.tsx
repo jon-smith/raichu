@@ -48,7 +48,7 @@ const WorkoutCreatorPage = () => {
 		currentSelectedInterval: selectedOrNewInterval(w),
 	}));
 
-	const { onChange, setSelectedIntensity, setSelectedLength } = useActions();
+	const { onChange, setSelectedIntensity } = useActions();
 
 	const onMouseWheel = useCallback(
 		(e: React.WheelEvent) => {

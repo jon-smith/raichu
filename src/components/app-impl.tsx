@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import { useViewSelector } from 'store/reducers';
 import { Page, setCurrentPage } from 'store/view/slice';
@@ -18,7 +18,7 @@ const palette = {
 	secondary: { main: '#FFECB3' },
 };
 
-const theme = createMuiTheme({
+const theme = createTheme({
 	palette,
 });
 
