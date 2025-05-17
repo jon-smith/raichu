@@ -71,7 +71,7 @@ const IntervalDetectionView = () => {
 					<ActivityIntervalAnalysisPlot />
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
-			<Box height="50vh">
+			<Box height="50vh" display="flex" flexDirection="column">
 				<IntervalEditorPlot intervals={intervals} />
 				<Button variant="contained" onClick={openInEditor} disabled={!activity}>
 					Open in editor

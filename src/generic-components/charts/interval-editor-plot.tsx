@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useRef, useEffect, useMemo } from 'react';
 import * as d3 from 'd3';
 import lodash from 'lodash';
@@ -42,7 +41,9 @@ const buildChart = (
 
 	const padding = { top: 20, left: 40, right: 40, bottom: 20 };
 
-	if (!width ?? !height) return;
+	if (!width || !height) {
+		return;
+	}
 
 	if (width <= padding.left + padding.right + 1 || height <= padding.top + padding.bottom + 1)
 		return;
@@ -218,7 +219,7 @@ const IntervalEditorPlot = (props: Props) => {
 	]);
 
 	useEffect(() => {
-		if (svgRef.current) {
+		if (svgRef.current && width && height) {
 			buildChart(
 				svgRef.current,
 				width,
@@ -230,7 +231,7 @@ const IntervalEditorPlot = (props: Props) => {
 		}
 	}, [intervalsWithColor, selectedIndex, onChange, width, height]);
 
-	return <svg ref={svgRef} width={width} height={height} />;
+	return <svg ref={svgRef} width="100%" height="100%" />;
 };
 
 export default withResizeDetector(IntervalEditorPlot);
