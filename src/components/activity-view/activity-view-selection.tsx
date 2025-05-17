@@ -23,7 +23,7 @@ const StyledTab = withStyles((theme) =>
 		root: {
 			textTransform: 'none',
 			minWidth: 72,
-			fontWeight: theme.typography.fontWeightRegular,
+			fontWeight: Number(theme.typography.fontWeightRegular),
 			marginRight: theme.spacing(4),
 		},
 	})

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createStyles, makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, createTheme } from '@material-ui/core/styles';
 import {
 	Table,
 	TableBody,
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) =>
 	})
 );
 
-const theme = createMuiTheme({
+const theme = createTheme({
 	overrides: {
 		MuiTableCell: {
 			root: {

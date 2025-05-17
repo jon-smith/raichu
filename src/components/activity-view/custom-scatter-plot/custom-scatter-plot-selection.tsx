@@ -29,16 +29,16 @@ const menuItems = variableList.map((v, i) => (
 
 function VarSelect(props: {
 	variable?: Variable;
-	key: keyof VarSelection;
+	varKey: keyof VarSelection;
 	onChange: (o?: Variable) => void;
 	title: string;
 	hidden?: boolean;
 }) {
-	const { variable, key, onChange, title, hidden = false } = props;
+	const { variable, varKey, onChange, title, hidden = false } = props;
 
 	const varIndex = variableList.findIndex((v) => v === variable);
 
-	const id = key + '-select';
+	const id = varKey + '-select';
 	const labelId = id + '-label';
 
 	const styles = useFormStyles(hidden ? { formControl: { display: 'none' } } : undefined);
@@ -48,7 +48,7 @@ function VarSelect(props: {
 			<Select
 				labelId={labelId}
 				id={id}
-				value={varIndex ?? ''}
+				value={varIndex >= 0 ? varIndex : ''}
 				onChange={(e) => {
 					const value = parseInt(String(e.target.value), 10);
 					if (Number.isSafeInteger(value)) {
@@ -86,12 +86,12 @@ export default function CustomScatterPlotSelectionForm(props: Props) {
 		<Box className={styles.formControl}>
 			<FormLabel component="legend">Custom Scatter Plot</FormLabel>
 			<Box display="flex" flexDirection="row">
-				<VarSelect variable={variables.x} onChange={onChangeX} key="x" title="X-axis" />
-				<VarSelect variable={variables.y} onChange={onChangeY} key="y" title="Y-axis" />
+				<VarSelect variable={variables.x} onChange={onChangeX} varKey="x" title="X-axis" />
+				<VarSelect variable={variables.y} onChange={onChangeY} varKey="y" title="Y-axis" />
 				<VarSelect
 					variable={variables.colour}
 					onChange={onChangeColour}
-					key="colour"
+					varKey="colour"
 					title="Colour"
 					hidden={true}
 				/>
